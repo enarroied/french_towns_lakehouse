@@ -1,0 +1,17 @@
+# config.yaml
+paths:
+  temp_dir: "/tmp/french_towns_downloads"
+  input_dir: "input"
+
+download:
+  concurrency: 3
+  timeout_seconds: 30
+
+downloads:
+  - name: "populations_historiques"
+    url: "https://api.insee.fr/melodi/file/DS_POPULATIONS_HISTORIQUES/DS_POPULATIONS_HISTORIQUES_CSV_FR"
+    filename: "populations_historiques.zip"  # or .csv if you know format
+
+  - name: "french_communes"
+    url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
+    filename: "communes_france.geojson"

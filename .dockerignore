@@ -1,0 +1,52 @@
+# .dockerignore
+
+.git
+.gitignore
+
+.env
+.env.*
+*.log
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.sublime-*
+
+dist/
+build/
+target/
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+Dockerfile*
+docker-compose*
+.dockerignore
+
+README.md
+docs/
+tests/
+test/
+
+input/           # Don't copy input files into image
+output/          # Don't copy output files
+data/minio/      # MinIO data stays local
+*.parquet        # Avoid copying data files
+*.geoparquet
+*.csv
+*.json
+
+# Python/uv specific
+
+.python-version
+uv.lock
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
