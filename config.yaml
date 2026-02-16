@@ -1,7 +1,14 @@
-# config.yaml
 paths:
   temp_dir: "/tmp/french_towns_downloads"
   input_dir: "input"
+  output_dir: "data/processed"
+  sql_dir: "sql"
+
+directories:
+  - temp_dir
+  - input_dir
+  - output_dir
+  - sql_dir
 
 download:
   concurrency: 3
@@ -10,8 +17,19 @@ download:
 downloads:
   - name: "populations_historiques"
     url: "https://api.insee.fr/melodi/file/DS_POPULATIONS_HISTORIQUES/DS_POPULATIONS_HISTORIQUES_CSV_FR"
-    filename: "populations_historiques.zip"  # or .csv if you know format
+    filename: "populations_historiques.zip"
 
   - name: "french_communes"
     url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
     filename: "communes_france.geojson"
+
+transformations:
+  - name: "process_communes"
+    input_pattern: "communes_france.geojson"
+    sql_template: "transform_french_towns.sql"
+    output_file: "communes_france.parquet"
+
+  - name: "process_population"
+    input_pattern: "DS_POPULATIONS_HISTORIQUES_data.csv"
+    sql_template: "transform_population.sql"
+    output_file: "french_population.parquet"

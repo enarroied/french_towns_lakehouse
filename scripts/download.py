@@ -21,9 +21,9 @@ TIMEOUT = config["download"]["timeout_seconds"]
 # Downloads from config (now a list of dicts)
 DOWNLOADS = config["downloads"]
 
-# Ensure directories exist
-TEMP_DIR.mkdir(exist_ok=True, parents=True)
-INPUT_DIR.mkdir(exist_ok=True, parents=True)
+# # Ensure directories exist
+# TEMP_DIR.mkdir(exist_ok=True, parents=True)
+# INPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 
 async def download_file(client: httpx.AsyncClient, url: str, output_path: Path):
