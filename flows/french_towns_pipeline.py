@@ -39,18 +39,31 @@ def transform_file(input_file: Path, transform_config: dict) -> Path:
 
     output_file = Path(PATHS["output_dir"]) / transform_config["output_file"]
 
-    # Read and render SQL template
+    render_context = {
+        "input_file": input_file,
+        "output_file": output_file,
+        "input_dir": PATHS["input_dir"],
+        "output_dir": PATHS["output_dir"],
+        "temp_dir": PATHS["temp_dir"],
+    }
+
+    if "params" in transform_config:
+        # Transform the params to include the full path!
+        params = transform_config["params"].copy()
+        for key, value in params.items():
+            if key.endswith('_file'):  # Any param ending with '_file'
+                params[key] = str(Path(PATHS["input_dir"]) / value)
+        render_context.update(params)
+
     sql_path = Path(PATHS["sql_dir"]) / transform_config["sql_template"]
     with open(sql_path) as f:
         template = Template(f.read())
 
-    query = template.render(input_file=input_file, output_file=output_file)
+    query = template.render(**render_context)
 
-    # Execute with DuckDB
     con = DuckDBConnection.get()
     con.execute(query)
 
-    print(f"✅ Transformed {input_file.name} -> {output_file}")
     return output_file
 
 
@@ -64,7 +77,6 @@ def french_towns_pipeline():
 
     # Step 2: For each transformation, find matching files and process
     for transform in TRANSFORMATIONS:
-        # Find files matching pattern
         pattern = transform["input_pattern"]
         matching_files = [f for f in input_files if f.match(pattern)]
 
@@ -72,11 +84,9 @@ def french_towns_pipeline():
             print(f"⚠️ No files match pattern: {pattern}")
             continue
 
-        # Transform each matching file
         for file in matching_files:
             transform_file(file, transform)
 
-    # Clean up
     DuckDBConnection.close()
     print("🎉 Pipeline complete!")
 
