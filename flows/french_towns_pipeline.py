@@ -137,7 +137,7 @@ def french_towns_pipeline():
         for file in matching_files:
             transform_file(file, transform)
 
-    # Step 2: send to minio/s3
+    # Step 3: send to minio/s3
     upload_to_minio(
         bucket_name="lakehouse-processed",
         source_dir=PATHS["output_dir"],
