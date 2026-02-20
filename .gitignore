@@ -1,6 +1,13 @@
 data/*
 input/*
 
+# dbt / duckdb
+target/
+dbt_packages/
+logs/
+french_towns.duckdb
+french_towns.duckdb.wal
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
