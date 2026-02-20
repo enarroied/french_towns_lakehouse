@@ -12,7 +12,6 @@ from prefect import flow, task
 from scripts.download import main as download_files
 from utils.db import DuckDBConnection
 
-# This finds the nearest .env by walking up directories
 load_dotenv(find_dotenv())
 
 
