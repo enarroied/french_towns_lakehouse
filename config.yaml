@@ -2,13 +2,10 @@ paths:
   temp_dir: "/tmp/french_towns_downloads"
   input_dir: "input"
   output_dir: "data/processed"
-  sql_dir: "sql"
 
 directories:
   - temp_dir
   - input_dir
-  - output_dir
-  - sql_dir
 
 download:
   concurrency: 3
@@ -34,22 +31,3 @@ downloads:
   - name: "salaries"
     url: "https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS/DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR"
     filename: "salaries.csv"
-
-transformations:
-  - name: "process_communes"
-    input_pattern: "communes_france.geojson"
-    sql_template: "transform_french_towns.sql"
-    output_file: "dim_communes_france.parquet"
-    params:
-      arrondissements_file: "arrondissements.csv"
-      departements_file: "departements.csv"
-
-  - name: "process_population"
-    input_pattern: "DS_POPULATIONS_HISTORIQUES_data.csv"
-    sql_template: "transform_population.sql"
-    output_file: "fact_population.parquet"
-
-  - name: "process_salaries"
-    input_pattern: "DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv"
-    sql_template: "transform_salaries.sql"
-    output_file: "fact_salaries.parquet"
