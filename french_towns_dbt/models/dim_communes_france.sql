@@ -1,6 +1,6 @@
 {{ config(
     materialized='external',
-    location=var('output_dir') ~ '/' ~ this.name ~ '.parquet'
+    location='../data/processed/' ~ this.name ~ '.parquet'
 ) }}
 
 SELECT
@@ -46,8 +46,8 @@ SELECT
     ST_YMax(geom)                                                   AS bbox_ymax,
     ST_Perimeter(geom)                                              AS perimeter,
     ST_NumInteriorRings(geom)                                       AS number_enclaves
-FROM ST_Read('{{ env_var("DBT_INPUT_DIR", "../input") }}/communes_france.geojson')
-LEFT JOIN read_csv_auto('{{ env_var("DBT_INPUT_DIR", "../input") }}/departements.csv')   AS dpt
+FROM {{ source('french_towns', 'communes_france') }}
+LEFT JOIN {{ source('french_towns', 'departements') }} AS dpt
     ON dpt.CHEFLIEU = com_code[1]
-LEFT JOIN read_csv_auto('{{ env_var("DBT_INPUT_DIR", "../input") }}/arrondissements.csv') AS arr
+LEFT JOIN {{ source('french_towns', 'arrondissements') }} AS arr
     ON arr.CHEFLIEU = com_code[1]

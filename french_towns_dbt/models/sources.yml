@@ -2,25 +2,25 @@ version: 2
 
 sources:
   - name: french_towns
-    meta:
-      external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/{name}"
+    schema: main
     tables:
       - name: communes_france
         meta:
-          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/communes_france.geojson"
+          external_location: "ST_Read('{{ var('input_dir') }}/communes_france.geojson')"
 
       - name: arrondissements
         meta:
-          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/arrondissements.csv"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/arrondissements.csv')"
 
       - name: departements
         meta:
-          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/departements.csv"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/departements.csv')"
 
       - name: populations_historiques
         meta:
-          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/DS_POPULATIONS_HISTORIQUES_data.csv"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/DS_POPULATIONS_HISTORIQUES_data.csv', sample_size=-1)"
+
 
       - name: salaries
         meta:
-          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv', sample_size=-1)"

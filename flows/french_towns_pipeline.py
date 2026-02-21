@@ -44,14 +44,25 @@ def download_all_files():
 
 @task
 def run_dbt():
-    """Task 2: Run all dbt models to produce parquet files in data/processed"""
+    """Task 2: Stage external sources then run all dbt models"""
+
+    # Step 2a: Create DuckDB views for all external sources (reads sources.yml)
+    stage = subprocess.run(
+        ["dbt", "run-operation", "stage_external_sources", "--profiles-dir", "."],
+        cwd=DBT_PROJECT_DIR,
+        capture_output=False,
+        text=True,
+    )
+    if stage.returncode != 0:
+        raise RuntimeError("dbt stage_external_sources failed — check logs above")
+
+    # Step 2b: Run all models
     result = subprocess.run(
         ["dbt", "run", "--profiles-dir", "."],
         cwd=DBT_PROJECT_DIR,
-        capture_output=False,  # let dbt print directly to stdout so you see progress
+        capture_output=False,
         text=True,
     )
-
     if result.returncode != 0:
         raise RuntimeError("dbt run failed — check logs above")
 
