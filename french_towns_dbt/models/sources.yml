@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: french_towns
+    meta:
+      external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/{name}"
+    tables:
+      - name: communes_france
+        meta:
+          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/communes_france.geojson"
+
+      - name: arrondissements
+        meta:
+          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/arrondissements.csv"
+
+      - name: departements
+        meta:
+          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/departements.csv"
+
+      - name: populations_historiques
+        meta:
+          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/DS_POPULATIONS_HISTORIQUES_data.csv"
+
+      - name: salaries
+        meta:
+          external_location: "{{ env_var('DBT_INPUT_DIR', '../input') }}/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv"

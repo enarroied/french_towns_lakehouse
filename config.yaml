@@ -12,7 +12,7 @@ directories:
 
 download:
   concurrency: 3
-  timeout_seconds: 30
+  timeout_seconds: 120
 
 downloads:
   - name: "populations_historiques"

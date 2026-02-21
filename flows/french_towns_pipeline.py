@@ -1,5 +1,6 @@
 import asyncio
 import os
+import subprocess
 from pathlib import Path
 
 import boto3
@@ -7,22 +8,20 @@ import yaml
 from botocore.config import Config
 from botocore.exceptions import ClientError
 from dotenv import find_dotenv, load_dotenv
-from jinja2 import Template
 from prefect import flow, task
 from scripts.download import main as download_files
-from utils.db import DuckDBConnection
 
 load_dotenv(find_dotenv())
-
 
 with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
 PATHS = config["paths"]
-TRANSFORMATIONS = config["transformations"]
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
+
+DBT_PROJECT_DIR = Path("french_towns_dbt")
 
 
 @task
@@ -38,44 +37,25 @@ def create_required_dirs():
 @task
 def download_all_files():
     """Task 1: Download all source files using asyncio"""
-    # Run async download in sync context
     asyncio.run(download_files())
     files = list(Path(PATHS["input_dir"]).glob("*"))
     return files
 
 
 @task
-def transform_file(input_file: Path, transform_config: dict) -> Path:
-    """Task 2: Transform a single file using SQL template"""
+def run_dbt():
+    """Task 2: Run all dbt models to produce parquet files in data/processed"""
+    result = subprocess.run(
+        ["dbt", "run", "--profiles-dir", "."],
+        cwd=DBT_PROJECT_DIR,
+        capture_output=False,  # let dbt print directly to stdout so you see progress
+        text=True,
+    )
 
-    output_file = Path(PATHS["output_dir"]) / transform_config["output_file"]
+    if result.returncode != 0:
+        raise RuntimeError("dbt run failed — check logs above")
 
-    render_context = {
-        "input_file": input_file,
-        "output_file": output_file,
-        "input_dir": PATHS["input_dir"],
-        "output_dir": PATHS["output_dir"],
-        "temp_dir": PATHS["temp_dir"],
-    }
-
-    if "params" in transform_config:
-        # Transform the params to include the full path!
-        params = transform_config["params"].copy()
-        for key, value in params.items():
-            if key.endswith("_file"):  # Any param ending with '_file'
-                params[key] = str(Path(PATHS["input_dir"]) / value)
-        render_context.update(params)
-
-    sql_path = Path(PATHS["sql_dir"]) / transform_config["sql_template"]
-    with open(sql_path) as f:
-        template = Template(f.read())
-
-    query = template.render(**render_context)
-
-    con = DuckDBConnection.get()
-    con.execute(query)
-
-    return output_file
+    print("✅ dbt run complete")
 
 
 @task
@@ -87,8 +67,7 @@ def upload_to_minio(
     secret_key: str = MINIO_SECRET_KEY,
     use_ssl: bool = False,
 ):
-    """Upload processed files to MinIO bucket (overwrite existing)"""
-
+    """Task 3: Upload processed parquet files to MinIO bucket"""
     client = boto3.client(
         "s3",
         endpoint_url=endpoint_url,
@@ -107,9 +86,8 @@ def upload_to_minio(
         else:
             raise e
 
-    # upload all parquet/geoparquet files
     source_path = Path(source_dir)
-    for file_path in source_path.glob("*.parquet") or source_path.glob("*.geoparquet"):
+    for file_path in source_path.glob("*.parquet"):
         client.upload_file(
             Filename=str(file_path), Bucket=bucket_name, Key=file_path.name
         )
@@ -120,29 +98,19 @@ def upload_to_minio(
 def french_towns_pipeline():
     """Main orchestration flow"""
 
-    # Step 1: Download all files
+    # Step 1: Create dirs and download
     create_required_dirs()
-    input_files = download_all_files()
+    download_all_files()
 
-    # Step 2: For each transformation, find matching files and process
-    for transform in TRANSFORMATIONS:
-        pattern = transform["input_pattern"]
-        matching_files = [f for f in input_files if f.match(pattern)]
+    # Step 2: Transform via dbt
+    run_dbt()
 
-        if not matching_files:
-            print(f"⚠️ No files match pattern: {pattern}")
-            continue
-
-        for file in matching_files:
-            transform_file(file, transform)
-
-    # Step 3: send to minio/s3
+    # Step 3: Upload to MinIO
     upload_to_minio(
         bucket_name="lakehouse-processed",
         source_dir=PATHS["output_dir"],
     )
 
-    DuckDBConnection.close()
     print("🎉 Pipeline complete!")
 
 

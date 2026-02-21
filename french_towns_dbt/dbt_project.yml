@@ -14,4 +14,8 @@ clean-targets:
 
 models:
   french_towns_dbt:
-    +materialized: table
+    +materialized: external
+
+vars:
+  output_dir: '../data/processed'
+  input_dir: '../input'
