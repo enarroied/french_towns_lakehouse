@@ -7,9 +7,9 @@ SELECT
     com_code[1]::CHAR(5)            AS id,
     com_current_code[1]::CHAR(5)    AS current_code,
     com_name[1]::VARCHAR(255)       AS name,
-    com_name_upper                  AS name_upper,
-    com_name_lower                  AS name_lower,
-    com_siren_code                  AS siren_code,
+    com_name_upper::VARCHAR(255)    AS name_upper,
+    com_name_lower::VARCHAR(255)    AS name_lower,
+    com_siren_code::CHAR(10)    AS siren_code,
     arrdep_name[1]::VARCHAR(255)    AS arrondissement_name,
     arrdep_code[1]::CHAR(7)         AS arrondissement_code,
     dep_name[1]::VARCHAR(255)       AS department_name,
@@ -38,7 +38,23 @@ SELECT
     END AS flag_sous_prefecture,
     geom                                                            AS geometry,
     geo_point_2d,
-    ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:2154'))          AS area_m2,
+    CASE
+        WHEN flag_metropole = 1
+            THEN ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:2154'))  / 1000000  -- Lambert-93 for mainland
+        WHEN department_code = '971' -- Guadeloupe
+            THEN ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:2970')) / 1000000
+        WHEN department_code = '972'  -- Martinique
+            THEN ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:2973')) / 1000000
+        WHEN department_code = '973'  -- French Guiana
+            THEN ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:2972')) / 1000000
+        WHEN department_code = '974'  -- Reunion
+            THEN ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:2975')) / 1000000
+        WHEN department_code = '975'  -- St. Pierre et Miquelon
+            THEN ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:2981')) / 1000000
+        WHEN department_code = '976'  -- Mayotte
+            THEN ST_Area(ST_Transform(geom, 'EPSG:4326', 'EPSG:4471')) / 1000000
+        ELSE NULL   -- We cant assume area if we don't have a proper projection
+    END AS area_km2,
     ST_Centroid(geom)                                               AS centroid,
     ST_XMin(geom)                                                   AS bbox_xmin,
     ST_XMax(geom)                                                   AS bbox_xmax,

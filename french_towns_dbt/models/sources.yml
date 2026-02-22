@@ -20,7 +20,6 @@ sources:
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/DS_POPULATIONS_HISTORIQUES_data.csv', sample_size=-1)"
 
-
       - name: salaries
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv', sample_size=-1)"
