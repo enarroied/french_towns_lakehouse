@@ -1,0 +1,10 @@
+french_towns_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '../french_towns.duckdb'
+      threads: 4
+      extensions:
+        - spatial
+      external_root: '../data/processed'
