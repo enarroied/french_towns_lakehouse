@@ -17,112 +17,86 @@ with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
 PATHS = config["paths"]
+DIRECTORIES = config.get("directories", [])
+DBT_PROJECT_DIR = Path("french_towns_dbt")
+DBT_PROFILES_ARGS = ["--profiles-dir", "."]
+MINIO_BUCKET = "lakehouse-processed"
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 
-DBT_PROJECT_DIR = Path("french_towns_dbt")
 
-
-@task
-def create_required_dirs():
-    with open("config.yaml") as f:
-        config = yaml.safe_load(f)
-
-    for dir_key in config.get("directories", []):
-        path = Path(config["paths"][dir_key])
-        path.mkdir(exist_ok=True, parents=True)
-
-
-@task
-def download_all_files():
-    """Task 1: Download all source files using asyncio"""
-    asyncio.run(download_files())
-    files = list(Path(PATHS["input_dir"]).glob("*"))
-    return files
-
-
-@task
-def run_dbt():
-    """Task 2: Stage external sources then run all dbt models"""
-
-    # Step 2a: Create DuckDB views for all external sources (reads sources.yml)
-    stage = subprocess.run(
-        ["dbt", "run-operation", "stage_external_sources", "--profiles-dir", "."],
-        cwd=DBT_PROJECT_DIR,
-        capture_output=False,
-        text=True,
-    )
-    if stage.returncode != 0:
-        raise RuntimeError("dbt stage_external_sources failed — check logs above")
-
-    # Step 2b: Run all models
+def _run_dbt_command(args: list[str], failure_message: str) -> None:
     result = subprocess.run(
-        ["dbt", "run", "--profiles-dir", "."],
+        ["dbt"] + args + DBT_PROFILES_ARGS,
         cwd=DBT_PROJECT_DIR,
         capture_output=False,
         text=True,
     )
     if result.returncode != 0:
-        raise RuntimeError("dbt run failed — check logs above")
-
-    print("✅ dbt run complete")
+        raise RuntimeError(failure_message)
 
 
 @task
-def upload_to_minio(
-    bucket_name: str = "lakehouse-processed",
-    source_dir: str = "data/processed",
-    endpoint_url: str = MINIO_ENDPOINT,
-    access_key: str = MINIO_ACCESS_KEY,
-    secret_key: str = MINIO_SECRET_KEY,
-    use_ssl: bool = False,
-):
-    """Task 3: Upload processed parquet files to MinIO bucket"""
+def create_required_dirs() -> None:
+    for dir_key in DIRECTORIES:
+        Path(config["paths"][dir_key]).mkdir(exist_ok=True, parents=True)
+
+
+@task
+def download_all_files() -> None:
+    asyncio.run(download_files())
+
+
+@task
+def run_dbt() -> None:
+    _run_dbt_command(
+        ["run-operation", "stage_external_sources"],
+        "dbt stage_external_sources failed — check logs above",
+    )
+    _run_dbt_command(
+        ["run"],
+        "dbt run failed — check logs above",
+    )
+    _run_dbt_command(
+        ["test"],
+        "dbt test failed — check logs above",
+    )
+
+
+@task
+def upload_to_minio() -> None:
     client = boto3.client(
         "s3",
-        endpoint_url=endpoint_url,
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key,
+        endpoint_url=MINIO_ENDPOINT,
+        aws_access_key_id=MINIO_ACCESS_KEY,
+        aws_secret_access_key=MINIO_SECRET_KEY,
         config=Config(signature_version="s3v4"),
-        use_ssl=use_ssl,
+        use_ssl=False,
     )
 
     try:
-        client.head_bucket(Bucket=bucket_name)
+        client.head_bucket(Bucket=MINIO_BUCKET)
     except ClientError as e:
         if e.response["Error"]["Code"] == "404":
-            client.create_bucket(Bucket=bucket_name)
-            print(f"📦 Created bucket: {bucket_name}")
+            client.create_bucket(Bucket=MINIO_BUCKET)
         else:
-            raise e
+            raise
 
-    source_path = Path(source_dir)
-    for file_path in source_path.glob("*.parquet"):
+    for file_path in Path(PATHS["output_dir"]).glob("*.parquet"):
         client.upload_file(
-            Filename=str(file_path), Bucket=bucket_name, Key=file_path.name
+            Filename=str(file_path),
+            Bucket=MINIO_BUCKET,
+            Key=file_path.name,
         )
-        print(f"✅ Uploaded {file_path.name} to {bucket_name}")
 
 
 @flow
-def french_towns_pipeline():
-    """Main orchestration flow"""
-
-    # Step 1: Create dirs and download
+def french_towns_pipeline() -> None:
     create_required_dirs()
     download_all_files()
-
-    # Step 2: Transform via dbt
     run_dbt()
-
-    # Step 3: Upload to MinIO
-    upload_to_minio(
-        bucket_name="lakehouse-processed",
-        source_dir=PATHS["output_dir"],
-    )
-
-    print("🎉 Pipeline complete!")
+    upload_to_minio()
 
 
 if __name__ == "__main__":
