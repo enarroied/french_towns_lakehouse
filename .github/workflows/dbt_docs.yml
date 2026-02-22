@@ -25,12 +25,12 @@ jobs:
       run: |
         cd french_towns_dbt
         uv pip install dbt-core dbt-duckdb
-        dbt deps
+        uv run dbt deps
 
     - name: Generate dbt docs
       run: |
         cd french_towns_dbt
-        uv run dbt docs generate  # Use 'uv run' to run in the virtual env
+        uv run dbt docs generate --profiles-dir . --empty-catalog
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
