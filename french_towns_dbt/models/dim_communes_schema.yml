@@ -129,7 +129,14 @@ models:
         data_type: STRUCT
 
       - name: area_km2
-        description: "Commune area in square kilometers (calculated using Lambert-93 projection for metropolitan France and default WGS84 for overseas France)"
+        description: "Commune area in square kilometers (calculated using Lambert-93 projection for metropolitan France, \
+                      EPSG:2970 for Guadeloupe\
+                      EPSG:2973 for Martinique\
+                      EPSG:2972 for French Guiana\
+                      EPSG:2975 for Reunion Island\
+                      EPSG:2981 for St. Pierre et Miquelon\
+                      EPSG:4471 for Mayotte\
+                      )"
         data_type: DOUBLE
         tests:
           - dbt_utils.accepted_range:

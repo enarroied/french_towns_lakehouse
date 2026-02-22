@@ -1,0 +1,38 @@
+name: Deploy dbt Docs
+
+on:
+  push:
+    branches: [master]  # Changed from 'main' to 'master'
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Set up Python
+      run: uv python install 3.11
+
+    - name: Install dependencies
+      run: |
+        cd french_towns_dbt
+        uv pip install dbt-core dbt-duckdb
+        dbt deps
+
+    - name: Generate dbt docs
+      run: |
+        cd french_towns_dbt
+        dbt docs generate
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./french_towns_dbt/target
+        destination_dir: docs
+        keep_files: false
