@@ -2,8 +2,8 @@ name: Deploy dbt Docs
 
 on:
   push:
-    branches: [master]  # Changed from 'main' to 'master'
-  workflow_dispatch:  # Allow manual triggers
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   deploy-docs:
@@ -18,6 +18,9 @@ jobs:
     - name: Set up Python
       run: uv python install 3.11
 
+    - name: Create virtual environment
+      run: uv venv
+
     - name: Install dependencies
       run: |
         cd french_towns_dbt
@@ -27,7 +30,7 @@ jobs:
     - name: Generate dbt docs
       run: |
         cd french_towns_dbt
-        dbt docs generate
+        uv run dbt docs generate  # Use 'uv run' to run in the virtual env
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
