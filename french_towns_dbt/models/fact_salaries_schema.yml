@@ -2,7 +2,9 @@ version: 2
 
 models:
   - name: fact_salaries
-    description: "Mean salaries by sex per French commune by year"
+    description: |
+      Mean salaries by sex and socio-professional category per French commune by year.
+      Based on INSEE data using PCS-ESE (Professions et Catégories Socioprofessionnelles - Emploi Salarié).
 
     # Model-level tests
     tests:
@@ -13,7 +15,7 @@ models:
 
     columns:
       - name: id
-        description: "INSEE commune code (5-character identifier)"
+        description: "INSEE commune code (5-character identifier, foreign key to dim_communes_france.id)"
         data_type: CHAR(5)
         tests:
           - not_null:
@@ -37,8 +39,9 @@ models:
                 values: [2023]
                 severity: warn
 
+      # Overall salaries by gender
       - name: mean_salary_men
-        description: "Mean annual salary for men"
+        description: "Mean annual salary for men (all socio-professional categories combined)"
         data_type: INTEGER
         tests:
           - not_null:
@@ -51,7 +54,7 @@ models:
                 severity: warn
 
       - name: mean_salary_women
-        description: "Mean annual salary for women"
+        description: "Mean annual salary for women (all socio-professional categories combined)"
         data_type: INTEGER
         tests:
           - not_null:
@@ -64,7 +67,7 @@ models:
                 severity: warn
 
       - name: mean_salary
-        description: "Mean annual salary for all sexes combined"
+        description: "Mean annual salary for all sexes combined (all socio-professional categories combined)"
         data_type: INTEGER
         tests:
           - not_null:
@@ -74,4 +77,187 @@ models:
               arguments:
                 min_value: 0
                 max_value: 200000
+                severity: warn
+
+      # Salaries by socio-professional category (all genders combined)
+      - name: mean_salary_management_position
+        description: |
+          Mean annual salary for management positions (cadres, professions intellectuelles supérieures).
+          PCS-ESE code '1T3' - all genders combined.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000  # Management positions have higher salaries
+                severity: warn
+
+      - name: mean_salary_intermediate_position
+        description: |
+          Mean annual salary for intermediate professions (professions intermédiaires).
+          PCS-ESE code '4' - all genders combined.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                severity: warn
+
+      - name: mean_salary_service_workers
+        description: |
+          Mean annual salary for service workers (employés).
+          PCS-ESE code '5' - all genders combined.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: mean_salary_manual_workers
+        description: |
+          Mean annual salary for manual workers (ouvriers).
+          PCS-ESE code '6' - all genders combined.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      # Salaries by socio-professional category - MEN only
+      - name: mean_salary_management_position_men
+        description: |
+          Mean annual salary for men in management positions (cadres, professions intellectuelles supérieures).
+          PCS-ESE code '1T3' - men only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                severity: warn
+
+      - name: mean_salary_intermediate_position_men
+        description: |
+          Mean annual salary for men in intermediate professions (professions intermédiaires).
+          PCS-ESE code '4' - men only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                severity: warn
+
+      - name: mean_salary_service_workers_men
+        description: |
+          Mean annual salary for men in service worker positions (employés).
+          PCS-ESE code '5' - men only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: mean_salary_manual_workers_men
+        description: |
+          Mean annual salary for men in manual worker positions (ouvriers).
+          PCS-ESE code '6' - men only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      # Salaries by socio-professional category - WOMEN only
+      - name: mean_salary_management_position_women
+        description: |
+          Mean annual salary for women in management positions (cadres, professions intellectuelles supérieures).
+          PCS-ESE code '1T3' - women only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                severity: warn
+
+      - name: mean_salary_intermediate_position_women
+        description: |
+          Mean annual salary for women in intermediate professions (professions intermédiaires).
+          PCS-ESE code '4' - women only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                severity: warn
+
+      - name: mean_salary_service_workers_women
+        description: |
+          Mean annual salary for women in service worker positions (employés).
+          PCS-ESE code '5' - women only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: mean_salary_manual_workers_women
+        description: |
+          Mean annual salary for women in manual worker positions (ouvriers).
+          PCS-ESE code '6' - women only.
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
                 severity: warn
