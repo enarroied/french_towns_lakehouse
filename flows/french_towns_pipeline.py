@@ -11,6 +11,7 @@ from dotenv import find_dotenv, load_dotenv
 from prefect import flow, task
 from scripts.download import main as download_files
 from scrapers import run_all_scrapers
+from custom_parsers import run_all_custom_parsers
 
 load_dotenv(find_dotenv())
 
@@ -52,6 +53,11 @@ def download_all_files() -> None:
 @task
 def run_scrapers() -> None:
     asyncio.run(run_all_scrapers(config))
+
+
+@task
+def run_custom_parsers() -> None:
+    run_all_custom_parsers(config)
 
 
 @task
@@ -102,6 +108,7 @@ def french_towns_pipeline() -> None:
     create_required_dirs()
     download_all_files()
     run_scrapers()
+    run_custom_parsers()
     run_dbt()
     upload_to_minio()
 
