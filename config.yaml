@@ -56,3 +56,9 @@ scrapers:
     enabled: true
     url: "https://www.les-plus-beaux-villages-de-france.org/fr/nos-villages/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
+
+  - name: "villes_prudentes"
+    module: "scrapers.scrape_villes_prudentes"
+    enabled: true
+    url: "https://www.villeprudente.fr/les-villes-labellisees/"
+    user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
