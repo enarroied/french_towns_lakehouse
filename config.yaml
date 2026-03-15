@@ -50,3 +50,9 @@ scrapers:
     user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
     page_size: 1000
     crawl_delay: 1
+
+  - name: "plus_beaux_villages"
+    module: "scrapers.scrape_plus_beaux_villages"
+    enabled: true
+    url: "https://www.les-plus-beaux-villages-de-france.org/fr/nos-villages/"
+    user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
