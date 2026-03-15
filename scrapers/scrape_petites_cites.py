@@ -1,36 +1,30 @@
 import asyncio
 import csv
+from pathlib import Path
 
 import aiohttp
+import yaml
 from bs4 import BeautifulSoup
 
-# --- Configuration ---
-SITEMAP_URL = "https://www.petitescitesdecaractere.com/cites-sitemap.xml"
-OUTPUT_CSV = "petites_cites_departments.csv"
-CONCURRENT_REQUESTS = 5  # number of pages to fetch at once
-USER_AGENT = "MyFrenchCitiesBot/1.0 (eric.narro.ied@gmail.com.com) - Weekly data update"
+
+def load_config() -> dict:
+    with open("config.yaml") as f:
+        return yaml.safe_load(f)
 
 
-# --- Helper to parse sitemap ---
-async def fetch_sitemap_urls(session):
-    """Fetch sitemap XML and return list of city page URLs."""
-    print(f"Fetching sitemap from {SITEMAP_URL}")
-    async with session.get(SITEMAP_URL) as resp:
+async def fetch_sitemap(session: aiohttp.ClientSession, url: str) -> list[str]:
+    async with session.get(url) as resp:
         resp.raise_for_status()
         xml = await resp.text()
     soup = BeautifulSoup(xml, "xml")
-    # Find all <loc> tags and filter those containing '/cites/'
-    urls = [loc.text for loc in soup.find_all("loc") if "/cites/" in loc.text]
-    print(f"Found {len(urls)} city URLs.")
-    return urls
+    return [loc.text for loc in soup.find_all("loc") if "/cites/" in loc.text]
 
 
-# --- Scrape a single city page ---
-# --- Scrape a single city page ---
-async def scrape_city(session, url):
-    """Fetch a city page and extract city name and department (lowercase)."""
+async def scrape_city(
+    session: aiohttp.ClientSession, url: str, headers: dict
+) -> dict | None:
     try:
-        async with session.get(url) as resp:
+        async with session.get(url, headers=headers) as resp:
             if resp.status != 200:
                 print(f"Error {resp.status} for {url}")
                 return None
@@ -38,67 +32,74 @@ async def scrape_city(session, url):
 
         soup = BeautifulSoup(html, "html.parser")
 
-        # Extract city name from <h1 class="cover-title">
         h1 = soup.find("h1", class_="cover-title")
         city = h1.get_text(strip=True).lower() if h1 else None
 
-        # Extract department from <div class="location"> (format "Region, Department" or just "Department")
         loc_div = soup.find("div", class_="location")
         department = None
         if loc_div:
             loc_text = loc_div.get_text(strip=True)
-            if "," in loc_text:
-                # Split and take the part after the comma (the department)
-                department = loc_text.split(",")[1].strip().lower()
-            else:
-                # No comma, so the whole string is the department (e.g., "Martinique")
-                department = loc_text.strip().lower()
+            department = (
+                loc_text.split(",")[1].strip().lower()
+                if "," in loc_text
+                else loc_text.strip().lower()
+            )
 
         if city and department:
             return {"city": city, "department": department}
-        else:
-            print(f"Missing data on {url}")
-            return None
-
+        print(f"Missing data on {url}")
+        return None
     except Exception as e:
         print(f"Exception scraping {url}: {e}")
         return None
 
 
-# --- Worker that limits concurrency ---
-async def worker(session, semaphore, url):
+async def worker(
+    session: aiohttp.ClientSession,
+    semaphore: asyncio.Semaphore,
+    url: str,
+    headers: dict,
+):
     async with semaphore:
-        return await scrape_city(session, url)
+        return await scrape_city(session, url, headers)
 
 
-# --- Main async function ---
-async def main():
-    # Headers to identify ourselves
-    headers = {"User-Agent": USER_AGENT}
+async def run(config: dict) -> Path:
+    scraper_config = next(
+        s for s in config["scrapers"] if s["module"] == "scrapers.scrape_petites_cites"
+    )
+    output_dir = Path(config["paths"]["scraper_dir"])
+    output_path = output_dir / f"{scraper_config['name']}.csv"
+
+    headers = {"User-Agent": scraper_config.get("user_agent", "FrenchTownsBot/1.0")}
+    concurrency = scraper_config.get("concurrency", 5)
 
     async with aiohttp.ClientSession(headers=headers) as session:
-        # Step 1: get all city URLs from sitemap
-        city_urls = await fetch_sitemap_urls(session)
+        urls = await fetch_sitemap(session, scraper_config["sitemap_url"])
+        print(f"Found {len(urls)} city URLs.")
 
-        if not city_urls:
-            print("No city URLs found. Exiting.")
-            return
+        if not urls:
+            print("No city URLs found.")
+            return output_path
 
-        # Step 2: scrape all pages with limited concurrency
-        semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
-        tasks = [worker(session, semaphore, url) for url in city_urls]
+        semaphore = asyncio.Semaphore(concurrency)
+        tasks = [worker(session, semaphore, url, headers) for url in urls]
         results = await asyncio.gather(*tasks)
 
-        # Filter out None (failed scrapes)
         valid_results = [r for r in results if r is not None]
 
-        # Step 3: write to CSV
-        with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=["city", "department"])
+        with open(output_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=["city", "department"])
             writer.writeheader()
             writer.writerows(valid_results)
 
-        print(f"\nDone! Scraped {len(valid_results)} cities. Saved to {OUTPUT_CSV}")
+        print(f"Scraped {len(valid_results)} cities. Saved to {output_path}")
+    return output_path
+
+
+async def main():
+    config = load_config()
+    await run(config)
 
 
 if __name__ == "__main__":

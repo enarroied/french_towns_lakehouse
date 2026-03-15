@@ -2,10 +2,12 @@ paths:
   temp_dir: "/tmp/french_towns_downloads"
   input_dir: "input"
   output_dir: "data/processed"
+  scraper_dir: "data/scraper"
 
 directories:
   - temp_dir
   - input_dir
+  - scraper_dir
 
 download:
   concurrency: 3
@@ -31,3 +33,11 @@ downloads:
   - name: "salaries"
     url: "https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS/DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR"
     filename: "salaries.csv"
+
+scrapers:
+  - name: "petites_cites"
+    module: "scrapers.scrape_petites_cites"
+    enabled: true
+    sitemap_url: "https://www.petitescitesdecaractere.com/cites-sitemap.xml"
+    user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
+    concurrency: 5
