@@ -3,11 +3,13 @@ paths:
   input_dir: "input"
   output_dir: "data/processed"
   scraper_dir: "data/scraper"
+  custom_dir: "data/custom"
 
 directories:
   - temp_dir
   - input_dir
   - scraper_dir
+  - custom_dir
 
 download:
   concurrency: 3
@@ -62,3 +64,10 @@ scrapers:
     enabled: true
     url: "https://www.villeprudente.fr/les-villes-labellisees/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
+
+custom_parsers:
+  - name: "ville_sportive"
+    module: "custom_parsers.parse_ville_sportive"
+    enabled: true
+    input_dir: "custom_parsers/data_for_parsers"
+    pdf_file: "2025-palmares.pdf"
