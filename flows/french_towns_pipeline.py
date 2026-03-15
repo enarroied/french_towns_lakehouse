@@ -10,6 +10,7 @@ from botocore.exceptions import ClientError
 from dotenv import find_dotenv, load_dotenv
 from prefect import flow, task
 from scripts.download import main as download_files
+from scrapers import run_all_scrapers
 
 load_dotenv(find_dotenv())
 
@@ -46,6 +47,11 @@ def create_required_dirs() -> None:
 @task
 def download_all_files() -> None:
     asyncio.run(download_files())
+
+
+@task
+def run_scrapers() -> None:
+    asyncio.run(run_all_scrapers(config))
 
 
 @task
@@ -95,6 +101,7 @@ def upload_to_minio() -> None:
 def french_towns_pipeline() -> None:
     create_required_dirs()
     download_all_files()
+    run_scrapers()
     run_dbt()
     upload_to_minio()
 
