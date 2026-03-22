@@ -1,6 +1,8 @@
 data/*
 input/*
 
+.vscode
+
 # dbt / duckdb
 target/
 dbt_packages/
