@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: fact_population
-    description: "Historical population counts per French commune by year"
+    description: "Historical population counts per French commune by year with year-over-year evolution metrics"
 
     # Model-level tests
     tests:
@@ -45,3 +45,23 @@ models:
                 min_value: 0
                 max_value: 3000000
                 severity: error
+
+      - name: year_evolution
+        description: "Absolute population change compared to previous year (current year - previous year). NULL for the first available year of each commune."
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -3000000
+                max_value: 3000000
+                severity: warn
+
+      - name: year_evolution_percent
+        description: "Relative population change compared to previous year, expressed as percentage. NULL for the first available year of each commune or when previous year population is zero."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -100
+                max_value: 1000
+                severity: warn
