@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: bridge_communes_zip_codes
+    description: "Bridge table linking communes to their postal codes. Each row represents a unique commune-zip code relationship."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['commune_id', 'zip_code_id']
+            severity: error
+
+    columns:
+      - name: commune_id
+        description: "INSEE commune code (5-character identifier)"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                  severity: error
+          - relationships:
+              arguments:
+                to: ref('dim_communes_france')
+                field: id
+                severity: error
+
+      - name: zip_code_id
+        description: "Postal code as integer (for numerical operations)"
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                  severity: error
+
+      - name: zip_code_char
+        description: "Postal code as 5-character string (preserves leading zeros)"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                  severity: error

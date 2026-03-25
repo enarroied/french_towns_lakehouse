@@ -9,7 +9,7 @@ SELECT
     com_name[1]::VARCHAR(255)       AS name,
     com_name_upper::VARCHAR(255)    AS name_upper,
     com_name_lower::VARCHAR(255)    AS name_lower,
-    com_siren_code::CHAR(10)    AS siren_code,
+    com_siren_code::CHAR(10)        AS siren_code,
     arrdep_name[1]::VARCHAR(255)    AS arrondissement_name,
     arrdep_code[1]::CHAR(7)         AS arrondissement_code,
     dep_name[1]::VARCHAR(255)       AS department_name,

@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: dim_zip_codes
+    description: "Dimension table of French postal codes with commune and department counts"
+    columns:
+      - name: id
+        description: "Postal code as integer (primary key)"
+        data_type: INTEGER
+        tests:
+          - unique:
+              arguments:
+                severity: error
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: zip_code_char
+        description: "Postal code as 5-character string (preserves leading zeros)"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: zip_code_main_department
+        description: "First 2 digits of postal code (department identifier)"
+        data_type: CHAR(2)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: number_of_communes
+        description: "Number of distinct INSEE communes associated with this postal code"
+        data_type: BIGINT
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                severity: error
+
+      - name: number_of_departments
+        description: "Number of distinct departments associated with this postal code (usually 1, but can be >1 for border codes)"
+        data_type: BIGINT
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                severity: error
