@@ -36,6 +36,10 @@ downloads:
     url: "https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS/DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR"
     filename: "salaries.csv"
 
+  - name: "zip_codes"
+    url: "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/data-files/019HexaSmal.csv"
+    filename: "019HexaSmal.csv"
+
 scrapers:
   - name: "petites_cites"
     module: "scrapers.scrape_petites_cites"

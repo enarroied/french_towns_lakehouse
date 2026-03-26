@@ -23,3 +23,7 @@ sources:
       - name: salaries
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv', sample_size=-1)"
+
+      - name: zip_codes
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/019HexaSmal.csv', sample_size=-1, encoding='latin-1', delim=';')"
