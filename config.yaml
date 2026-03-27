@@ -43,14 +43,14 @@ downloads:
 scrapers:
   - name: "petites_cites"
     module: "scrapers.scrape_petites_cites"
-    enabled: true
+    enabled: false
     sitemap_url: "https://www.petitescitesdecaractere.com/cites-sitemap.xml"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     concurrency: 5
 
   - name: "villes_fleuries"
     module: "scrapers.scrape_villes_fleuries"
-    enabled: true
+    enabled: false
     endpoint: "https://villes-et-villages-fleuris.com/pages/post/commune"
     referer: "https://villes-et-villages-fleuris.com/les-communes-labelisees"
     user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
@@ -59,26 +59,38 @@ scrapers:
 
   - name: "plus_beaux_villages"
     module: "scrapers.scrape_plus_beaux_villages"
-    enabled: true
+    enabled: false
     url: "https://www.les-plus-beaux-villages-de-france.org/fr/nos-villages/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "villes_prudentes"
     module: "scrapers.scrape_villes_prudentes"
-    enabled: true
+    enabled: false
     url: "https://www.villeprudente.fr/les-villes-labellisees/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "village_etape"
     module: "scrapers.scrape_village_etape"
-    enabled: true
+    enabled: false
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     base_url: "https://village-etape.fr/nos-village-etape/"
     concurrency: 3
+
+  - name: "famille_plus"
+    module: "scrapers.scrape_famille_plus"
+    enabled: true
+    user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
+    url: "https://www.familleplus.fr/fr/le-label/carte"
 
 custom_parsers:
   - name: "ville_sportive"
     module: "custom_parsers.parse_ville_sportive"
     enabled: true
-    input_dir: "custom_parsers/data_for_parsers"
+    input_dir: "custom_parsers/data_for_parsers/ville_active_sportive"
     pdf_file: "2025-palmares.pdf"
+
+  - name: "pavillon_bleu"
+    module: "custom_parsers.parse_pavillon_bleu"
+    enabled: true
+    input_dir: "custom_parsers/data_for_parsers/pavillon_bleu"
+    pdf_file: "Palmares-Pavillon-Bleu-2025-1.pdf"
