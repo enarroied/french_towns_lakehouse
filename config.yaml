@@ -69,6 +69,12 @@ scrapers:
     url: "https://www.villeprudente.fr/les-villes-labellisees/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
+  - name: "village_etape"
+    module: "scrapers.scrape_village_etape"
+    user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
+    base_url: "https://village-etape.fr/nos-village-etape/"
+    concurrency: 3
+
 custom_parsers:
   - name: "ville_sportive"
     module: "custom_parsers.parse_ville_sportive"
