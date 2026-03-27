@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import traceback
 from dataclasses import dataclass
@@ -17,42 +18,43 @@ class ScraperResult:
     tb: str | None = None
 
 
+async def _run_single_scraper(scraper: dict, config: dict) -> ScraperResult:
+    name = scraper["name"]
+    module_path = scraper["module"]
+    try:
+        module = import_module(module_path)
+        output_path = await module.run(config)
+        return ScraperResult(
+            name=name,
+            module=module_path,
+            success=True,
+            output_path=output_path,
+        )
+    except Exception as exc:
+        full_tb = traceback.format_exc()
+        return ScraperResult(
+            name=name,
+            module=module_path,
+            success=False,
+            error=str(exc),
+            tb=full_tb,
+        )
+
+
 async def run_all_scrapers(config: dict) -> list[ScraperResult]:
-    results: list[ScraperResult] = []
+    enabled_scrapers = [s for s in config.get("scrapers", []) if s.get("enabled", True)]
+    skipped = [s for s in config.get("scrapers", []) if not s.get("enabled", True)]
 
-    for scraper in config.get("scrapers", []):
-        if not scraper.get("enabled", True):
-            logger.info("⏭  %s — skipped (disabled)", scraper["name"])
-            continue
+    for s in skipped:
+        logger.info("⏭  %s — skipped (disabled)", s["name"])
 
-        name = scraper["name"]
-        module_path = scraper["module"]
+    tasks = [_run_single_scraper(s, config) for s in enabled_scrapers]
+    results = await asyncio.gather(*tasks)
 
-        try:
-            module = import_module(module_path)
-            output_path = await module.run(config)
-            results.append(
-                ScraperResult(
-                    name=name,
-                    module=module_path,
-                    success=True,
-                    output_path=output_path,
-                )
-            )
-            logger.info("✅ %s — OK → %s", name, output_path)
+    for r in results:
+        if r.success:
+            logger.info("✅ %s — OK → %s", r.name, r.output_path)
+        else:
+            logger.error("❌ %s — FAILED: %s", r.name, r.error)
 
-        except Exception as exc:
-            full_tb = traceback.format_exc()
-            results.append(
-                ScraperResult(
-                    name=name,
-                    module=module_path,
-                    success=False,
-                    error=str(exc),
-                    tb=full_tb,
-                )
-            )
-            # Log the short error immediately so it appears inline in Prefect logs
-            logger.error("❌ %s — FAILED: %s", name, exc)
-
-    return results
+    return list(results)
