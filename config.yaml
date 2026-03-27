@@ -71,6 +71,7 @@ scrapers:
 
   - name: "village_etape"
     module: "scrapers.scrape_village_etape"
+    enabled: true
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     base_url: "https://village-etape.fr/nos-village-etape/"
     concurrency: 3
