@@ -1,11 +1,17 @@
 import asyncio
 import logging
+import sys
 from pathlib import Path
 
 import yaml
-from prefect import flow, task
+from prefect import flow
+from prefect import task
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scrapers import run_all_scrapers
+
 
 logger = logging.getLogger(__name__)
 

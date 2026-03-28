@@ -7,11 +7,14 @@ import boto3
 import yaml
 from botocore.config import Config
 from botocore.exceptions import ClientError
-from dotenv import find_dotenv, load_dotenv
-from prefect import flow, task
-from scripts.download import main as download_files
-from scrapers import run_all_scrapers
 from custom_parsers import run_all_custom_parsers
+from dotenv import find_dotenv
+from dotenv import load_dotenv
+from prefect import flow
+from prefect import task
+from scrapers import run_all_scrapers
+from scripts.download import main as download_files
+
 
 load_dotenv(find_dotenv())
 
@@ -52,7 +55,24 @@ def download_all_files() -> None:
 
 @task
 def run_scrapers() -> None:
-    asyncio.run(run_all_scrapers(config))
+    results = asyncio.run(run_all_scrapers(config))
+
+    succeeded = [r for r in results if r.success]
+    failed = [r for r in results if not r.success]
+
+    width = 50
+    print("\n" + "=" * width)
+    print("  SCRAPER RUN SUMMARY")
+    print("=" * width)
+    for r in results:
+        status = "OK" if r.success else "FAILED"
+        print(f"  {r.name:<30} {status}")
+        if not r.success:
+            short = (r.error or "unknown error").splitlines()[0][:60]
+            print(f"      - {short}")
+    print("-" * width)
+    print(f"  {len(succeeded)}/{len(results)} scrapers succeeded.")
+    print("=" * width + "\n")
 
 
 @task
