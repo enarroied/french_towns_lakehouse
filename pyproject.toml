@@ -24,3 +24,38 @@ dependencies = [
 dev = [
     "ruff>=0.15.1",
 ]
+
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # Pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "PTH",  # pathlib (discourages os.path.join, open(), etc.)
+    "B",    # flake8-bugbear (best practices)
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "RET",  # flake8-return
+    "PL",   # Pylint
+    "N",    # pep8-naming
+]
+ignore = [
+    "E501",           # line too long (handled by formatter)
+    "PLR0913",        # too many arguments
+    "PLR2004",        # magic values in comparisons
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+combine-as-imports = true
+lines-after-imports = 2
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
