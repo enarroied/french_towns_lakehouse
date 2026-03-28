@@ -8,8 +8,7 @@ from bs4 import BeautifulSoup
 
 
 def load_config() -> dict:
-    with open("config.yaml") as f:
-        return yaml.safe_load(f)
+    return yaml.safe_load(Path("config.yaml").open())
 
 
 async def fetch_sitemap(session: aiohttp.ClientSession, url: str) -> list[str]:
@@ -88,7 +87,7 @@ async def run(config: dict) -> Path:
 
         valid_results = [r for r in results if r is not None]
 
-        with open(output_path, "w", newline="", encoding="utf-8") as f:
+        with output_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["city", "department"])
             writer.writeheader()
             writer.writerows(valid_results)

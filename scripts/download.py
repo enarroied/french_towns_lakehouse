@@ -8,7 +8,7 @@ import yaml
 
 
 # Load config
-with open("config.yaml") as f:
+with Path("config.yaml").open() as f:
     config = yaml.safe_load(f)
 
 TEMP_DIR = Path(config["paths"]["temp_dir"])

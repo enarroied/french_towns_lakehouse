@@ -13,8 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def load_config() -> dict:
-    with open("config.yaml") as f:
-        return yaml.safe_load(f)
+    return yaml.safe_load(Path("config.yaml").open())
 
 
 def extract_text(html: str) -> str:
@@ -82,6 +81,8 @@ async def fetch_page(
                     logger.warning("Session refresh failed: %s", refresh_err)
             else:
                 raise
+
+    return {}
 
 
 async def fetch_all_rows(
@@ -173,7 +174,7 @@ async def run(config: dict) -> Path:
 
         parsed = [parse_row(row) for row in all_raw]
 
-        with open(output_path, "w", newline="", encoding="utf-8") as f:
+        with output_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f, fieldnames=["commune", "region", "departement", "nb_fleurs"]
             )

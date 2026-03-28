@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-with open("config.yaml") as f:
+with Path("config.yaml").open() as f:
     config = yaml.safe_load(f)
 
 DIRECTORIES = config.get("directories", [])
@@ -100,7 +100,7 @@ def run_parsers() -> list[ParserResult]:
 
     if failed:
         log_path = Path("logs/parser_errors.log")
-        with open(log_path, "w", encoding="utf-8") as f:
+        with log_path.open("w", encoding="utf-8") as f:
             for r in failed:
                 f.write(f"\n{'=' * 60}\n")
                 f.write(f"PARSER : {r.name}\n")

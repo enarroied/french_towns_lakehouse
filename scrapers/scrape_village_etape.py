@@ -10,11 +10,10 @@ from bs4 import BeautifulSoup
 
 def load_config() -> dict:
     """Load configuration from YAML file."""
-    with open("config.yaml") as f:
-        return yaml.safe_load(f)
+    return yaml.safe_load(Path("config.yaml").open())
 
 
-async def fetch_village_urls(
+async def fetch_village_urls(  # noqa: PLR0912, PLR0915
     session: aiohttp.ClientSession, base_url: str
 ) -> list[str]:
     """Fetch all village detail page URLs from the main listing."""
@@ -22,10 +21,7 @@ async def fetch_village_urls(
     page = 1
 
     while True:
-        if page == 1:
-            url = base_url
-        else:
-            url = f"{base_url}{page}/"
+        url = base_url if page == 1 else f"{base_url}{page}/"
 
         print(f"Fetching page {page}...")
 
@@ -48,9 +44,6 @@ async def fetch_village_urls(
             link_data = element.get("data-ha-element-link")
             if link_data:
                 try:
-                    # Parse the JSON string in data-ha-element-link
-                    import json
-
                     link_info = json.loads(link_data)
                     if "url" in link_info:
                         links.append(link_info["url"])
@@ -107,7 +100,7 @@ async def fetch_village_urls(
     return unique_urls
 
 
-async def scrape_village(
+async def scrape_village(  # noqa: PLR0912
     session: aiohttp.ClientSession, url: str, headers: dict
 ) -> dict | None:
     """Scrape detailed information from a village page."""
@@ -247,7 +240,7 @@ async def run(config: dict) -> Path:
 
         # Write to CSV
         if valid_results:
-            with open(output_path, "w", newline="", encoding="utf-8") as f:
+            with output_path.open("w", newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(
                     f,
                     fieldnames=[

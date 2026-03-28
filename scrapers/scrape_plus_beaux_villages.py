@@ -8,8 +8,7 @@ from bs4 import BeautifulSoup
 
 
 def load_config() -> dict:
-    with open("config.yaml") as f:
-        return yaml.safe_load(f)
+    return yaml.safe_load(Path("config.yaml").open())
 
 
 def parse_villages(html: str) -> list[dict]:
@@ -56,7 +55,7 @@ async def run(config: dict) -> Path:
 
         villages = parse_villages(html)
 
-        with open(output_path, "w", newline="", encoding="utf-8") as f:
+        with output_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["city", "department"])
             writer.writeheader()
             writer.writerows(villages)

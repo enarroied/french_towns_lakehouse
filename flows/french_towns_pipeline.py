@@ -18,7 +18,7 @@ from scripts.download import main as download_files
 
 load_dotenv(find_dotenv())
 
-with open("config.yaml") as f:
+with Path("config.yaml").open() as f:
     config = yaml.safe_load(f)
 
 PATHS = config["paths"]
@@ -35,6 +35,7 @@ def _run_dbt_command(args: list[str], failure_message: str) -> None:
     result = subprocess.run(
         ["dbt"] + args + DBT_PROFILES_ARGS,
         cwd=DBT_PROJECT_DIR,
+        check=False,
         capture_output=False,
         text=True,
     )
@@ -58,7 +59,6 @@ def run_scrapers() -> None:
     results = asyncio.run(run_all_scrapers(config))
 
     succeeded = [r for r in results if r.success]
-    failed = [r for r in results if not r.success]
 
     width = 50
     print("\n" + "=" * width)

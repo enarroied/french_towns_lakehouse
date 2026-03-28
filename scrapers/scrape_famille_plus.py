@@ -15,8 +15,7 @@ from bs4 import BeautifulSoup
 
 def load_config() -> dict:
     """Load configuration from YAML file."""
-    with open("config.yaml") as f:
-        return yaml.safe_load(f)
+    return yaml.safe_load(Path("config.yaml").open())
 
 
 async def fetch_destinations(session: aiohttp.ClientSession, url: str) -> list[dict]:
@@ -109,7 +108,7 @@ async def run(config: dict) -> Path:
             return output_path
 
         # Write to CSV
-        with open(output_path, "w", newline="", encoding="utf-8") as f:
+        with output_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f,
                 fieldnames=["name", "department_code", "type"],

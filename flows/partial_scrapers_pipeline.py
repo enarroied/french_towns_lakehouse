@@ -15,7 +15,7 @@ from scrapers import run_all_scrapers
 
 logger = logging.getLogger(__name__)
 
-with open("config.yaml") as f:
+with Path("config.yaml").open() as f:
     config = yaml.safe_load(f)
 
 PATHS = config["paths"]
@@ -56,7 +56,7 @@ def run_scrapers() -> None:
     # ── Full tracebacks → logs/scraper_errors.log ────────────────────────────
     if failed:
         log_path = Path("logs/scraper_errors.log")
-        with open(log_path, "w", encoding="utf-8") as f:
+        with log_path.open("w", encoding="utf-8") as f:
             for r in failed:
                 f.write(f"\n{'=' * 60}\n")
                 f.write(f"SCRAPER : {r.name}\n")
