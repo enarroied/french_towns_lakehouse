@@ -78,9 +78,16 @@ scrapers:
 
   - name: "famille_plus"
     module: "scrapers.scrape_famille_plus"
-    enabled: true
+    enabled: false
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     url: "https://www.familleplus.fr/fr/le-label/carte"
+
+  - name: "pavillon_bleu"
+    module: "scrapers.scrape_pavillon_bleu"
+    enabled: true
+    user_agent: "Mozilla/5.0 (compatible; FrenchTownsBot/1.0; educational)"
+    url: "https://pavillonbleu.org/laureats/"
+
 
 custom_parsers:
   - name: "ville_sportive"
@@ -88,9 +95,3 @@ custom_parsers:
     enabled: true
     input_dir: "custom_parsers/data_for_parsers/ville_active_sportive"
     pdf_file: "2025-palmares.pdf"
-
-  - name: "pavillon_bleu"
-    module: "custom_parsers.parse_pavillon_bleu"
-    enabled: true
-    input_dir: "custom_parsers/data_for_parsers/pavillon_bleu"
-    pdf_file: "Palmares-Pavillon-Bleu-2025-1.pdf"
