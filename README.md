@@ -106,7 +106,7 @@ You can access your MinIO service from your browser:
 
 ![](./img/minio.jpg)
 
-The pipeline creates the `lakehouse-processed` bucket automatically on first run. You can browse uploaded files in the web console or query them directly via the S3 API.
+The pipeline uploads parquet files to the `validated` bucket. You can browse uploaded files in the web console or query them directly via the S3 API.
 
 To stop MinIO:
 
@@ -156,7 +156,7 @@ Example of downloaded files:
 
 **Step 3 — dbt run.** Prefect calls `dbt run` as a subprocess from inside `french_towns_dbt/`. dbt stages external sources (mounting the raw files as DuckDB views), then runs all three models in parallel across four threads. Each model writes a Parquet file to `data/processed/`.
 
-**Step 4 — Upload to MinIO.** All `*.parquet` files from `data/processed/` upload to the `lakehouse-processed` bucket. The pipeline creates the bucket if it does not exist.
+**Step 4 — Upload to MinIO.** All `*.parquet` files from `data/processed/` upload to the `validated` bucket.
 
 ### Run dbt in isolation
 
@@ -194,8 +194,8 @@ SELECT
     c.name,
     c.department_name,
     p.population
-FROM read_parquet('s3://lakehouse-processed/dim_communes_france.parquet') AS c
-JOIN read_parquet('s3://lakehouse-processed/fact_population.parquet') AS p
+FROM read_parquet('s3://validated/dim_communes_france.parquet') AS c
+JOIN read_parquet('s3://validated/fact_population.parquet') AS p
     ON c.id = p.id
 WHERE p.year = 2021
 ORDER BY p.population DESC
@@ -209,8 +209,8 @@ SELECT
     ROUND(AVG(s.mean_salary_men)) AS avg_salary_men,
     ROUND(AVG(s.mean_salary_women)) AS avg_salary_women,
     ROUND(100.0 * (AVG(s.mean_salary_men) - AVG(s.mean_salary_women)) / AVG(s.mean_salary_men), 1) AS gap_pct
-FROM read_parquet('s3://lakehouse-processed/dim_communes_france.parquet') AS c
-JOIN read_parquet('s3://lakehouse-processed/fact_salaries.parquet') AS s
+FROM read_parquet('s3://validated/dim_communes_france.parquet') AS c
+JOIN read_parquet('s3://validated/fact_salaries.parquet') AS s
     ON c.id = s.id
 WHERE c.flag_metropole = 1
 GROUP BY c.region_name

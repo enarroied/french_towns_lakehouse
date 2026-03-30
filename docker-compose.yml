@@ -9,7 +9,7 @@ services:
       MINIO_ROOT_USER:     ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
       # auto-create buckets on startup:
-      MINIO_DEFAULT_BUCKETS: lakehouse-raw,lakehouse-processed,backups
+      MINIO_DEFAULT_BUCKETS: staging-current,staging-historical,validated,validated-historical,rejected,evidence-archive,lakehouse
     volumes:
       - ./data/minio:/data
       - ./input:/input:ro   # ro: Read-only

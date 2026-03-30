@@ -82,12 +82,6 @@ scrapers:
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     url: "https://www.familleplus.fr/fr/le-label/carte"
 
-  - name: "pavillon_bleu"
-    module: "scrapers.scrape_pavillon_bleu"
-    enabled: true
-    user_agent: "Mozilla/5.0 (compatible; FrenchTownsBot/1.0; educational)"
-    url: "https://pavillonbleu.org/laureats/"
-
 
 custom_parsers:
   - name: "ville_sportive"
