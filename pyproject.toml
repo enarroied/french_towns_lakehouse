@@ -8,15 +8,21 @@ dependencies = [
     "aiohttp>=3.13.3",
     "beautifulsoup4>=4.14.3",
     "boto3>=1.42.51",
+    "clear>=2.0.0",
     "dbt-core>=1.11.6",
     "dbt-duckdb>=1.10.1",
     "duckdb>=1.4.4",
+    "folium>=0.20.0",
+    "geopandas>=1.1.3",
     "httpx>=0.28.1",
     "jinja2>=3.1.6",
     "lxml>=6.0.2",
+    "owslib>=0.35.0",
     "pandas>=3.0.0",
     "pdfplumber>=0.11.9",
     "prefect>=3.6.17",
+    "pyarrow>=23.0.1",
+    "pyproj>=3.7.2",
     "pyyaml>=6.0.3",
 ]
 
@@ -24,3 +30,38 @@ dependencies = [
 dev = [
     "ruff>=0.15.1",
 ]
+
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # Pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "PTH",  # pathlib (discourages os.path.join, open(), etc.)
+    "B",    # flake8-bugbear (best practices)
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "RET",  # flake8-return
+    "PL",   # Pylint
+    "N",    # pep8-naming
+]
+ignore = [
+    "E501",           # line too long (handled by formatter)
+    "PLR0913",        # too many arguments
+    "PLR2004",        # magic values in comparisons
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+combine-as-imports = true
+lines-after-imports = 2
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

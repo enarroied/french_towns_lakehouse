@@ -8,8 +8,7 @@ import yaml
 
 
 def load_config() -> dict:
-    with open("config.yaml") as f:
-        return yaml.safe_load(f)
+    return yaml.safe_load(Path("config.yaml").open())
 
 
 SECTION_RE = re.compile(r"\d+\s+villes?\s+\u201c(\d+)\s+LAURIERS?\u201d", re.IGNORECASE)
@@ -110,7 +109,7 @@ def run(config: dict) -> Path:
     print(f"  4 lauriers: {counts[4]}")
     print(f"  Total     : {len(rows)}")
 
-    with open(output_path, "w", newline="", encoding="utf-8") as f:
+    with output_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["commune", "dept_code", "nb_lauriers"])
         writer.writeheader()
         writer.writerows(rows)

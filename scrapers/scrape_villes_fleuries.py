@@ -1,5 +1,6 @@
 import asyncio
 import csv
+import logging
 import re
 from pathlib import Path
 
@@ -8,9 +9,11 @@ import yaml
 from bs4 import BeautifulSoup
 
 
+logger = logging.getLogger(__name__)
+
+
 def load_config() -> dict:
-    with open("config.yaml") as f:
-        return yaml.safe_load(f)
+    return yaml.safe_load(Path("config.yaml").open())
 
 
 def extract_text(html: str) -> str:
@@ -36,16 +39,50 @@ def parse_row(row: list) -> dict:
 
 
 async def init_session(session: aiohttp.ClientSession, referer: str) -> None:
+    """Hit the referer page to get a fresh PHPSESSID cookie."""
     async with session.get(referer) as resp:
         resp.raise_for_status()
+    logger.debug("Session initialised (cookie refreshed).")
 
 
 async def fetch_page(
-    session: aiohttp.ClientSession, endpoint: str, payload: dict
+    session: aiohttp.ClientSession,
+    endpoint: str,
+    payload: dict,
+    referer: str,
+    max_retries: int = 3,
+    backoff: tuple[float, ...] = (3.0, 10.0, 30.0),
 ) -> dict:
-    async with session.post(endpoint, data=payload) as resp:
-        resp.raise_for_status()
-        return await resp.json(content_type=None)
+    """POST one page, retrying up to max_retries times on 500 errors.
+
+    On each 500 the session cookie is refreshed before retrying, because
+    an expired PHPSESSID is the most likely cause of server-side 500s here.
+    """
+    for attempt in range(max_retries + 1):
+        try:
+            async with session.post(endpoint, data=payload) as resp:
+                resp.raise_for_status()
+                return await resp.json(content_type=None)
+        except aiohttp.ClientResponseError as exc:
+            if exc.status == 500 and attempt < max_retries:
+                wait = backoff[attempt]
+                logger.warning(
+                    "500 from %s (attempt %d/%d) — refreshing session and retrying in %.0fs…",
+                    endpoint,
+                    attempt + 1,
+                    max_retries,
+                    wait,
+                )
+                await asyncio.sleep(wait)
+                # Refresh the session cookie before next attempt
+                try:
+                    await init_session(session, referer)
+                except Exception as refresh_err:
+                    logger.warning("Session refresh failed: %s", refresh_err)
+            else:
+                raise
+
+    return {}
 
 
 async def fetch_all_rows(
@@ -55,13 +92,14 @@ async def fetch_all_rows(
     total: int,
     page_size: int,
     crawl_delay: float,
+    referer: str,
 ) -> list:
     all_rows = []
     for start in range(0, total, page_size):
         end = min(start + page_size, total)
-        print(f"  Fetching rows {start}–{end}…")
+        logger.info("  Fetching rows %d–%d…", start, end)
         payload = {**payload_base, "start": str(start), "length": str(page_size)}
-        page = await fetch_page(session, endpoint, payload)
+        page = await fetch_page(session, endpoint, payload, referer)
         all_rows.extend(page["data"])
         await asyncio.sleep(crawl_delay)
     return all_rows
@@ -110,17 +148,19 @@ async def run(config: dict) -> Path:
 
     page_size = scraper_config.get("page_size", 1000)
     crawl_delay = scraper_config.get("crawl_delay", 1)
+    referer = scraper_config["referer"]
 
     async with aiohttp.ClientSession(headers=headers) as session:
-        await init_session(session, scraper_config["referer"])
+        await init_session(session, referer)
 
         first_page = await fetch_page(
             session,
             scraper_config["endpoint"],
             {**payload_base, "start": "0", "length": str(page_size)},
+            referer,
         )
         total = int(first_page["recordsTotal"])
-        print(f"Total records: {total}")
+        logger.info("Total records: %d", total)
 
         all_raw = await fetch_all_rows(
             session,
@@ -129,22 +169,24 @@ async def run(config: dict) -> Path:
             total,
             page_size,
             crawl_delay,
+            referer,
         )
 
         parsed = [parse_row(row) for row in all_raw]
 
-        with open(output_path, "w", newline="", encoding="utf-8") as f:
+        with output_path.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(
                 f, fieldnames=["commune", "region", "departement", "nb_fleurs"]
             )
             writer.writeheader()
             writer.writerows(parsed)
 
-        print(f"Saved {len(parsed)} communes → {output_path}")
+        logger.info("Saved %d communes → %s", len(parsed), output_path)
     return output_path
 
 
 async def main():
+    logging.basicConfig(level=logging.INFO)
     config = load_config()
     await run(config)
 
