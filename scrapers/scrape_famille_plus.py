@@ -103,7 +103,7 @@ async def run(config: dict) -> str:
             data=destinations,
             fieldnames=["name", "department_code", "type"],
             filename=f"{scraper_config['name']}.csv",
-            subfolder="scrapers",
+            subfolder=scraper_config.get("target_folder", "labels"),
             metadata={"source_url": url},
             pipeline_name="staging_current_labels",
         )

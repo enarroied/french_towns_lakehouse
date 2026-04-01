@@ -14,8 +14,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from flows.shared import get_config
 from flows.shared import get_custom_parsers
-from flows.shared import get_directories
-from flows.shared import get_paths
 from flows.shared import get_scrapers
 
 
@@ -107,9 +105,7 @@ async def _run_async_scrapers() -> list[ScraperResult]:
 
 
 @task
-def create_required_dirs() -> None:
-    for dir_key in get_directories():
-        Path(get_paths()[dir_key]).mkdir(exist_ok=True, parents=True)
+def setup_logs() -> None:
     Path("logs").mkdir(exist_ok=True)
 
 
@@ -215,7 +211,7 @@ def run_parsers() -> list[ParserResult]:
 
 @flow(name="staging_current_labels")
 def staging_current_labels() -> None:
-    create_required_dirs()
+    setup_logs()
     run_scrapers()
     run_parsers()
 

@@ -122,6 +122,7 @@ def upload_to_staging_with_download_metadata(
     download_config: dict,
     pipeline_name: str | None = None,
     prefect_run_id: str | None = None,
+    target_folder: str | None = None,
 ) -> None:
     metadata = create_metadata_sidecar(
         source_url=download_config.get("url"),
@@ -132,7 +133,8 @@ def upload_to_staging_with_download_metadata(
         http_status=200,
         notes="",
     )
-    upload_to_staging(file_path, bucket_name, metadata=metadata)
+    key = f"{target_folder}/{file_path.name}" if target_folder else file_path.name
+    upload_to_staging(file_path, bucket_name, key=key, metadata=metadata)
 
 
 def upload_directory_to_staging(

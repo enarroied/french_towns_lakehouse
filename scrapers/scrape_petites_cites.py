@@ -94,7 +94,7 @@ async def run(config: dict) -> str:
             data=valid_results,
             fieldnames=["city", "department"],
             filename=f"{scraper_config['name']}.csv",
-            subfolder="scrapers",
+            subfolder=scraper_config.get("target_folder", "labels"),
             metadata={"source_url": scraper_config["sitemap_url"]},
             pipeline_name="staging_current_labels",
         )

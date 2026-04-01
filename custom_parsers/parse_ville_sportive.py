@@ -115,7 +115,7 @@ def run(config: dict) -> str:
         data=rows,
         fieldnames=["commune", "dept_code", "nb_lauriers"],
         filename=f"{parser_config['name']}.csv",
-        subfolder="custom",
+        subfolder=parser_config.get("target_folder", "labels"),
         pipeline_name="staging_current_labels",
     )
 
