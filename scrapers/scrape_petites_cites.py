@@ -1,10 +1,15 @@
 import asyncio
-import csv
+import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from flows.shared.minio import write_csv_to_staging
 
 
 def load_config() -> dict:
@@ -63,12 +68,10 @@ async def worker(
         return await scrape_city(session, url, headers)
 
 
-async def run(config: dict) -> Path:
+async def run(config: dict) -> str:
     scraper_config = next(
         s for s in config["scrapers"] if s["module"] == "scrapers.scrape_petites_cites"
     )
-    output_dir = Path(config["paths"]["scraper_dir"])
-    output_path = output_dir / f"{scraper_config['name']}.csv"
 
     headers = {"User-Agent": scraper_config.get("user_agent", "FrenchTownsBot/1.0")}
     concurrency = scraper_config.get("concurrency", 5)
@@ -79,7 +82,7 @@ async def run(config: dict) -> Path:
 
         if not urls:
             print("No city URLs found.")
-            return output_path
+            return scraper_config["name"]
 
         semaphore = asyncio.Semaphore(concurrency)
         tasks = [worker(session, semaphore, url, headers) for url in urls]
@@ -87,13 +90,17 @@ async def run(config: dict) -> Path:
 
         valid_results = [r for r in results if r is not None]
 
-        with output_path.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=["city", "department"])
-            writer.writeheader()
-            writer.writerows(valid_results)
+        key = write_csv_to_staging(
+            data=valid_results,
+            fieldnames=["city", "department"],
+            filename=f"{scraper_config['name']}.csv",
+            subfolder="scrapers",
+            metadata={"source_url": scraper_config["sitemap_url"]},
+            pipeline_name="staging_current_labels",
+        )
 
-        print(f"Scraped {len(valid_results)} cities. Saved to {output_path}")
-    return output_path
+        print(f"Scraped {len(valid_results)} cities. Uploaded to {key}")
+    return key
 
 
 async def main():

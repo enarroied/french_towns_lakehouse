@@ -13,7 +13,7 @@ _config: dict[str, Any] | None = None
 
 
 def get_config() -> dict[str, Any]:
-    global _config
+    global _config  # noqa: PLW0603
     if _config is None:
         config_path = Path("config.yaml")
         with config_path.open() as f:
@@ -47,3 +47,7 @@ MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 
 DBT_PROJECT_DIR = Path("french_towns_dbt")
 DBT_PROFILES_ARGS = ["--profiles-dir", "."]
+
+
+def get_buckets() -> dict[str, str]:
+    return get_config().get("buckets", {})

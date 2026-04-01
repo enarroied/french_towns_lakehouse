@@ -1,52 +1,61 @@
 # Flows
 
-This directory contains all Prefect orchestration flows organized by pipeline stage.
+Prefect orchestration flows for the French Towns LakeHouse pipeline.
+
+## Overview
+
+This directory contains all Prefect flows organized by pipeline stage. See the [root README](../README.md) for the complete project documentation.
 
 ## Directory Structure
 
 ```
 flows/
-├── shared/              # Shared utilities (config, minio helpers)
-├── staging/            # Staging pipelines (data ingestion)
-├── transformation/     # Transformation pipelines (dbt models)
-└── integration/        # Integration pipelines (LakeHouse loading)
-```
-
-## Pipeline Naming Convention
-
-All pipelines follow the naming pattern:
-```
-{functionality}_{timing}_{subject_type}_{domain}
-```
-
-Where:
-- **functionality**: `staging`, `transformation`, or `integration`
-- **timing**: `current` or `historical`
-- **subject_type**: `dim`, `fact`, or omitted for staging
-- **domain**: `geography`, `demographics`, `labels`, etc.
-
-Examples:
-- `staging_current_geography` — download geography data
-- `transformation_current_dim_geography` — build geography dimensions
-- `transformation_current_fact_demographics` — build demographics facts
-- `integration_current_dim_communes` — load commune dimensions to LakeHouse
-
-## Shared Utilities
-
-Import shared utilities in your flows:
-```python
-from flows.shared import get_config, get_paths, get_minio_client
+├── shared/              # Shared utilities (config, minio, download, dbt)
+├── staging/             # Staging pipelines (data ingestion → MinIO)
+├── transformation/      # Transformation pipelines (dbt models → validated/)
+└── integration/         # Integration pipelines (validated → LakeHouse)
 ```
 
 ## Running Flows
 
-Individual flows can be run directly:
+### Test All Flows Together
+
 ```bash
-uv run python -m flows.staging.staging_current_geography
-uv run python -m flows.transformation.transformation_current_dim_geography
+uv run python -m flows.french_towns_pipeline
 ```
 
-For scheduled execution, deploy flows to Prefect:
+### Run Individual Flows
+
 ```bash
-prefect deployment build flows/staging/staging_current_geography.py:staging_current_geography -n "geography-staging"
+# Staging
+uv run python -m flows.staging.staging_current_geography
+uv run python -m flows.staging.staging_current_demographics
+uv run python -m flows.staging.staging_current_labels
+
+# Transformation
+uv run python -m flows.transformation.transformation_current_dim_geography
+uv run python -m flows.transformation.transformation_current_fact_demographics
+uv run python -m flows.transformation.transformation_current_labels
+```
+
+## Deploying to Prefect
+
+```bash
+./scripts/deploy_flows.sh
+```
+
+Then view and manage deployments at `http://localhost:4200/deployments`.
+
+## Shared Utilities
+
+```python
+from flows.shared import (
+    get_config,        # Load config.yaml
+    get_paths,         # Get path configuration
+    get_buckets,       # Get MinIO bucket names
+    get_downloads,     # Get download configurations
+    get_scrapers,      # Get scraper configurations
+    get_minio_client,  # Get boto3 MinIO client
+    upload_to_staging,  # Upload file with metadata sidecar
+)
 ```

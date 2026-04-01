@@ -9,15 +9,15 @@ from pathlib import Path
 from prefect import flow
 from prefect import task
 
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from flows.shared import (
-    get_config,
-    get_paths,
-    get_directories,
-    get_scrapers,
-    get_custom_parsers,
-)
+from flows.shared import get_config
+from flows.shared import get_custom_parsers
+from flows.shared import get_directories
+from flows.shared import get_paths
+from flows.shared import get_scrapers
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class ScraperResult:
     name: str
     module: str
     success: bool
-    output_path: Path | None = None
+    minio_key: str | None = None
     error: str | None = None
     tb: str | None = None
 
@@ -37,12 +37,12 @@ async def _run_single_scraper(scraper: dict, config: dict) -> ScraperResult:
     module_path = scraper["module"]
     try:
         module = import_module(module_path)
-        output_path = await module.run(config)
+        minio_key = await module.run(config)
         return ScraperResult(
             name=name,
             module=module_path,
             success=True,
-            output_path=output_path,
+            minio_key=minio_key,
         )
     except Exception as exc:
         full_tb = traceback.format_exc()
@@ -75,7 +75,8 @@ async def _run_async_scrapers() -> list[ScraperResult]:
     print("=" * width)
     for r in results:
         status = "OK" if r.success else "FAILED"
-        print(f" {r.name:<30} {status}")
+        key_info = f" → {r.minio_key}" if r.minio_key else ""
+        print(f" {r.name:<30} {status}{key_info}")
         if not r.success:
             short = (r.error or "unknown error").splitlines()[0][:60]
             print(f"     - {short}")
@@ -122,7 +123,7 @@ class ParserResult:
     name: str
     module: str
     success: bool
-    output_path: Path | None = None
+    minio_key: str | None = None
     error: str | None = None
     tb: str | None = None
 
@@ -143,16 +144,16 @@ def run_parsers() -> list[ParserResult]:
 
         try:
             module = import_module(module_path)
-            output_path = module.run(config)
+            minio_key = module.run(config)
             results.append(
                 ParserResult(
                     name=name,
                     module=module_path,
                     success=True,
-                    output_path=output_path,
+                    minio_key=minio_key,
                 )
             )
-            logger.info("OK %s — %s", name, output_path)
+            logger.info("OK %s — %s", name, minio_key)
 
         except Exception as exc:
             full_tb = traceback.format_exc()
@@ -180,7 +181,8 @@ def run_parsers() -> list[ParserResult]:
 
     for r in results:
         status = "OK" if r.success else "FAILED"
-        print(f" {r.name:<30} {status}")
+        key_info = f" → {r.minio_key}" if r.minio_key else ""
+        print(f" {r.name:<30} {status}{key_info}")
         if not r.success:
             short = (r.error or "unknown error").splitlines()[0][:60]
             print(f"     - {short}")

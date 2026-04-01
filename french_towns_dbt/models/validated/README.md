@@ -1,6 +1,14 @@
 # Validated Models
 
-This directory contains the validated (schema-enforced) models that implement the star schema. These are the final step before LakeHouse integration.
+See [root README](../../README.md) for complete documentation.
+
+## Purpose
+
+Validated models implement the schema-enforced star schema:
+
+- Data contracts via dbt schema tests (not-null, uniqueness, referential integrity)
+- Star schema structure (dimensions + facts)
+- Output to `data/processed/` as Parquet files
 
 ## Structure
 
@@ -8,34 +16,17 @@ This directory contains the validated (schema-enforced) models that implement th
 validated/
 ├── dim/              # Dimension models
 ├── fact/             # Fact models
-└── bridge_*.sql      # Bridge tables
+└── bridge_*.sql     # Bridge tables
 ```
-
-## Purpose
-
-Validated models:
-- Enforce data contracts (not-null, uniqueness, referential integrity)
-- Build the star schema structure
-- Are NOT historized (historization happens in the LakeHouse layer)
-- Output to local `data/processed/` as Parquet files (current V1 behavior)
-
-## Data Contracts
-
-All validated models include dbt schema tests:
-- Not-null constraints on primary keys
-- Uniqueness constraints on natural and surrogate keys
-- Foreign key relationships where applicable
-- Accepted value ranges for enumerations
 
 ## Models
 
-### Dimensions
-- `dim_communes_france` — all French communes with geometry and hierarchy
-- `dim_zip_codes` — ZIP code to commune mapping
+| Type | Name | Description |
+|------|------|-------------|
+| Dimension | `dim_communes_france` | All French communes with geometry and hierarchy |
+| Dimension | `dim_zip_codes` | ZIP code to commune mapping |
+| Fact | `fact_population` | Historical population per commune |
+| Fact | `fact_salaries` | Mean annual salary by sex (2023) |
+| Bridge | `bridge_communes_zip_codes` | Many-to-many commune/ZIP relationships |
 
-### Facts
-- `fact_population` — historical population per commune
-- `fact_salaries` — mean annual salary by sex per commune (2023)
-
-### Bridges
-- `bridge_communes_zip_codes` — many-to-many commune/ZIP code relationships
+See [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/) for full lineage.

@@ -1,0 +1,48 @@
+deployments:
+  - name: staging-geography
+    entrypoint: flows/staging/staging_current_geography.py:staging_current_geography
+    schedule: null  # Enable cron schedule as needed, e.g., cron: "0 6 * * *"
+    tags:
+      - staging
+      - current
+      - geography
+
+  - name: staging-demographics
+    entrypoint: flows/staging/staging_current_demographics.py:staging_current_demographics
+    schedule: null
+    tags:
+      - staging
+      - current
+      - demographics
+
+  - name: staging-labels
+    entrypoint: flows/staging/staging_current_labels.py:staging_current_labels
+    schedule: null
+    tags:
+      - staging
+      - current
+      - labels
+
+  - name: transformation-dim-geography
+    entrypoint: flows/transformation/transformation_current_dim_geography.py:transformation_current_dim_geography
+    schedule: null
+    tags:
+      - transformation
+      - current
+      - geography
+
+  - name: transformation-fact-demographics
+    entrypoint: flows/transformation/transformation_current_fact_demographics.py:transformation_current_fact_demographics
+    schedule: null
+    tags:
+      - transformation
+      - current
+      - demographics
+
+  - name: transformation-labels
+    entrypoint: flows/transformation/transformation_current_labels.py:transformation_current_labels
+    schedule: null
+    tags:
+      - transformation
+      - current
+      - labels
