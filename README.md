@@ -10,6 +10,11 @@
     - [What the Pipeline Does](#what-the-pipeline-does)
     - [Run dbt in isolation](#run-dbt-in-isolation)
   - [Query the Lakehouse](#query-the-lakehouse)
+  - [Naming Conventions](#naming-conventions)
+    - [Pipeline Naming](#pipeline-naming)
+    - [MinIO Bucket Structure](#minio-bucket-structure)
+    - [dbt Model Layers](#dbt-model-layers)
+    - [Domain Categories](#domain-categories)
   - [Project Structure](#project-structure)
   - [Data Sources](#data-sources)
   - [dbt Documentation](#dbt-documentation)
@@ -48,7 +53,7 @@ All three tables join on the INSEE commune code (`id`, `CHAR(5)`).
 
 **Why DuckDB?** DuckDB runs entirely in-process. It doesn't need a server. It reads GeoJSON, CSV, and Parquet natively, supports spatial functions via the `spatial` extension, and handles the full transformation workload on a laptop. For a dataset of this size, it outperforms a traditional database stack with a fraction of the operational complexity.
 
-**Why dbt?** dbt brings software engineering discipline to SQL: version control, modular models, schema documentation, and data tests. The schema YAML files define column types, accepted value ranges, uniqueness constraints, and referential integrity checks between the dimension and fact tables. The [dbt docs site](https://enarroied.github.io/french_towns_lakehouse/) auto-generates from those files on every push to master.
+**Why dbt?** dbt brings software engineering discipline to SQL: version control, modular models, schema documentation, and data tests. The schema YAML files define column types, accepted value ranges, uniqueness constraints, and referential integrity checks between the dimension and fact tables. The [dbt docs site](https://enarroied.github.io/french_towns_lakehouse/) auto-generates from those files on every push to `master`.
 
 ---
 
@@ -219,31 +224,100 @@ ORDER BY gap_pct DESC;
 
 ---
 
+## Naming Conventions
+
+This project follows consistent naming conventions across pipelines, models, and files.
+
+### Pipeline Naming
+
+Pipelines are named by combining the following dimensions, separated by underscores:
+
+```
+{functionality}_{timing}_{subject_type}_{domain}
+```
+
+| Dimension | Options | Description |
+|-----------|---------|-------------|
+| `functionality` | `staging`, `transformation`, `integration` | Stage in the pipeline |
+| `timing` | `current`, `historical` | Data time horizon |
+| `subject_type` | `dim`, `fact` | Type of model (transformation/integration only) |
+| `domain` | `geography`, `demographics`, `labels` | Thematic area |
+
+Examples:
+- `staging_current_geography` — download geography source files
+- `staging_current_demographics` — download population/salary data
+- `staging_current_labels` — run web scrapers for tourism labels
+- `transformation_current_dim_geography` — build geography dimension models
+- `transformation_current_fact_demographics` — build demographics fact models
+- `integration_current_dim_communes` — load commune dimensions to LakeHouse
+
+### MinIO Bucket Structure
+
+| Bucket | Purpose |
+|--------|---------|
+| `staging-current` | Raw files from automated and manual current ingestion |
+| `staging-historical` | Raw files from historical reconstruction |
+| `validated` | Parquet files from the current transformation/validation stage |
+| `validated-historical` | Parquet files from the historical validation stage |
+| `rejected` | Records rejected during validation |
+| `evidence-archive` | Staging files archived after successful integration |
+| `lakehouse` | Apache Iceberg files forming the final dimensional model |
+
+### dbt Model Layers
+
+| Layer | Purpose | Location |
+|-------|---------|----------|
+| `staging/` | Raw source landing (future MinIO migration) | `french_towns_dbt/models/staging/` |
+| `validated/` | Schema-enforced star schema | `french_towns_dbt/models/validated/` |
+| `lakehouse/` | SCD Type 2 historization | `french_towns_dbt/models/lakehouse/` |
+
+### Domain Categories
+
+| Domain | Data Sources |
+|--------|--------------|
+| `geography` | Communes, departments, regions, arrondissements |
+| `demographics` | Population, salaries, census data |
+| `labels` | Tourism labels (Villages Fleuris, Petites Cités de Caractère, etc.) |
+
+---
+
 ## Project Structure
 
 ```
 french_towns_lakehouse/
-├── flows/
-│   └── french_towns_pipeline.py     # Prefect orchestration flow
-├── scripts/
-│   └── download.py                  # Async file downloader
-├── french_towns_dbt/                # dbt project
+├── flows/                           # Prefect orchestration flows
+│   ├── shared/                     # Shared utilities
+│   │   ├── config.py               # Config loader
+│   │   └── minio.py                # MinIO helpers
+│   ├── staging/                    # Staging pipelines
+│   │   ├── staging_current_geography.py
+│   │   ├── staging_current_demographics.py
+│   │   └── staging_current_labels.py
+│   ├── transformation/             # dbt transformation pipelines
+│   │   ├── transformation_current_dim_geography.py
+│   │   ├── transformation_current_fact_demographics.py
+│   │   └── transformation_current_labels.py
+│   └── integration/                # LakeHouse integration (future)
+├── french_towns_dbt/               # dbt project
 │   ├── dbt_project.yml
 │   ├── profiles.yml
 │   ├── packages.yml
 │   └── models/
-│       ├── sources.yml
-│       ├── dim_communes_france.sql
-│       ├── fact_population.sql
-│       └── fact_salaries.sql
-├── .github/
-│   └── workflows/
-│       └── deploy_docs.yml          # Auto-deploys dbt docs to GitHub Pages
-├── input/                           # Downloaded raw files (gitignored)
+│       ├── staging/                # Raw staging models (future MinIO)
+│       ├── validated/              # Schema-enforced models
+│       │   ├── dim/                # Dimension models
+│       │   └── fact/               # Fact models
+│       └── lakehouse/              # SCD Type 2 models (future)
+├── audit/                          # Audit database
+│   └── audit_schema.sql            # audit.duckdb schema
+├── scrapers/                       # Web scrapers for labels
+├── custom_parsers/                 # Custom data parsers
+├── scripts/                        # Utility scripts
+├── input/                          # Downloaded raw files
 ├── data/
-│   ├── processed/                   # dbt Parquet outputs (gitignored)
-│   └── minio/                       # MinIO volume (gitignored)
-├── config.yaml
+│   ├── processed/                  # dbt Parquet outputs
+│   └── minio/                       # MinIO volume
+├── config.yaml                     # Pipeline configuration
 ├── docker-compose.yml
 └── pyproject.toml
 ```
