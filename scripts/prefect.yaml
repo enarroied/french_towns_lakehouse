@@ -1,0 +1,33 @@
+# Welcome to your prefect.yaml file! You can use this file for storing and managing
+# configuration for deploying your flows. We recommend committing this file to source
+# control along with your flow code.
+
+# Generic metadata about this project
+name: scripts
+prefect-version: 3.6.17
+
+# build section allows you to manage and build docker images
+build: null
+
+# push section allows you to manage if and how this project is uploaded to remote locations
+push: null
+
+# pull section allows you to provide instructions for cloning this project in remote locations
+pull:
+- prefect.deployments.steps.set_working_directory:
+    directory: /home/eric/Documents/french_towns_lakehouse/scripts
+
+# the deployments section allows you to provide configuration for deploying flows
+deployments:
+- name: staging-geography
+  version: null
+  tags: []
+  concurrency_limit: null
+  description: null
+  entrypoint: ../flows/staging/staging_current_geography.py:staging_current_geography
+  parameters: {}
+  work_pool:
+    name: local-dev-pool
+    work_queue_name: null
+    job_variables: {}
+  schedules: []
