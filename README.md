@@ -122,6 +122,7 @@ docker compose up -d
 | `domain` | `geography`, `demographics`, `labels` | Thematic area |
 
 Examples:
+
 - `staging_current_geography` — download geography source files
 - `transformation_current_dim_geography` — build geography dimensions
 - `integration_current_fact_demographics` — load demographics facts
@@ -166,7 +167,7 @@ dbt test --profiles-dir .
 Deploy flows to Prefect for scheduled execution:
 
 ```bash
-./scripts/deploy_flows.sh
+prefect deploy --all
 ```
 
 View deployments at `http://localhost:4200/deployments`.
