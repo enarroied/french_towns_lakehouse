@@ -1,20 +1,15 @@
 import asyncio
 import logging
-import sys
 import traceback
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 
-from prefect import flow
-from prefect import task
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 from flows.shared import get_config
 from flows.shared import get_custom_parsers
 from flows.shared import get_scrapers
+from prefect import flow
+from prefect import task
 
 
 logger = logging.getLogger(__name__)

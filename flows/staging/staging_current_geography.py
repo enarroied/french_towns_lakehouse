@@ -1,17 +1,12 @@
 import asyncio
-import sys
 from pathlib import Path
-
-from prefect import flow
-from prefect import task
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from flows.shared import get_config
 from flows.shared import get_downloads
 from flows.shared import get_paths
 from flows.shared.download import run_async_downloads_to_minio
+from prefect import flow
+from prefect import task
 
 
 DOMAIN_DOWNLOADS = [

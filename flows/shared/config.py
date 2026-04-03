@@ -9,45 +9,47 @@ from dotenv import load_dotenv
 
 load_dotenv(find_dotenv())
 
-_config: dict[str, Any] | None = None
+_PROJECT_ROOT = Path(__file__).parent.parent.parent
+
+# Load once at import time
+with (_PROJECT_ROOT / "config.yaml").open() as f:
+    _config: dict[str, Any] = yaml.safe_load(f)
 
 
+# Config accessors
 def get_config() -> dict[str, Any]:
-    global _config  # noqa: PLW0603
-    if _config is None:
-        config_path = Path("config.yaml")
-        with config_path.open() as f:
-            _config = yaml.safe_load(f)
     return _config
 
 
 def get_paths() -> dict[str, str]:
-    return get_config()["paths"]
+    return _config["paths"]
 
 
 def get_directories() -> list[str]:
-    return get_config().get("directories", [])
+    return _config.get("directories", [])
 
 
 def get_downloads() -> list[dict[str, Any]]:
-    return get_config().get("downloads", [])
+    return _config.get("downloads", [])
 
 
 def get_scrapers() -> list[dict[str, Any]]:
-    return get_config().get("scrapers", [])
+    return _config.get("scrapers", [])
 
 
 def get_custom_parsers() -> list[dict[str, Any]]:
-    return get_config().get("custom_parsers", [])
+    return _config.get("custom_parsers", [])
 
 
+def get_buckets() -> dict[str, str]:
+    return _config.get("buckets", {})
+
+
+# MinIO
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
 MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 
-DBT_PROJECT_DIR = Path("french_towns_dbt")
-DBT_PROFILES_ARGS = ["--profiles-dir", "."]
-
-
-def get_buckets() -> dict[str, str]:
-    return get_config().get("buckets", {})
+# dbt
+DBT_PROJECT_DIR = _PROJECT_ROOT / "french_towns_dbt"
+DBT_PROFILES_ARGS = ["--profiles-dir", str(DBT_PROJECT_DIR)]

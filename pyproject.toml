@@ -65,3 +65,7 @@ lines-after-imports = 2
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["flows*"]

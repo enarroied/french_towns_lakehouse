@@ -1,5 +1,3 @@
-from prefect import flow
-
 from flows.staging.staging_current_demographics import staging_current_demographics
 from flows.staging.staging_current_geography import staging_current_geography
 from flows.staging.staging_current_labels import staging_current_labels
@@ -12,6 +10,7 @@ from flows.transformation.transformation_current_fact_demographics import (
 from flows.transformation.transformation_current_labels import (
     transformation_current_labels,
 )
+from prefect import flow
 
 
 @flow(name="french_towns_pipeline")

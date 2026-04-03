@@ -1,14 +1,7 @@
-import sys
-from pathlib import Path
-
-from prefect import flow
-from prefect import task
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 from flows.shared.dbt import run_and_test
 from flows.shared.dbt import stage_external_sources
+from prefect import flow
+from prefect import task
 
 
 MODEL_SELECTOR = "validated_dim_dim_communes_france"

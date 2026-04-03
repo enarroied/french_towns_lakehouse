@@ -51,6 +51,9 @@ git clone https://github.com/enarroied/french_towns_lakehouse.git
 cd french_towns_lakehouse
 uv sync
 
+# Install the project as a Python package (required for flows to work)
+uv pip install -e .
+
 # Install dbt packages
 cd french_towns_dbt && dbt deps && cd ..
 ```
