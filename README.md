@@ -167,6 +167,12 @@ uv run python -m flows.staging.staging_current_geography
 uv run python -m flows.transformation.transformation_current_dim_geography
 ```
 
+### Start a dev worker
+
+```bash
+uv run prefect worker start --pool "local-dev-pool"
+```
+
 ### What the Pipeline Does
 
 **Step 1 — Create directories.** Creates `input/`, `data/processed/`, and other required paths from `config.yaml` if they do not exist.
