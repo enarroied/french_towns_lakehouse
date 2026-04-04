@@ -62,22 +62,25 @@ downloads:
     target_folder: "geography"
 
 scrapers:
+  # url = the sitemap; city detail URLs are derived from it
   - name: "petites_cites"
     module: "scrapers.scrape_petites_cites"
     enabled: true
     domain: "labels"
     target_folder: "labels"
-    sitemap_url: "https://www.petitescitesdecaractere.com/cites-sitemap.xml"
+    url: "https://www.petitescitesdecaractere.com/cites-sitemap.xml"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     concurrency: 5
 
+  # url = the human-readable listing page (also used as HTTP Referer)
+  # endpoint = the XHR POST target (scraper-specific, lives in extra)
   - name: "villes_fleuries"
     module: "scrapers.scrape_villes_fleuries"
     enabled: true
     domain: "labels"
     target_folder: "labels"
+    url: "https://villes-et-villages-fleuris.com/les-communes-labelisees"
     endpoint: "https://villes-et-villages-fleuris.com/pages/post/commune"
-    referer: "https://villes-et-villages-fleuris.com/les-communes-labelisees"
     user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
     page_size: 1000
     crawl_delay: 1
@@ -103,8 +106,8 @@ scrapers:
     enabled: true
     domain: "labels"
     target_folder: "labels"
+    url: "https://village-etape.fr/nos-village-etape/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
-    base_url: "https://village-etape.fr/nos-village-etape/"
     concurrency: 3
 
   - name: "famille_plus"
@@ -112,8 +115,8 @@ scrapers:
     enabled: true
     domain: "labels"
     target_folder: "labels"
-    user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     url: "https://www.familleplus.fr/fr/le-label/carte"
+    user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
 custom_parsers:
   - name: "ville_sportive"

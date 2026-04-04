@@ -27,6 +27,5 @@ def run_scraper(scraper_name: str) -> str:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        msg = "Usage: python -m flows.scrapers.scraper <scraper_name>"
-        raise SystemExit(msg)
+        raise SystemExit("Usage: python -m flows.scrapers.scraper <scraper_name>")
     run_scraper(sys.argv[1])

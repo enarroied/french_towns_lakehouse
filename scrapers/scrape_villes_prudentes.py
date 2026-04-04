@@ -1,79 +1,68 @@
-import asyncio
-from pathlib import Path
+import logging
 
 import aiohttp
-import yaml
 from bs4 import BeautifulSoup
 from flows.shared.minio import write_csv_to_staging
-from scrapers.logging import get_scraper_logger
+
+from scrapers.utils import get_scraper_config
+
+logger = logging.getLogger(__name__)
+
+MODULE = "scrapers.scrape_villes_prudentes"
+FIELDNAMES = ["city", "department"]
 
 
-def load_config() -> dict:
-    return yaml.safe_load(Path("config.yaml").open())
+# ---------------------------------------------------------------------------
+# Parsers
+# ---------------------------------------------------------------------------
 
 
 def parse_table(html: str) -> list[dict]:
+    """Parse the labeled communes table from a Ville Prudente page."""
     soup = BeautifulSoup(html, "html.parser")
     table = soup.find("table", class_="ea-advanced-data-table")
     if not table:
         return []
 
     results = []
-    rows = table.find("tbody").find_all("tr")
-    for row in rows:
+    for row in table.find("tbody").find_all("tr"):
         cells = row.find_all("td")
-        if len(cells) >= 5:
-            city = cells[1].get_text(strip=True).lower()
-            department = cells[4].get_text(strip=True)
-            department = (
-                department.strip().zfill(2) if department.isdigit() else department
-            )
+        if len(cells) < 5:
+            continue
 
-            if city and department:
-                results.append({"city": city, "department": department})
+        city = cells[1].get_text(strip=True).lower()
+        dept_raw = cells[4].get_text(strip=True)
+        department = dept_raw.zfill(2) if dept_raw.isdigit() else dept_raw
+
+        if city and department:
+            results.append({"city": city, "department": department})
 
     return results
 
 
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+
 async def run(config: dict) -> str:
-    logger = get_scraper_logger("scrape_villes_prudentes")
-    scraper_config = next(
-        s
-        for s in config["scrapers"]
-        if s["module"] == "scrapers.scrape_villes_prudentes"
-    )
+    """Scrape Villes Prudentes labeled communes and upload to staging."""
+    scraper = get_scraper_config(config, MODULE)
+    logger.info("Starting %s", scraper.name)
 
-    headers = {
-        "User-Agent": scraper_config.get("user_agent", "FrenchTownsBot/1.0"),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
-    }
-
-    async with aiohttp.ClientSession(headers=headers) as session:
-        async with session.get(scraper_config["url"]) as resp:
+    async with aiohttp.ClientSession(headers=scraper.headers) as session:
+        async with session.get(scraper.url) as resp:
             resp.raise_for_status()
-            html = await resp.text()
-
-        villes = parse_table(html)
-        logger.info("Found %d communes.", len(villes))
+            communes = parse_table(await resp.text())
 
         key = write_csv_to_staging(
-            data=villes,
-            fieldnames=["city", "department"],
-            filename=f"{scraper_config['name']}.csv",
-            subfolder=scraper_config.get("target_folder", "labels"),
-            metadata={"source_url": scraper_config["url"]},
+            data=communes,
+            fieldnames=FIELDNAMES,
+            filename=f"{scraper.name}.csv",
+            subfolder=scraper.target_folder,
+            metadata={"source_url": scraper.url},
             pipeline_name="staging_current_labels",
         )
 
-        logger.info("Scraped %d communes. Uploaded to %s", len(villes), key)
+    logger.info("%s: scraped %d communes → %s", scraper.name, len(communes), key)
     return key
-
-
-async def main():
-    config = load_config()
-    await run(config)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
