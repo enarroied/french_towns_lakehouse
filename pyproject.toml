@@ -68,4 +68,4 @@ convention = "google"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["flows*"]
+include = ["flows*", "scrapers*", "custom_parsers*"]
