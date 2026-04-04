@@ -18,7 +18,7 @@ SELECT
     MAX(CASE WHEN SEX = 'F' AND PCS_ESE = '5' THEN OBS_VALUE::INTEGER END) AS mean_salary_service_workers_women,
     MAX(CASE WHEN SEX = 'F' AND PCS_ESE = '6' THEN OBS_VALUE::INTEGER END) AS mean_salary_manual_workers_women,
     MAX(CASE WHEN SEX = 'F' AND PCS_ESE = '_T' THEN OBS_VALUE::INTEGER END) AS mean_salary
-FROM read_csv_auto('../input/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv', sample_size=-1)
+FROM read_csv_auto('s3://staging-current/demographics/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv', sample_size=-1)
 WHERE
     GEO_OBJECT = 'COM'
 
