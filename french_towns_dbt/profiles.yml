@@ -7,4 +7,4 @@ french_towns_dbt:
       threads: 4
       extensions:
         - spatial
-      external_root: '../data/processed'
+        - httpfs

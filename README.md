@@ -61,8 +61,13 @@ cd french_towns_dbt && dbt deps && cd ..
 Create `.env`:
 ```bash
 MINIO_ENDPOINT=http://localhost:19000
-MINIO_ROOT_USER=minioadmin
+MINIO_ROOT_USER=minio_user
 MINIO_ROOT_PASSWORD=minioadmin
+
+AWS_ACCESS_KEY_ID=minio_user
+AWS_SECRET_ACCESS_KEY=minioadmin
+AWS_ENDPOINT=localhost:19000
+AWS_DEFAULT_REGION=us-east-1
 ```
 
 Start MinIO:

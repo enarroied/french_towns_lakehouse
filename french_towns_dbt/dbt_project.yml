@@ -15,7 +15,11 @@ clean-targets:
 models:
   french_towns_dbt:
     +materialized: external
+    +external_root: 's3://validated'
 
 vars:
-  output_dir: '../data/processed'
-  input_dir: '../input'
+  input_dir: 's3://staging-current'
+  output_dir: 's3://validated'
+
+on-run-start:
+  - "{{ create_minio_secret() }}"
