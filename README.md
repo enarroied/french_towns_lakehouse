@@ -79,6 +79,16 @@ docker compose up -d
 
 ## Pipeline Architecture
 
+You can access your MinIO service from your browser:
+
+![](./img/minio.jpg)
+
+The pipeline uploads parquet files to the `validated` bucket. You can browse uploaded files in the web console or query them directly via the S3 API.
+
+To stop MinIO:
+
+```bash
+docker compose down
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   STAGING       │───▶│  TRANSFORMATION  │───▶│   INTEGRATION   │
@@ -157,7 +167,27 @@ uv run python -m flows.staging.staging_current_geography
 uv run python -m flows.transformation.transformation_current_dim_geography
 ```
 
-### Run dbt in Isolation
+### What the Pipeline Does
+
+**Step 1 — Create directories.** Creates `input/`, `data/processed/`, and other required paths from `config.yaml` if they do not exist.
+
+**Step 2 — Download source files.** Downloads raw datasets from French government APIs (or other sources) and data portals concurrently, using an asyncio semaphore to cap concurrency at three simultaneous requests. ZIP archives extract automatically to `input/`; plain files move there directly. INSEE APIs can be slow — the timeout is set to 120 seconds per file.
+
+Example of downloaded files:
+
+- `communes_france.geojson` (287 MB) — GeoJSON of all French communes
+- `arrondissements.csv` — INSEE arrondissement reference table
+- `departements.csv` — INSEE department reference table
+- `DS_POPULATIONS_HISTORIQUES_data.csv` — historical population per commune (from ZIP)
+- `DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv` — salary data by sex and employment category (from ZIP)
+
+**Step 3 — dbt run.** Prefect calls `dbt run` as a subprocess from inside `french_towns_dbt/`. dbt stages external sources (mounting the raw files as DuckDB views), then runs all three models in parallel across four threads. Each model writes a Parquet file to `data/processed/`.
+
+**Step 4 — Upload to MinIO.** All `*.parquet` files from `data/processed/` upload to the `validated` bucket.
+
+### Run dbt in isolation
+
+To iterate on models without re-downloading source files:
 
 ```bash
 cd french_towns_dbt
@@ -241,12 +271,31 @@ SET s3_use_ssl = false;
 SET s3_url_style = 'path';
 
 -- Top 10 communes by population in 2021
-SELECT c.name, c.department_name, p.population
+SELECT
+    c.name,
+    c.department_name,
+    p.population
 FROM read_parquet('s3://validated/dim_communes_france.parquet') AS c
-JOIN read_parquet('s3://validated/fact_population.parquet') AS p ON c.id = p.id
+JOIN read_parquet('s3://validated/fact_population.parquet') AS p
+    ON c.id = p.id
 WHERE p.year = 2021
 ORDER BY p.population DESC
 LIMIT 10;
+```
+
+```sql
+-- Gender pay gap by region (2023)
+SELECT
+    c.region_name,
+    ROUND(AVG(s.mean_salary_men)) AS avg_salary_men,
+    ROUND(AVG(s.mean_salary_women)) AS avg_salary_women,
+    ROUND(100.0 * (AVG(s.mean_salary_men) - AVG(s.mean_salary_women)) / AVG(s.mean_salary_men), 1) AS gap_pct
+FROM read_parquet('s3://validated/dim_communes_france.parquet') AS c
+JOIN read_parquet('s3://validated/fact_salaries.parquet') AS s
+    ON c.id = s.id
+WHERE c.flag_metropole = 1
+GROUP BY c.region_name
+ORDER BY gap_pct DESC;
 ```
 
 ---
