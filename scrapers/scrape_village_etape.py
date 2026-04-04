@@ -1,43 +1,34 @@
 import asyncio
 import json
-import sys
+import logging
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from flows.shared.minio import write_csv_to_staging
+from scrapers.logging import get_scraper_logger
 
 
 def load_config() -> dict:
-    """Load configuration from YAML file."""
     return yaml.safe_load(Path("config.yaml").open())
 
 
 async def fetch_village_urls(  # noqa: PLR0912, PLR0915
-    session: aiohttp.ClientSession, base_url: str
+    logger: logging.Logger, session: aiohttp.ClientSession, base_url: str
 ) -> list[str]:
-    """Fetch all village detail page URLs from the main listing."""
     all_urls = []
     page = 1
 
     while True:
         url = base_url if page == 1 else f"{base_url}{page}/"
 
-        print(f"Fetching page {page}...")
-
         try:
             async with session.get(url) as resp:
                 if resp.status != 200:
-                    print(f"Page {page} returned {resp.status}, stopping.")
                     break
                 html = await resp.text()
-        except Exception as e:
-            print(f"Error fetching page {page}: {e}")
+        except Exception:
             break
 
         soup = BeautifulSoup(html, "html.parser")
@@ -70,11 +61,10 @@ async def fetch_village_urls(  # noqa: PLR0912, PLR0915
                     links.append(parent["href"])
 
         if not links:
-            print(f"No villages found on page {page}, stopping.")
             break
 
         all_urls.extend(links)
-        print(f"Found {len(links)} villages on page {page}")
+        logger.info("Page %d: found %d villages.", page, len(links))
 
         pagination = soup.find("nav", class_="elementor-pagination")
         if pagination:
@@ -100,11 +90,9 @@ async def fetch_village_urls(  # noqa: PLR0912, PLR0915
 async def scrape_village(  # noqa: PLR0912
     session: aiohttp.ClientSession, url: str, headers: dict
 ) -> dict | None:
-    """Scrape detailed information from a village page."""
     try:
         async with session.get(url, headers=headers) as resp:
             if resp.status != 200:
-                print(f"Error {resp.status} for {url}")
                 return None
             html = await resp.text()
 
@@ -159,7 +147,6 @@ async def scrape_village(  # noqa: PLR0912
                         practical["email"] = text_content
 
         if not name:
-            print(f"Missing name on {url}")
             return None
 
         return {
@@ -173,8 +160,7 @@ async def scrape_village(  # noqa: PLR0912
             else None,
         }
 
-    except Exception as e:
-        print(f"Exception scraping {url}: {e}")
+    except Exception:
         return None
 
 
@@ -184,14 +170,13 @@ async def worker(
     url: str,
     headers: dict,
 ) -> dict | None:
-    """Worker with concurrency control."""
     async with semaphore:
         await asyncio.sleep(0.5)
         return await scrape_village(session, url, headers)
 
 
 async def run(config: dict) -> str:
-    """Main execution function."""
+    logger = get_scraper_logger("scrape_village_etape")
     scraper_config = next(
         s for s in config["scrapers"] if s["module"] == "scrapers.scrape_village_etape"
     )
@@ -207,11 +192,10 @@ async def run(config: dict) -> str:
     )
 
     async with aiohttp.ClientSession(headers=headers) as session:
-        urls = await fetch_village_urls(session, base_url)
-        print(f"Found {len(urls)} village URLs.")
+        urls = await fetch_village_urls(logger, session, base_url)
+        logger.info("Found %d village URLs.", len(urls))
 
         if not urls:
-            print("No village URLs found.")
             return scraper_config["name"]
 
         semaphore = asyncio.Semaphore(concurrency)
@@ -236,15 +220,15 @@ async def run(config: dict) -> str:
                 metadata={"source_url": base_url},
                 pipeline_name="staging_current_labels",
             )
-            print(f"Scraped {len(valid_results)} villages. Uploaded to {key}")
+            logger.info("Scraped %d villages. Uploaded to %s", len(valid_results), key)
         else:
-            print("No valid villages scraped.")
+            logger.info("No valid villages scraped.")
+            key = scraper_config["name"]
 
-    return key if valid_results else scraper_config["name"]
+    return key
 
 
 async def main():
-    """Entry point."""
     config = load_config()
     await run(config)
 

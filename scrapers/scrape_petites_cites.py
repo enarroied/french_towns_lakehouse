@@ -1,15 +1,11 @@
 import asyncio
-import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from flows.shared.minio import write_csv_to_staging
+from scrapers.logging import get_scraper_logger
 
 
 def load_config() -> dict:
@@ -30,7 +26,6 @@ async def scrape_city(
     try:
         async with session.get(url, headers=headers) as resp:
             if resp.status != 200:
-                print(f"Error {resp.status} for {url}")
                 return None
             html = await resp.text()
 
@@ -51,10 +46,8 @@ async def scrape_city(
 
         if city and department:
             return {"city": city, "department": department}
-        print(f"Missing data on {url}")
         return None
-    except Exception as e:
-        print(f"Exception scraping {url}: {e}")
+    except Exception:
         return None
 
 
@@ -69,6 +62,7 @@ async def worker(
 
 
 async def run(config: dict) -> str:
+    logger = get_scraper_logger("scrape_petites_cites")
     scraper_config = next(
         s for s in config["scrapers"] if s["module"] == "scrapers.scrape_petites_cites"
     )
@@ -78,10 +72,9 @@ async def run(config: dict) -> str:
 
     async with aiohttp.ClientSession(headers=headers) as session:
         urls = await fetch_sitemap(session, scraper_config["sitemap_url"])
-        print(f"Found {len(urls)} city URLs.")
+        logger.info("Found %d city URLs.", len(urls))
 
         if not urls:
-            print("No city URLs found.")
             return scraper_config["name"]
 
         semaphore = asyncio.Semaphore(concurrency)
@@ -99,7 +92,7 @@ async def run(config: dict) -> str:
             pipeline_name="staging_current_labels",
         )
 
-        print(f"Scraped {len(valid_results)} cities. Uploaded to {key}")
+        logger.info("Scraped %d cities. Uploaded to %s", len(valid_results), key)
     return key
 
 

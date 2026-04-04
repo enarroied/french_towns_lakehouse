@@ -50,3 +50,52 @@ deployments:
   schedules: []
   work_pool:
     name: local-dev-pool
+
+# Individual scraper deployments (all use the same master flow with parameters)
+- name: scraper-petites-cites
+  entrypoint: flows/scrapers/__init__.py:run_scraper
+  parameters:
+    scraper_name: petites_cites
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: scraper-villes-fleuries
+  entrypoint: flows/scrapers/__init__.py:run_scraper
+  parameters:
+    scraper_name: villes_fleuries
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: scraper-plus-beaux-villages
+  entrypoint: flows/scrapers/__init__.py:run_scraper
+  parameters:
+    scraper_name: plus_beaux_villages
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: scraper-villes-prudentes
+  entrypoint: flows/scrapers/__init__.py:run_scraper
+  parameters:
+    scraper_name: villes_prudentes
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: scraper-village-etape
+  entrypoint: flows/scrapers/__init__.py:run_scraper
+  parameters:
+    scraper_name: village_etape
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: scraper-famille-plus
+  entrypoint: flows/scrapers/__init__.py:run_scraper
+  parameters:
+    scraper_name: famille_plus
+  schedules: []
+  work_pool:
+    name: local-dev-pool
