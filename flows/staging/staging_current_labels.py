@@ -11,7 +11,6 @@ from prefect import task
 
 logger = logging.getLogger(__name__)
 
-
 SCRAPER_MODULE_MAP = {
     "petites_cites": "scrapers.scrape_petites_cites",
     "villes_fleuries": "scrapers.scrape_villes_fleuries",
@@ -44,34 +43,36 @@ def run_single_scraper(scraper_name: str) -> dict:
 def staging_current_labels() -> list[dict]:
     setup_logs()
 
-    enabled_scrapers = [s for s in get_scrapers() if s.get("enabled", True)]
-    disabled_scrapers = [s for s in get_scrapers() if not s.get("enabled", True)]
+    all_scrapers = get_scrapers()
+    enabled = [s for s in all_scrapers if s.get("enabled", True)]
+    disabled = [s for s in all_scrapers if not s.get("enabled", True)]
 
-    for s in disabled_scrapers:
+    for s in disabled:
         logger.info("Skipping %s (disabled)", s["name"])
 
-    results = []
-    for scraper in enabled_scrapers:
-        result = run_single_scraper(scraper["name"])
-        results.append(result)
+    # Submit all scrapers concurrently
+    futures = [run_single_scraper.submit(s["name"]) for s in enabled]
+
+    # Block here until every scraper is done — nothing below runs until all futures resolve
+    results = [f.result() for f in futures]
 
     succeeded = [r for r in results if r["success"]]
     failed = [r for r in results if not r["success"]]
 
     width = 50
-    print("\n" + "=" * width)
-    print(" SCRAPER RUN SUMMARY")
-    print("=" * width)
+    logger.info("\n" + "=" * width)
+    logger.info(" SCRAPER RUN SUMMARY")
+    logger.info("=" * width)
     for r in results:
         status = "OK" if r["success"] else "FAILED"
         result_info = f" → {r.get('result', '')}" if r["success"] else ""
-        print(f" {r['name']:<30} {status}{result_info}")
+        logger.info(f" {r['name']:<30} {status}{result_info}")
         if not r["success"]:
             short = (r.get("error") or "unknown error")[:60]
-            print(f"     - {short}")
-    print("-" * width)
-    print(f" {len(succeeded)}/{len(results)} scrapers succeeded.")
-    print("=" * width + "\n")
+            logger.info(f"     - {short}")
+    logger.info("-" * width)
+    logger.info(f" {len(succeeded)}/{len(results)} scrapers succeeded.")
+    logger.info("=" * width + "\n")
 
     if failed:
         logger.warning("%d scrapers failed", len(failed))

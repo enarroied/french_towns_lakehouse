@@ -1,15 +1,11 @@
 import asyncio
-import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from flows.shared.minio import write_csv_to_staging
+from scrapers.logging import get_scraper_logger
 
 
 def load_config() -> dict:
@@ -20,13 +16,10 @@ def parse_table(html: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     table = soup.find("table", class_="ea-advanced-data-table")
     if not table:
-        print("Could not find the data table!")
         return []
 
     results = []
     rows = table.find("tbody").find_all("tr")
-    print(f"Found {len(rows)} rows in the table")
-
     for row in rows:
         cells = row.find_all("td")
         if len(cells) >= 5:
@@ -43,6 +36,7 @@ def parse_table(html: str) -> list[dict]:
 
 
 async def run(config: dict) -> str:
+    logger = get_scraper_logger("scrape_villes_prudentes")
     scraper_config = next(
         s
         for s in config["scrapers"]
@@ -61,6 +55,7 @@ async def run(config: dict) -> str:
             html = await resp.text()
 
         villes = parse_table(html)
+        logger.info("Found %d communes.", len(villes))
 
         key = write_csv_to_staging(
             data=villes,
@@ -71,7 +66,7 @@ async def run(config: dict) -> str:
             pipeline_name="staging_current_labels",
         )
 
-        print(f"Scraped {len(villes)} communes. Uploaded to {key}")
+        logger.info("Scraped %d communes. Uploaded to %s", len(villes), key)
     return key
 
 

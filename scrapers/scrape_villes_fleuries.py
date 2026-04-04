@@ -1,20 +1,13 @@
 import asyncio
 import logging
 import re
-import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from flows.shared.minio import write_csv_to_staging
-
-
-logger = logging.getLogger(__name__)
+from scrapers.logging import get_scraper_logger
 
 
 def load_config() -> dict:
@@ -44,13 +37,12 @@ def parse_row(row: list) -> dict:
 
 
 async def init_session(session: aiohttp.ClientSession, referer: str) -> None:
-    """Hit the referer page to get a fresh PHPSESSID cookie."""
     async with session.get(referer) as resp:
         resp.raise_for_status()
-    logger.debug("Session initialised (cookie refreshed).")
 
 
 async def fetch_page(
+    logger: logging.Logger,
     session: aiohttp.ClientSession,
     endpoint: str,
     payload: dict,
@@ -58,7 +50,6 @@ async def fetch_page(
     max_retries: int = 3,
     backoff: tuple[float, ...] = (3.0, 10.0, 30.0),
 ) -> dict:
-    """POST one page, retrying up to max_retries times on 500 errors."""
     for attempt in range(max_retries + 1):
         try:
             async with session.post(endpoint, data=payload) as resp:
@@ -67,13 +58,6 @@ async def fetch_page(
         except aiohttp.ClientResponseError as exc:
             if exc.status == 500 and attempt < max_retries:
                 wait = backoff[attempt]
-                logger.warning(
-                    "500 from %s (attempt %d/%d) — refreshing session and retrying in %.0fs…",
-                    endpoint,
-                    attempt + 1,
-                    max_retries,
-                    wait,
-                )
                 await asyncio.sleep(wait)
                 try:
                     await init_session(session, referer)
@@ -86,6 +70,7 @@ async def fetch_page(
 
 
 async def fetch_all_rows(
+    logger: logging.Logger,
     session: aiohttp.ClientSession,
     endpoint: str,
     payload_base: dict,
@@ -97,15 +82,16 @@ async def fetch_all_rows(
     all_rows = []
     for start in range(0, total, page_size):
         end = min(start + page_size, total)
-        logger.info("  Fetching rows %d–%d…", start, end)
+        logger.info("  Fetching rows %d-%d...", start, end)
         payload = {**payload_base, "start": str(start), "length": str(page_size)}
-        page = await fetch_page(session, endpoint, payload, referer)
+        page = await fetch_page(logger, session, endpoint, payload, referer)
         all_rows.extend(page["data"])
         await asyncio.sleep(crawl_delay)
     return all_rows
 
 
 async def run(config: dict) -> str:
+    logger = get_scraper_logger("scrape_villes_fleuries")
     scraper_config = next(
         s
         for s in config["scrapers"]
@@ -152,6 +138,7 @@ async def run(config: dict) -> str:
         await init_session(session, referer)
 
         first_page = await fetch_page(
+            logger,
             session,
             scraper_config["endpoint"],
             {**payload_base, "start": "0", "length": str(page_size)},
@@ -161,6 +148,7 @@ async def run(config: dict) -> str:
         logger.info("Total records: %d", total)
 
         all_raw = await fetch_all_rows(
+            logger,
             session,
             scraper_config["endpoint"],
             payload_base,

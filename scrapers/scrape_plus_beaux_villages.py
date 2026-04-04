@@ -1,15 +1,11 @@
 import asyncio
-import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from flows.shared.minio import write_csv_to_staging
+from scrapers.logging import get_scraper_logger
 
 
 def load_config() -> dict:
@@ -39,6 +35,7 @@ def parse_villages(html: str) -> list[dict]:
 
 
 async def run(config: dict) -> str:
+    logger = get_scraper_logger("scrape_plus_beaux_villages")
     scraper_config = next(
         s
         for s in config["scrapers"]
@@ -57,6 +54,7 @@ async def run(config: dict) -> str:
             html = await resp.text()
 
         villages = parse_villages(html)
+        logger.info("Found %d villages.", len(villages))
 
         key = write_csv_to_staging(
             data=villages,
@@ -67,7 +65,7 @@ async def run(config: dict) -> str:
             pipeline_name="staging_current_labels",
         )
 
-        print(f"Scraped {len(villages)} villages. Uploaded to {key}")
+        logger.info("Scraped %d villages. Uploaded to %s", len(villages), key)
     return key
 
 

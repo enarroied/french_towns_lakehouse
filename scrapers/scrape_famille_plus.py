@@ -1,38 +1,30 @@
-"""
-Async scraper for Famille Plus website
-Extracts destination information from https://www.familleplus.fr/fr/le-label/carte
-"""
-
 import asyncio
+import logging
 import re
-import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
-
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from flows.shared.minio import write_csv_to_staging
+from scrapers.logging import get_scraper_logger
 
 
 def load_config() -> dict:
-    """Load configuration from YAML file."""
     return yaml.safe_load(Path("config.yaml").open())
 
 
-async def fetch_destinations(session: aiohttp.ClientSession, url: str) -> list[dict]:
-    """Fetch all destination data from the map page."""
+async def fetch_destinations(
+    logger: logging.Logger, session: aiohttp.ClientSession, url: str
+) -> list[dict]:
     try:
         async with session.get(url) as resp:
             if resp.status != 200:
-                print(f"Error fetching page: {resp.status}")
+                logger.warning("Failed to fetch page: %d", resp.status)
                 return []
             html = await resp.text()
-    except Exception as e:
-        print(f"Exception fetching page: {e}")
+    except Exception as exc:
+        logger.error("Exception fetching page: %s", exc)
         return []
 
     soup = BeautifulSoup(html, "html.parser")
@@ -79,7 +71,7 @@ async def fetch_destinations(session: aiohttp.ClientSession, url: str) -> list[d
 
 
 async def run(config: dict) -> str:
-    """Main execution function."""
+    logger = get_scraper_logger("scrape_famille_plus")
     scraper_config = next(
         s for s in config["scrapers"] if s["module"] == "scrapers.scrape_famille_plus"
     )
@@ -92,11 +84,10 @@ async def run(config: dict) -> str:
     url = scraper_config.get("url", "https://www.familleplus.fr/fr/le-label/carte")
 
     async with aiohttp.ClientSession(headers=headers) as session:
-        destinations = await fetch_destinations(session, url)
-        print(f"Found {len(destinations)} destinations.")
+        destinations = await fetch_destinations(logger, session, url)
+        logger.info("Found %d destinations.", len(destinations))
 
         if not destinations:
-            print("No destinations found.")
             return scraper_config["name"]
 
         key = write_csv_to_staging(
@@ -108,17 +99,15 @@ async def run(config: dict) -> str:
             pipeline_name="staging_current_labels",
         )
 
-        print(f"Scraped {len(destinations)} destinations. Uploaded to {key}")
+        logger.info("Scraped %d destinations. Uploaded to %s", len(destinations), key)
 
-        print("\nSample data:")
         for d in destinations[:5]:
-            print(f"  - {d['name']} | {d['department_code']} | {d['type']}")
+            logger.info("  - %s | %s | %s", d["name"], d["department_code"], d["type"])
 
     return key
 
 
 async def main():
-    """Entry point."""
     config = load_config()
     await run(config)
 
