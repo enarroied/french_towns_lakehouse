@@ -1,31 +1,35 @@
-import asyncio
-from pathlib import Path
+import logging
 
 import aiohttp
-import yaml
 from bs4 import BeautifulSoup
 from flows.shared.minio import write_csv_to_staging
-from scrapers.logging import get_scraper_logger
+
+from scrapers.utils import get_scraper_config
+
+logger = logging.getLogger(__name__)
+
+MODULE = "scrapers.scrape_plus_beaux_villages"
+FIELDNAMES = ["city", "department"]
 
 
-def load_config() -> dict:
-    return yaml.safe_load(Path("config.yaml").open())
+# ---------------------------------------------------------------------------
+# Parsers
+# ---------------------------------------------------------------------------
 
 
 def parse_villages(html: str) -> list[dict]:
+    """Parse village entries from the Les Plus Beaux Villages listing page."""
     soup = BeautifulSoup(html, "html.parser")
     results = []
-    result_divs = soup.find_all("div", class_="result")
 
-    for div in result_divs:
+    for div in soup.find_all("div", class_="result"):
         name_div = div.find("div", class_="name")
-        if not name_div:
-            continue
-        city = name_div.get_text(strip=True).lower()
-
         locality_div = div.find("div", class_="locality")
-        if not locality_div:
+
+        if not name_div or not locality_div:
             continue
+
+        city = name_div.get_text(strip=True).lower()
         department = locality_div.get_text(strip=True).lower().split()[-1]
 
         if city and department:
@@ -34,45 +38,29 @@ def parse_villages(html: str) -> list[dict]:
     return results
 
 
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+
 async def run(config: dict) -> str:
-    logger = get_scraper_logger("scrape_plus_beaux_villages")
-    scraper_config = next(
-        s
-        for s in config["scrapers"]
-        if s["module"] == "scrapers.scrape_plus_beaux_villages"
-    )
+    """Scrape Les Plus Beaux Villages de France and upload to staging."""
+    scraper = get_scraper_config(config, MODULE)
+    logger.info("Starting %s", scraper.name)
 
-    headers = {
-        "User-Agent": scraper_config.get("user_agent", "FrenchTownsBot/1.0"),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
-    }
-
-    async with aiohttp.ClientSession(headers=headers) as session:
-        async with session.get(scraper_config["url"]) as resp:
+    async with aiohttp.ClientSession(headers=scraper.headers) as session:
+        async with session.get(scraper.url) as resp:
             resp.raise_for_status()
-            html = await resp.text()
-
-        villages = parse_villages(html)
-        logger.info("Found %d villages.", len(villages))
+            villages = parse_villages(await resp.text())
 
         key = write_csv_to_staging(
             data=villages,
-            fieldnames=["city", "department"],
-            filename=f"{scraper_config['name']}.csv",
-            subfolder=scraper_config.get("target_folder", "labels"),
-            metadata={"source_url": scraper_config["url"]},
+            fieldnames=FIELDNAMES,
+            filename=f"{scraper.name}.csv",
+            subfolder=scraper.target_folder,
+            metadata={"source_url": scraper.url},
             pipeline_name="staging_current_labels",
         )
 
-        logger.info("Scraped %d villages. Uploaded to %s", len(villages), key)
+    logger.info("%s: scraped %d villages → %s", scraper.name, len(villages), key)
     return key
-
-
-async def main():
-    config = load_config()
-    await run(config)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

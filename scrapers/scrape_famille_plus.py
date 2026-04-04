@@ -1,116 +1,101 @@
-import asyncio
 import logging
 import re
-from pathlib import Path
 
 import aiohttp
-import yaml
 from bs4 import BeautifulSoup
 from flows.shared.minio import write_csv_to_staging
-from scrapers.logging import get_scraper_logger
+
+from scrapers.utils import get_scraper_config
+
+logger = logging.getLogger(__name__)
+
+MODULE = "scrapers.scrape_famille_plus"
+FIELDNAMES = ["name", "department_code", "type"]
+_DESTINATION_TYPES = {"mer", "montagne", "nature", "ville"}
 
 
-def load_config() -> dict:
-    return yaml.safe_load(Path("config.yaml").open())
+# ---------------------------------------------------------------------------
+# Parsers
+# ---------------------------------------------------------------------------
 
 
-async def fetch_destinations(
-    logger: logging.Logger, session: aiohttp.ClientSession, url: str
-) -> list[dict]:
+def _parse_destination_type(article) -> str | None:
+    """Return the destination type from an article's CSS classes, or None."""
+    return next((cls for cls in article.get("class", []) if cls in _DESTINATION_TYPES), None)
+
+
+def _parse_department_code(article) -> str | None:
+    """Extract the department code (e.g. '09', '2A') from an article element."""
+    dept_elem = article.find("p", class_="col-4") or article.find("p", class_="align-self-center")
+    if not dept_elem:
+        return None
+    match = re.search(r"\((\d+|2A|2B)\)", dept_elem.get_text(strip=True))
+    return match.group(1) if match else None
+
+
+def parse_destinations(html: str) -> list[dict]:
+    """Parse all destination entries from a Famille Plus HTML page."""
+    soup = BeautifulSoup(html, "html.parser")
+    results = []
+
+    for article in soup.find_all("article", class_="node--type-destination"):
+        dest_type = _parse_destination_type(article)
+        h5 = article.find("h5")
+        name = h5.find("a").get_text(strip=True) if h5 and h5.find("a") else None
+        dept = _parse_department_code(article)
+
+        if name and dept and dest_type:
+            results.append({"name": name, "department_code": dept, "type": dest_type})
+
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Network
+# ---------------------------------------------------------------------------
+
+
+async def fetch_page(session: aiohttp.ClientSession, url: str) -> str | None:
+    """Fetch a single HTML page, returning None on any failure."""
     try:
         async with session.get(url) as resp:
             if resp.status != 200:
-                logger.warning("Failed to fetch page: %d", resp.status)
-                return []
-            html = await resp.text()
+                logger.warning("Unexpected status %d for %s", resp.status, url)
+                return None
+            return await resp.text()
     except Exception as exc:
-        logger.error("Exception fetching page: %s", exc)
-        return []
+        logger.error("Failed to fetch %s: %s", url, exc)
+        return None
 
-    soup = BeautifulSoup(html, "html.parser")
 
-    destinations = []
-    articles = soup.find_all("article", class_="node--type-destination")
-
-    for article in articles:
-        classes = article.get("class", [])
-        dest_type = None
-        for cls in classes:
-            if cls in ["mer", "montagne", "nature", "ville"]:
-                dest_type = cls
-                break
-
-        h5 = article.find("h5")
-        if h5:
-            a = h5.find("a")
-            town_name = a.get_text(strip=True) if a else None
-        else:
-            town_name = None
-
-        dept = None
-        dept_elem = article.find("p", class_="col-4")
-        if not dept_elem:
-            dept_elem = article.find("p", class_="align-self-center")
-
-        if dept_elem:
-            dept_text = dept_elem.get_text(strip=True)
-            match = re.search(r"\((\d+|[2A|2B])\)", dept_text)
-            if match:
-                dept = match.group(1)
-
-        if town_name and dept and dest_type:
-            destinations.append(
-                {
-                    "name": town_name,
-                    "department_code": dept,
-                    "type": dest_type,
-                }
-            )
-
-    return destinations
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
 
 
 async def run(config: dict) -> str:
-    logger = get_scraper_logger("scrape_famille_plus")
-    scraper_config = next(
-        s for s in config["scrapers"] if s["module"] == "scrapers.scrape_famille_plus"
-    )
+    """Scrape Famille Plus destinations and upload to staging."""
+    scraper = get_scraper_config(config, MODULE)
+    logger.info("Starting %s", scraper.name)
 
-    headers = {
-        "User-Agent": scraper_config.get("user_agent", "FrenchTownsBot/1.0"),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
-    }
-    url = scraper_config.get("url", "https://www.familleplus.fr/fr/le-label/carte")
+    async with aiohttp.ClientSession(headers=scraper.headers) as session:
+        html = await fetch_page(session, scraper.url)
+        if not html:
+            return scraper.name
 
-    async with aiohttp.ClientSession(headers=headers) as session:
-        destinations = await fetch_destinations(logger, session, url)
-        logger.info("Found %d destinations.", len(destinations))
-
+        destinations = parse_destinations(html)
         if not destinations:
-            return scraper_config["name"]
+            logger.warning("%s: no destinations found", scraper.name)
+            return scraper.name
 
         key = write_csv_to_staging(
             data=destinations,
-            fieldnames=["name", "department_code", "type"],
-            filename=f"{scraper_config['name']}.csv",
-            subfolder=scraper_config.get("target_folder", "labels"),
-            metadata={"source_url": url},
+            fieldnames=FIELDNAMES,
+            filename=f"{scraper.name}.csv",
+            subfolder=scraper.target_folder,
+            metadata={"source_url": scraper.url},
             pipeline_name="staging_current_labels",
         )
 
-        logger.info("Scraped %d destinations. Uploaded to %s", len(destinations), key)
-
-        for d in destinations[:5]:
-            logger.info("  - %s | %s | %s", d["name"], d["department_code"], d["type"])
-
+    logger.info("%s: scraped %d destinations → %s", scraper.name, len(destinations), key)
     return key
-
-
-async def main():
-    config = load_config()
-    await run(config)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
