@@ -1,12 +1,25 @@
-data/*
-input/*
+# Runtime data directories
+data/
+input/
+logs/
+
+# MinIO data (local runtime storage)
+data/staging-current/
+data/staging-historical/
+data/validated/
+data/validated-historical/
+data/rejected/
+data/evidence-archive/
+data/lakehouse/
+
+# Audit database (DuckDB file)
+audit/*.duckdb
 
 .vscode
 
 # dbt / duckdb
 target/
 dbt_packages/
-logs/
 french_towns.duckdb
 french_towns.duckdb.wal
 

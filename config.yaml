@@ -11,6 +11,15 @@ directories:
   - scraper_dir
   - custom_dir
 
+buckets:
+  staging_current: "staging-current"
+  staging_historical: "staging-historical"
+  validated: "validated"
+  validated_historical: "validated-historical"
+  rejected: "rejected"
+  evidence_archive: "evidence-archive"
+  lakehouse: "lakehouse"
+
 download:
   concurrency: 3
   timeout_seconds: 120
@@ -19,38 +28,54 @@ downloads:
   - name: "populations_historiques"
     url: "https://api.insee.fr/melodi/file/DS_POPULATIONS_HISTORIQUES/DS_POPULATIONS_HISTORIQUES_CSV_FR"
     filename: "populations_historiques.zip"
+    domain: "demographics"
+    target_folder: "demographics"
 
   - name: "french_communes"
     url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
     filename: "communes_france.geojson"
+    domain: "geography"
+    target_folder: "geography"
 
   - name: "arrondissements"
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/arrondissement_2022.csv"
     filename: "arrondissements.csv"
+    domain: "geography"
+    target_folder: "geography"
 
   - name: "departements"
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/departement_2022.csv"
     filename: "departements.csv"
+    domain: "geography"
+    target_folder: "geography"
 
   - name: "salaries"
     url: "https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS/DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR"
     filename: "salaries.csv"
+    domain: "demographics"
+    target_folder: "demographics"
 
   - name: "zip_codes"
     url: "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/data-files/019HexaSmal.csv"
     filename: "019HexaSmal.csv"
+    domain: "geography"
+    target_folder: "geography"
 
 scrapers:
   - name: "petites_cites"
     module: "scrapers.scrape_petites_cites"
-    enabled: false
+    enabled: true
+    domain: "labels"
+    target_folder: "labels"
     sitemap_url: "https://www.petitescitesdecaractere.com/cites-sitemap.xml"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     concurrency: 5
 
   - name: "villes_fleuries"
     module: "scrapers.scrape_villes_fleuries"
-    enabled: false
+    enabled: true
+    domain: "labels"
+    target_folder: "labels"
     endpoint: "https://villes-et-villages-fleuris.com/pages/post/commune"
     referer: "https://villes-et-villages-fleuris.com/les-communes-labelisees"
     user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
@@ -59,33 +84,42 @@ scrapers:
 
   - name: "plus_beaux_villages"
     module: "scrapers.scrape_plus_beaux_villages"
-    enabled: false
+    enabled: true
+    domain: "labels"
+    target_folder: "labels"
     url: "https://www.les-plus-beaux-villages-de-france.org/fr/nos-villages/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "villes_prudentes"
     module: "scrapers.scrape_villes_prudentes"
-    enabled: false
+    enabled: true
+    domain: "labels"
+    target_folder: "labels"
     url: "https://www.villeprudente.fr/les-villes-labellisees/"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "village_etape"
     module: "scrapers.scrape_village_etape"
-    enabled: false
+    enabled: true
+    domain: "labels"
+    target_folder: "labels"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     base_url: "https://village-etape.fr/nos-village-etape/"
     concurrency: 3
 
   - name: "famille_plus"
     module: "scrapers.scrape_famille_plus"
-    enabled: false
+    enabled: true
+    domain: "labels"
+    target_folder: "labels"
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     url: "https://www.familleplus.fr/fr/le-label/carte"
-
 
 custom_parsers:
   - name: "ville_sportive"
     module: "custom_parsers.parse_ville_sportive"
     enabled: true
+    domain: "labels"
+    target_folder: "labels"
     input_dir: "custom_parsers/data_for_parsers/ville_active_sportive"
     pdf_file: "2025-palmares.pdf"

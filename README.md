@@ -1,106 +1,83 @@
 # French Towns LakeHouse
 
-- [French Towns LakeHouse](#french-towns-lakehouse)
-  - [What does this build?](#what-does-this-build)
-  - [Technology Stack](#technology-stack)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
-  - [Start the MinIO Server](#start-the-minio-server)
-  - [Run the Pipeline](#run-the-pipeline)
-    - [What the Pipeline Does](#what-the-pipeline-does)
-    - [Run dbt in isolation](#run-dbt-in-isolation)
-  - [Query the Lakehouse](#query-the-lakehouse)
-  - [Project Structure](#project-structure)
-  - [Data Sources](#data-sources)
-  - [dbt Documentation](#dbt-documentation)
-
-
-A self-hosted data lakehouse of French municipal data. The pipeline downloads open government datasets, transforms them into clean Parquet files using DuckDB and dbt, and uploads the results to a local MinIO object store.
+A self-hosted data lakehouse of French municipal data. The pipeline downloads open government datasets, transforms them into clean Parquet files using DuckDB and dbt, and uploads the results to MinIO object storage.
 
 **dbt model documentation:** [https://enarroied.github.io/french_towns_lakehouse/](https://enarroied.github.io/french_towns_lakehouse/)
 
 ---
 
+## Quick Links
+
+| Topic | Location |
+|-------|----------|
+| [Project Structure](#project-structure) | Directory layout |
+| [Naming Conventions](#naming-conventions) | Pipelines, buckets, models |
+| [Pipeline Architecture](#pipeline-architecture) | Staging → Transformation → Integration |
+| [Setup & Running](#setup) | Prerequisites, installation, execution |
+| [Deployment](#prefect-deployments) | Deploying flows to Prefect |
+| [Full Specifications](private/Specifications/specifications.md) | Detailed design document |
+
+---
+
 ## What does this build?
 
-This project is about creating a data lakehouse using French geographical data. As an example, we created three analytics-ready tables, available as Parquet files in an S3-compatible object store (refer to the DBT documentation to see all the tables and their lineage):
+Three analytics-ready tables available as Parquet files:
 
-- `dim_communes_france` : all French communes with geometry, administrative hierarchy, spatial metrics, and flag columns (Corsica, metropole, prefecture status)
-- `fact_population` : historical population per commune by census year
-- `fact_salaries` : mean annual salary by sex per commune (2023)
+- `dim_communes_france` — all French communes with geometry, administrative hierarchy, spatial metrics, and flags
+- `fact_population` — historical population per commune by census year
+- `fact_salaries` — mean annual salary by sex per commune (2023)
 
-All three tables join on the INSEE commune code (`id`, `CHAR(5)`).
-
-**Note**: INSEE codes include letters and always have 5 characters, we chose a `CHAR(5)` for now, we may create a `INT` id sometime.
+All tables join on the INSEE commune code (`id`, `CHAR(5)`).
 
 ---
 
 ## Technology Stack
 
-| Layer | Tool | Role |
-|---|---|---|
-| Orchestration | Prefect 3 | Flow and task management |
-| Downloading | httpx (async) | Concurrent file downloads |
-| Transformation | dbt-core + dbt-duckdb | SQL models, external Parquet output |
-| Compute engine | DuckDB | In-process SQL, spatial queries |
-| Object storage | MinIO (Docker) | S3-compatible local lakehouse store |
-| Package manager | uv | Python dependency management |
-
-**Why DuckDB?** DuckDB runs entirely in-process. It doesn't need a server. It reads GeoJSON, CSV, and Parquet natively, supports spatial functions via the `spatial` extension, and handles the full transformation workload on a laptop. For a dataset of this size, it outperforms a traditional database stack with a fraction of the operational complexity.
-
-**Why dbt?** dbt brings software engineering discipline to SQL: version control, modular models, schema documentation, and data tests. The schema YAML files define column types, accepted value ranges, uniqueness constraints, and referential integrity checks between the dimension and fact tables. The [dbt docs site](https://enarroied.github.io/french_towns_lakehouse/) auto-generates from those files on every push to master.
-
----
-
-## Prerequisites
-
-- Python 3.11+
-- [uv](https://docs.astral.sh/uv/) (`pip install uv`)
-- Docker and Docker Compose
+| Layer | Tool |
+|-------|------|
+| Orchestration | Prefect 3 |
+| Downloading | httpx (async) |
+| Transformation | dbt-core + dbt-duckdb |
+| Compute | DuckDB |
+| Object Storage | MinIO (S3-compatible) |
+| Package Manager | uv |
 
 ---
 
 ## Setup
 
-Clone the repository and install dependencies:
-
 ```bash
 git clone https://github.com/enarroied/french_towns_lakehouse.git
 cd french_towns_lakehouse
 uv sync
+
+# Install the project as a Python package (required for flows to work)
+uv pip install -e .
+
+# Install dbt packages
+cd french_towns_dbt && dbt deps && cd ..
 ```
 
-Install dbt packages:
-
-```bash
-cd french_towns_dbt
-dbt deps
-cd ..
-```
-
-Create a `.env` file at the project root:
-
+Create `.env`:
 ```bash
 MINIO_ENDPOINT=http://localhost:19000
-MINIO_ROOT_USER=minioadmin
+MINIO_ROOT_USER=minio_user
 MINIO_ROOT_PASSWORD=minioadmin
+
+AWS_ACCESS_KEY_ID=minio_user
+AWS_SECRET_ACCESS_KEY=minioadmin
+AWS_ENDPOINT=localhost:19000
+AWS_DEFAULT_REGION=us-east-1
 ```
 
----
-
-## Start the MinIO Server
-
-MinIO provides the S3-compatible object store where the pipeline deposits finished Parquet files. Run it in a separate terminal before starting the pipeline:
-
+Start MinIO:
 ```bash
 docker compose up -d
 ```
 
-This starts MinIO with:
+---
 
-- **API endpoint:** `http://localhost:19000`
-- **Web console:** `http://localhost:19001` (login: `minioadmin` / `minioadmin`)
-- **Data volume:** `./data/minio` (persists across restarts)
+## Pipeline Architecture
 
 You can access your MinIO service from your browser:
 
@@ -113,32 +90,82 @@ To stop MinIO:
 ```bash
 docker compose down
 ```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   STAGING       │───▶│  TRANSFORMATION  │───▶│   INTEGRATION   │
+│                 │    │                  │    │   (future)      │
+│  MinIO buckets: │    │  dbt models:     │    │                 │
+│  staging-*      │    │  validated/      │    │  LakeHouse:     │
+└─────────────────┘    └──────────────────┘    │  lakehouse/     │
+                                               └─────────────────┘
+```
+
+### MinIO Bucket Structure
+
+| Bucket | Purpose |
+|--------|---------|
+| `staging-current` | Raw files from automated ingestion |
+| `staging-historical` | Raw files from historical reconstruction |
+| `validated` | Parquet files from validation stage |
+| `validated-historical` | Parquet files from historical validation |
+| `rejected` | Records rejected during validation |
+| `evidence-archive` | Staging files archived after integration |
+| `lakehouse` | Final dimensional model (Apache Iceberg) |
+
+### dbt Model Layers
+
+| Layer | Purpose |
+|-------|---------|
+| `staging/` | Raw source landing (reads from MinIO) |
+| `validated/` | Schema-enforced star schema |
+| `lakehouse/` | SCD Type 2 historization |
 
 ---
 
-## Run the Pipeline
+## Naming Conventions
 
-Before running the pipeline, ensure MinIO is running as well.
+### Pipeline Naming
 
-You'll need Prefect's serve to run to run the pipeline. To start it, you need to open a dedicated terminal session and type:
-
-```bash
-uv run prefect server start
+```
+{functionality}_{timing}_{subject_type}_{domain}
 ```
 
-Prefect starts a local server at `http://localhost:4200` where you can monitor task progress, view logs, and inspect run history.
+| Dimension | Options | Description |
+|-----------|---------|-------------|
+| `functionality` | `staging`, `transformation`, `integration` | Pipeline stage |
+| `timing` | `current`, `historical` | Data time horizon |
+| `subject_type` | `dim`, `fact` | Type (transformation/integration only) |
+| `domain` | `geography`, `demographics`, `labels` | Thematic area |
 
-![](./img/prefect.jpg)
+Examples:
 
-Next, you can start the pipeline from the project root:
+- `staging_current_geography` — download geography source files
+- `transformation_current_dim_geography` — build geography dimensions
+- `integration_current_fact_demographics` — load demographics facts
+
+### Domain Categories
+
+| Domain | Data Sources |
+|--------|--------------|
+| `geography` | Communes, departments, regions, arrondissements |
+| `demographics` | Population, salaries, census data |
+| `labels` | Tourism labels (Villages Fleuris, Petites Cités de Caractère, etc.) |
+
+---
+
+## Running the Pipeline
+
+### Run All Flows (for testing)
 
 ```bash
 uv run python -m flows.french_towns_pipeline
 ```
 
-You can see the tasks running in Prefect's UI.
+### Run Individual Flows
 
-![](./img/prefect_2.jpg)
+```bash
+uv run python -m flows.staging.staging_current_geography
+uv run python -m flows.transformation.transformation_current_dim_geography
+```
 
 ### What the Pipeline Does
 
@@ -165,21 +192,75 @@ To iterate on models without re-downloading source files:
 ```bash
 cd french_towns_dbt
 dbt run --profiles-dir .
-```
-
-To run data quality tests:
-
-```bash
 dbt test --profiles-dir .
 ```
 
 ---
 
-## Query the Lakehouse
+## Prefect Deployments
 
-Once the pipeline completes, query the Parquet files directly from DuckDB using the MinIO S3 endpoint:
+Deploy flows to Prefect for scheduled execution:
+
+```bash
+prefect deploy --all
+```
+
+View deployments at `http://localhost:4200/deployments`.
+
+Each flow can be deployed independently and scheduled with cron or interval schedules.
+
+---
+
+## Project Structure
+
+```
+french_towns_lakehouse/
+├── flows/                           # Prefect orchestration
+│   ├── shared/                      # Shared utilities
+│   │   ├── config.py                # Config loader
+│   │   ├── minio.py                 # MinIO helpers + sidecar generation
+│   │   ├── download.py               # Async download utilities
+│   │   └── dbt.py                   # dbt runner utilities
+│   ├── staging/                     # Staging pipelines
+│   │   ├── staging_current_geography.py
+│   │   ├── staging_current_demographics.py
+│   │   └── staging_current_labels.py
+│   └── transformation/               # Transformation pipelines
+│       ├── transformation_current_dim_geography.py
+│       ├── transformation_current_fact_demographics.py
+│       └── transformation_current_labels.py
+├── french_towns_dbt/                # dbt project
+│   └── models/
+│       ├── staging/                 # Raw staging models
+│       ├── validated/               # Schema-enforced models
+│       │   ├── dim/
+│       │   └── fact/
+│       └── lakehouse/               # SCD Type 2 models
+├── audit/                          # Audit database
+│   └── audit_schema.sql            # audit.duckdb schema
+├── config.yaml                     # Pipeline configuration
+├── docker-compose.yml              # MinIO service
+└── pyproject.toml
+```
+
+---
+
+## Data Sources
+
+| Dataset | Source | License |
+|---------|--------|---------|
+| Communes GeoJSON | [data.gouv.fr](https://www.data.gouv.fr/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b) | Licence Ouverte 2.0 |
+| Arrondissements | [INSEE](https://www.insee.fr/fr/statistiques/fichier/6051727/arrondissement_2022.csv) | Licence Ouverte 2.0 |
+| Departments | [INSEE](https://www.insee.fr/fr/statistiques/fichier/6051727/departement_2022.csv) | Licence Ouverte 2.0 |
+| Historical populations | [INSEE API](https://api.insee.fr/melodi/file/DS_POPULATIONS_HISTORIQUES) | Licence Ouverte 2.0 |
+| Salaries | [INSEE API](https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS) | Licence Ouverte 2.0 |
+
+---
+
+## Query the LakeHouse
 
 ```sql
+-- Connect to MinIO via DuckDB
 INSTALL httpfs;
 LOAD httpfs;
 
@@ -219,58 +300,10 @@ ORDER BY gap_pct DESC;
 
 ---
 
-## Project Structure
+## Documentation
 
-```
-french_towns_lakehouse/
-├── flows/
-│   └── french_towns_pipeline.py     # Prefect orchestration flow
-├── scripts/
-│   └── download.py                  # Async file downloader
-├── french_towns_dbt/                # dbt project
-│   ├── dbt_project.yml
-│   ├── profiles.yml
-│   ├── packages.yml
-│   └── models/
-│       ├── sources.yml
-│       ├── dim_communes_france.sql
-│       ├── fact_population.sql
-│       └── fact_salaries.sql
-├── .github/
-│   └── workflows/
-│       └── deploy_docs.yml          # Auto-deploys dbt docs to GitHub Pages
-├── input/                           # Downloaded raw files (gitignored)
-├── data/
-│   ├── processed/                   # dbt Parquet outputs (gitignored)
-│   └── minio/                       # MinIO volume (gitignored)
-├── config.yaml
-├── docker-compose.yml
-└── pyproject.toml
-```
-
----
-
-## Data Sources
-
-| Dataset | Source | License |
-|---|---|---|
-| Communes GeoJSON | [data.gouv.fr](https://www.data.gouv.fr/datasets/communes-france-1) | Licence Ouverte 2.0 |
-| Arrondissements & Departments | [INSEE](https://www.insee.fr) | Licence Ouverte 2.0 |
-| Historical populations | [INSEE](https://catalogue-donnees.insee.fr/fr/catalogue/recherche/DS_POPULATIONS_HISTORIQUES) | Licence Ouverte 2.0 |
-| Salaries by sex and professional category | [INSEE](https://catalogue-donnees.insee.fr/fr/catalogue/recherche/DS_BTS_SAL_EQTP_SEX_PCS) | Licence Ouverte 2.0 |
-
----
-
-## dbt Documentation
-
-The dbt docs site generates automatically on every push to `master` via GitHub Actions and deploys to GitHub Pages. To generate docs locally:
-
-```bash
-cd french_towns_dbt
-dbt docs generate --profiles-dir .
-dbt docs serve --profiles-dir .
-```
-
-Open `http://localhost:8080` to browse the full data catalog, lineage graph, and column-level documentation.
-
-For more on dbt, see the [official dbt documentation](https://docs.getdbt.com).
+- **dbt Docs:** Auto-generated on push to `master` → [GitHub Pages](https://enarroied.github.io/french_towns_lakehouse/)
+- **Full Specifications:** [private/Specifications/specifications.md](private/Specifications/specifications.md)
+- **Audit Database:** [audit/README.md](audit/README.md)
+- **Custom Parsers:** [custom_parsers/README.md](custom_parsers/README.md)
+- **Integration Pipelines:** [flows/integration/README.md](flows/integration/README.md)

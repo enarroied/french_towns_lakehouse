@@ -1,11 +1,16 @@
 import asyncio
-import csv
 import json
+import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from flows.shared.minio import write_csv_to_staging
 
 
 def load_config() -> dict:
@@ -37,8 +42,6 @@ async def fetch_village_urls(  # noqa: PLR0912, PLR0915
 
         soup = BeautifulSoup(html, "html.parser")
 
-        # Find all village links in the loop grid
-        # The links are on divs with data-ha-element-link attribute
         links = []
         for element in soup.find_all(attrs={"data-ha-element-link": True}):
             link_data = element.get("data-ha-element-link")
@@ -50,7 +53,6 @@ async def fetch_village_urls(  # noqa: PLR0912, PLR0915
                 except (json.JSONDecodeError, KeyError):
                     continue
 
-        # Alternative: Look for direct links in the loop items
         if not links:
             loop_items = soup.find_all("div", class_="e-loop-item")
             for item in loop_items:
@@ -59,11 +61,8 @@ async def fetch_village_urls(  # noqa: PLR0912, PLR0915
                     links.append(link["href"])
 
         if not links:
-            # Check for pagination - if no links and we're not on page 1, break
             if page > 1:
                 break
-            # On page 1, we might need a different selector
-            # Try finding links in h2 headings
             headings = soup.find_all("h2", class_="elementor-heading-title")
             for heading in headings:
                 parent = heading.find_parent("a")
@@ -77,19 +76,17 @@ async def fetch_village_urls(  # noqa: PLR0912, PLR0915
         all_urls.extend(links)
         print(f"Found {len(links)} villages on page {page}")
 
-        # Check if there's a next page
         pagination = soup.find("nav", class_="elementor-pagination")
         if pagination:
             next_link = pagination.find("a", class_="next")
             if not next_link:
                 break
-        elif page >= 4:  # Fallback: stop after 4 pages (as seen in HTML)
+        elif page >= 4:
             break
 
         page += 1
-        await asyncio.sleep(1)  # Respectful delay between pages
+        await asyncio.sleep(1)
 
-    # Remove duplicates while preserving order
     seen = set()
     unique_urls = []
     for url in all_urls:
@@ -113,23 +110,19 @@ async def scrape_village(  # noqa: PLR0912
 
         soup = BeautifulSoup(html, "html.parser")
 
-        # Extract village name (h1)
         name = None
         h1 = soup.find("h1", class_="elementor-heading-title")
         if h1:
             name = h1.get_text(strip=True)
 
-        # Alternative: try other selectors
         if not name:
             name_elem = soup.find("h1")
             if name_elem:
                 name = name_elem.get_text(strip=True)
 
-        # FIXED: Extract region and road from the icon list (inline items)
         region = None
         road = None
 
-        # Look for the ul with elementor-inline-items class
         icon_list = soup.find("ul", class_="elementor-icon-list-items")
         if icon_list and "elementor-inline-items" in icon_list.get("class", []):
             items = icon_list.find_all("li", class_="elementor-icon-list-item")
@@ -143,7 +136,6 @@ async def scrape_village(  # noqa: PLR0912
                 region = texts[0]
                 road = texts[1]
 
-        # Extract description
         description = None
         desc_elem = soup.find("div", class_="elementor-widget-text-editor")
         if desc_elem:
@@ -151,7 +143,6 @@ async def scrape_village(  # noqa: PLR0912
             if p:
                 description = p.get_text(strip=True)
 
-        # Extract practical info (mairie, tourist office, etc.)
         practical = {}
         info_sections = soup.find_all("div", class_="elementor-icon-list-items")
         for section in info_sections:
@@ -195,21 +186,15 @@ async def worker(
 ) -> dict | None:
     """Worker with concurrency control."""
     async with semaphore:
-        # Add small random delay to be respectful
         await asyncio.sleep(0.5)
         return await scrape_village(session, url, headers)
 
 
-async def run(config: dict) -> Path:
+async def run(config: dict) -> str:
     """Main execution function."""
-    # Find scraper config
     scraper_config = next(
         s for s in config["scrapers"] if s["module"] == "scrapers.scrape_village_etape"
     )
-
-    output_dir = Path(config["paths"]["scraper_dir"])
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / f"{scraper_config['name']}.csv"
 
     headers = {
         "User-Agent": scraper_config.get("user_agent", "VillageEtapeBot/1.0"),
@@ -222,44 +207,40 @@ async def run(config: dict) -> Path:
     )
 
     async with aiohttp.ClientSession(headers=headers) as session:
-        # Fetch all village URLs
         urls = await fetch_village_urls(session, base_url)
         print(f"Found {len(urls)} village URLs.")
 
         if not urls:
             print("No village URLs found.")
-            return output_path
+            return scraper_config["name"]
 
-        # Scrape each village with concurrency control
         semaphore = asyncio.Semaphore(concurrency)
         tasks = [worker(session, semaphore, url, headers) for url in urls]
         results = await asyncio.gather(*tasks)
 
-        # Filter out None results
         valid_results = [r for r in results if r is not None]
 
-        # Write to CSV
         if valid_results:
-            with output_path.open("w", newline="", encoding="utf-8") as f:
-                writer = csv.DictWriter(
-                    f,
-                    fieldnames=[
-                        "name",
-                        "url",
-                        "region",
-                        "road",
-                        "description",
-                        "practical",
-                    ],
-                )
-                writer.writeheader()
-                writer.writerows(valid_results)
-
-            print(f"Scraped {len(valid_results)} villages. Saved to {output_path}")
+            key = write_csv_to_staging(
+                data=valid_results,
+                fieldnames=[
+                    "name",
+                    "url",
+                    "region",
+                    "road",
+                    "description",
+                    "practical",
+                ],
+                filename=f"{scraper_config['name']}.csv",
+                subfolder=scraper_config.get("target_folder", "labels"),
+                metadata={"source_url": base_url},
+                pipeline_name="staging_current_labels",
+            )
+            print(f"Scraped {len(valid_results)} villages. Uploaded to {key}")
         else:
             print("No valid villages scraped.")
 
-    return output_path
+    return key if valid_results else scraper_config["name"]
 
 
 async def main():

@@ -1,10 +1,15 @@
-import csv
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 import pdfplumber
 import yaml
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from flows.shared.minio import write_csv_to_staging
 
 
 def load_config() -> dict:
@@ -86,15 +91,12 @@ def parse_palmares(path: Path) -> list[dict]:
     return results
 
 
-def run(config: dict) -> Path:
+def run(config: dict) -> str:
     parser_config = next(
         s
         for s in config["custom_parsers"]
         if s["module"] == "custom_parsers.parse_ville_sportive"
     )
-    output_dir = Path(config["paths"]["custom_dir"])
-    output_dir.mkdir(exist_ok=True, parents=True)
-    output_path = output_dir / f"{parser_config['name']}.csv"
 
     input_dir = Path(parser_config.get("input_dir", "custom_parsers/data_for_parsers"))
     pdf_path = input_dir / parser_config["pdf_file"]
@@ -109,13 +111,16 @@ def run(config: dict) -> Path:
     print(f"  4 lauriers: {counts[4]}")
     print(f"  Total     : {len(rows)}")
 
-    with output_path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["commune", "dept_code", "nb_lauriers"])
-        writer.writeheader()
-        writer.writerows(rows)
+    key = write_csv_to_staging(
+        data=rows,
+        fieldnames=["commune", "dept_code", "nb_lauriers"],
+        filename=f"{parser_config['name']}.csv",
+        subfolder=parser_config.get("target_folder", "labels"),
+        pipeline_name="staging_current_labels",
+    )
 
-    print(f"Saved → {output_path}")
-    return output_path
+    print(f"Uploaded → {key}")
+    return key
 
 
 if __name__ == "__main__":

@@ -1,10 +1,15 @@
 import asyncio
-import csv
+import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from flows.shared.minio import write_csv_to_staging
 
 
 def load_config() -> dict:
@@ -37,14 +42,12 @@ def parse_table(html: str) -> list[dict]:
     return results
 
 
-async def run(config: dict) -> Path:
+async def run(config: dict) -> str:
     scraper_config = next(
         s
         for s in config["scrapers"]
         if s["module"] == "scrapers.scrape_villes_prudentes"
     )
-    output_dir = Path(config["paths"]["scraper_dir"])
-    output_path = output_dir / f"{scraper_config['name']}.csv"
 
     headers = {
         "User-Agent": scraper_config.get("user_agent", "FrenchTownsBot/1.0"),
@@ -59,13 +62,17 @@ async def run(config: dict) -> Path:
 
         villes = parse_table(html)
 
-        with output_path.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=["city", "department"])
-            writer.writeheader()
-            writer.writerows(villes)
+        key = write_csv_to_staging(
+            data=villes,
+            fieldnames=["city", "department"],
+            filename=f"{scraper_config['name']}.csv",
+            subfolder=scraper_config.get("target_folder", "labels"),
+            metadata={"source_url": scraper_config["url"]},
+            pipeline_name="staging_current_labels",
+        )
 
-        print(f"Scraped {len(villes)} communes. Saved to {output_path}")
-    return output_path
+        print(f"Scraped {len(villes)} communes. Uploaded to {key}")
+    return key
 
 
 async def main():

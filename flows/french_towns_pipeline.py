@@ -1,15 +1,15 @@
-import asyncio
-import os
-import subprocess
-from pathlib import Path
-
-import boto3
-import yaml
-from botocore.config import Config
-from botocore.exceptions import ClientError
-from custom_parsers import run_all_custom_parsers
-from dotenv import find_dotenv
-from dotenv import load_dotenv
+from flows.staging.staging_current_demographics import staging_current_demographics
+from flows.staging.staging_current_geography import staging_current_geography
+from flows.staging.staging_current_labels import staging_current_labels
+from flows.transformation.transformation_current_dim_geography import (
+    transformation_current_dim_geography,
+)
+from flows.transformation.transformation_current_fact_demographics import (
+    transformation_current_fact_demographics,
+)
+from flows.transformation.transformation_current_labels import (
+    transformation_current_labels,
+)
 from prefect import flow
 from prefect import task
 from scrapers import run_all_scrapers
@@ -125,12 +125,29 @@ def upload_to_minio() -> None:
 
 @flow
 def french_towns_pipeline() -> None:
-    create_required_dirs()
-    download_all_files()
-    run_scrapers()
-    run_custom_parsers()
-    run_dbt()
-    upload_to_minio()
+    """
+    Unified pipeline for testing all child flows end-to-end.
+    In production, each child flow is deployed and scheduled independently.
+    """
+    print("\n" + "=" * 60)
+    print(" STAGING PHASE")
+    print("=" * 60)
+
+    staging_current_geography()
+    staging_current_demographics()
+    staging_current_labels()
+
+    print("\n" + "=" * 60)
+    print(" TRANSFORMATION PHASE")
+    print("=" * 60)
+
+    transformation_current_dim_geography()
+    transformation_current_fact_demographics()
+    transformation_current_labels()
+
+    print("\n" + "=" * 60)
+    print(" PIPELINE COMPLETE")
+    print("=" * 60)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 {{ config(
     materialized='external',
-    location='../data/processed/' ~ this.name ~ '.parquet'
+    location='s3://validated/' ~ this.name ~ '.parquet'
 ) }}
 
 SELECT

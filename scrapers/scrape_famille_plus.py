@@ -4,13 +4,18 @@ Extracts destination information from https://www.familleplus.fr/fr/le-label/car
 """
 
 import asyncio
-import csv
 import re
+import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from flows.shared.minio import write_csv_to_staging
 
 
 def load_config() -> dict:
@@ -32,12 +37,10 @@ async def fetch_destinations(session: aiohttp.ClientSession, url: str) -> list[d
 
     soup = BeautifulSoup(html, "html.parser")
 
-    # Find all destination articles
     destinations = []
     articles = soup.find_all("article", class_="node--type-destination")
 
     for article in articles:
-        # Extract type from class (mer, montagne, nature, ville)
         classes = article.get("class", [])
         dest_type = None
         for cls in classes:
@@ -45,7 +48,6 @@ async def fetch_destinations(session: aiohttp.ClientSession, url: str) -> list[d
                 dest_type = cls
                 break
 
-        # Extract town name from h5 > a
         h5 = article.find("h5")
         if h5:
             a = h5.find("a")
@@ -53,18 +55,13 @@ async def fetch_destinations(session: aiohttp.ClientSession, url: str) -> list[d
         else:
             town_name = None
 
-        # Extract department from the paragraph
-        # Department is in format "Charente-Maritime (17)"
         dept = None
-        # Check desktop version first
         dept_elem = article.find("p", class_="col-4")
         if not dept_elem:
-            # Check mobile version
             dept_elem = article.find("p", class_="align-self-center")
 
         if dept_elem:
             dept_text = dept_elem.get_text(strip=True)
-            # Extract department code from parentheses
             match = re.search(r"\((\d+|[2A|2B])\)", dept_text)
             if match:
                 dept = match.group(1)
@@ -81,16 +78,11 @@ async def fetch_destinations(session: aiohttp.ClientSession, url: str) -> list[d
     return destinations
 
 
-async def run(config: dict) -> Path:
+async def run(config: dict) -> str:
     """Main execution function."""
-    # Find scraper config
     scraper_config = next(
         s for s in config["scrapers"] if s["module"] == "scrapers.scrape_famille_plus"
     )
-
-    output_dir = Path(config["paths"]["scraper_dir"])
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / f"{scraper_config['name']}.csv"
 
     headers = {
         "User-Agent": scraper_config.get("user_agent", "FrenchTownsBot/1.0"),
@@ -105,25 +97,24 @@ async def run(config: dict) -> Path:
 
         if not destinations:
             print("No destinations found.")
-            return output_path
+            return scraper_config["name"]
 
-        # Write to CSV
-        with output_path.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(
-                f,
-                fieldnames=["name", "department_code", "type"],
-            )
-            writer.writeheader()
-            writer.writerows(destinations)
+        key = write_csv_to_staging(
+            data=destinations,
+            fieldnames=["name", "department_code", "type"],
+            filename=f"{scraper_config['name']}.csv",
+            subfolder=scraper_config.get("target_folder", "labels"),
+            metadata={"source_url": url},
+            pipeline_name="staging_current_labels",
+        )
 
-        print(f"Scraped {len(destinations)} destinations. Saved to {output_path}")
+        print(f"Scraped {len(destinations)} destinations. Uploaded to {key}")
 
-        # Show sample
         print("\nSample data:")
         for d in destinations[:5]:
             print(f"  - {d['name']} | {d['department_code']} | {d['type']}")
 
-    return output_path
+    return key
 
 
 async def main():

@@ -1,12 +1,17 @@
 import asyncio
-import csv
 import logging
 import re
+import sys
 from pathlib import Path
 
 import aiohttp
 import yaml
 from bs4 import BeautifulSoup
+
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from flows.shared.minio import write_csv_to_staging
 
 
 logger = logging.getLogger(__name__)
@@ -53,11 +58,7 @@ async def fetch_page(
     max_retries: int = 3,
     backoff: tuple[float, ...] = (3.0, 10.0, 30.0),
 ) -> dict:
-    """POST one page, retrying up to max_retries times on 500 errors.
-
-    On each 500 the session cookie is refreshed before retrying, because
-    an expired PHPSESSID is the most likely cause of server-side 500s here.
-    """
+    """POST one page, retrying up to max_retries times on 500 errors."""
     for attempt in range(max_retries + 1):
         try:
             async with session.post(endpoint, data=payload) as resp:
@@ -74,7 +75,6 @@ async def fetch_page(
                     wait,
                 )
                 await asyncio.sleep(wait)
-                # Refresh the session cookie before next attempt
                 try:
                     await init_session(session, referer)
                 except Exception as refresh_err:
@@ -105,14 +105,12 @@ async def fetch_all_rows(
     return all_rows
 
 
-async def run(config: dict) -> Path:
+async def run(config: dict) -> str:
     scraper_config = next(
         s
         for s in config["scrapers"]
         if s["module"] == "scrapers.scrape_villes_fleuries"
     )
-    output_dir = Path(config["paths"]["scraper_dir"])
-    output_path = output_dir / f"{scraper_config['name']}.csv"
 
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
@@ -174,15 +172,17 @@ async def run(config: dict) -> Path:
 
         parsed = [parse_row(row) for row in all_raw]
 
-        with output_path.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(
-                f, fieldnames=["commune", "region", "departement", "nb_fleurs"]
-            )
-            writer.writeheader()
-            writer.writerows(parsed)
+        key = write_csv_to_staging(
+            data=parsed,
+            fieldnames=["commune", "region", "departement", "nb_fleurs"],
+            filename=f"{scraper_config['name']}.csv",
+            subfolder=scraper_config.get("target_folder", "labels"),
+            metadata={"source_url": referer},
+            pipeline_name="staging_current_labels",
+        )
 
-        logger.info("Saved %d communes → %s", len(parsed), output_path)
-    return output_path
+        logger.info("Saved %d communes → %s", len(parsed), key)
+    return key
 
 
 async def main():

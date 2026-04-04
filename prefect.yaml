@@ -1,0 +1,52 @@
+name: french_towns_lakehouse
+prefect-version: 3.6.17
+
+build: null
+push: null
+
+pull:
+- prefect.deployments.steps.set_working_directory:
+    directory: "{{ $FRENCH_TOWNS_ROOT }}"
+
+deployments:
+- name: staging-geography
+  entrypoint: flows/staging/staging_current_geography.py:staging_current_geography
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: staging-demographics
+  entrypoint: flows/staging/staging_current_demographics.py:staging_current_demographics
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: staging-labels
+  entrypoint: flows/staging/staging_current_labels.py:staging_current_labels
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: transformation-dim-geography
+  entrypoint: flows/transformation/transformation_current_dim_geography.py:transformation_current_dim_geography
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: transformation-fact-demographics
+  entrypoint: flows/transformation/transformation_current_fact_demographics.py:transformation_current_fact_demographics
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: transformation-labels
+  entrypoint: flows/transformation/transformation_current_labels.py:transformation_current_labels
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: french-towns-pipeline
+  entrypoint: flows/french_towns_pipeline.py:french_towns_pipeline
+  schedules: []
+  work_pool:
+    name: local-dev-pool
