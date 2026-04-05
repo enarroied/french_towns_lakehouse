@@ -1,13 +1,14 @@
 import asyncio
 from pathlib import Path
 
-from flows.shared import finalize_run
 from flows.shared import get_config
 from flows.shared import get_downloads
 from flows.shared import get_paths
-from flows.shared import init_run
-from flows.shared import log_upload
+from flows.shared.audit import finalize_run
+from flows.shared.audit import init_run
+from flows.shared.audit import log_upload
 from flows.shared.download import run_async_downloads_to_minio
+from flows.shared.minio import STAGING_BUCKET
 from prefect import flow
 from prefect import task
 
@@ -31,8 +32,18 @@ def download_geography_files(run_id: str) -> dict[str, list[str]]:
         )
     )
 
+    # Build a lookup so we can pass source_url per file
+    url_by_name = {d["name"]: d.get("url") for d in downloads}
+
     for name, keys in results.items():
-        log_upload(run_id=run_id, name=name, keys=keys)
+        log_upload(
+            run_id=run_id,
+            name=name,
+            keys=keys,
+            source_url=url_by_name.get(name),
+            bucket=STAGING_BUCKET,
+            # size_mb: TODO — capture in download.py before unlink()
+        )
 
     return results
 
@@ -41,8 +52,8 @@ def download_geography_files(run_id: str) -> dict[str, list[str]]:
 def staging_current_geography() -> None:
     run_id = init_run(domain="geography")
     try:
-        download_geography_files(run_id=run_id)
-        finalize_run(run_id=run_id, status="SUCCESS")
+        results = download_geography_files(run_id=run_id)
+        finalize_run(run_id=run_id, status="SUCCESS", number_files=len(results))
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")
         raise

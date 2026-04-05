@@ -1,5 +1,5 @@
--- migrations/002_add_file_audit.sql
-CREATE TABLE IF NOT EXISTS file_audit (
+-- migrations/002_add_file_metadata.sql
+CREATE TABLE IF NOT EXISTS file_metadata (
     file_id UUID PRIMARY KEY,
     run_id UUID,
     filename TEXT,

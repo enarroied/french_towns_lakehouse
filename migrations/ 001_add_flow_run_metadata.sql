@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS flow_run_metadata (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP,
     technical_type TEXT, -- scraper, download, api
-    metrics_json JSON
+    number_files INTEGER
 );
