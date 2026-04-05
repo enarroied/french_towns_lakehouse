@@ -15,7 +15,9 @@ async def _run_scraper(scraper: dict, config: dict) -> ScraperResult:
     try:
         module = import_module(module_path)
         output_key = await module.run(config)
-        return ScraperResult(name=name, module=module_path, success=True, output_key=output_key)
+        return ScraperResult(
+            name=name, module=module_path, success=True, output_key=output_key
+        )
     except Exception as exc:
         return ScraperResult(
             name=name,

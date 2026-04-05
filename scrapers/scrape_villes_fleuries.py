@@ -167,7 +167,9 @@ async def run(config: dict) -> str:
         total = int(first_page["recordsTotal"])
         logger.info("%s: %d total records", scraper.name, total)
 
-        all_rows = await fetch_all_rows(session, endpoint, scraper.url, total, page_size, crawl_delay)
+        all_rows = await fetch_all_rows(
+            session, endpoint, scraper.url, total, page_size, crawl_delay
+        )
         communes = [parse_row(row) for row in all_rows]
 
         key = write_csv_to_staging(

@@ -34,7 +34,11 @@ def parse_city_page(html: str) -> dict | None:
     loc_div = soup.find("div", class_="location")
     if loc_div:
         loc_text = loc_div.get_text(strip=True)
-        department = loc_text.split(",")[1].strip().lower() if "," in loc_text else loc_text.strip().lower()
+        department = (
+            loc_text.split(",")[1].strip().lower()
+            if "," in loc_text
+            else loc_text.strip().lower()
+        )
     else:
         department = None
 
@@ -88,9 +92,9 @@ async def run(config: dict) -> str:
             return scraper.name
 
         semaphore = asyncio.Semaphore(scraper.concurrency)
-        results = await asyncio.gather(*[
-            fetch_city(session, semaphore, url, scraper.headers) for url in urls
-        ])
+        results = await asyncio.gather(
+            *[fetch_city(session, semaphore, url, scraper.headers) for url in urls]
+        )
 
         cities = [r for r in results if r is not None]
 

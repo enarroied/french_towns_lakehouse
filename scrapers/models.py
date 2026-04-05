@@ -37,7 +37,16 @@ class ScraperConfig:
 
         Known keys become typed attributes; everything else goes into ``extra``.
         """
-        known = {"name", "module", "url", "enabled", "user_agent", "concurrency", "target_folder", "domain"}
+        known = {
+            "name",
+            "module",
+            "url",
+            "enabled",
+            "user_agent",
+            "concurrency",
+            "target_folder",
+            "domain",
+        }
         base = {k: v for k, v in data.items() if k in known}
         extra = {k: v for k, v in data.items() if k not in known}
         return cls(**base, extra=extra)

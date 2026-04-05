@@ -54,7 +54,11 @@ def _urls_from_headings(soup: BeautifulSoup) -> list[str]:
 
 def parse_listing_urls(soup: BeautifulSoup) -> list[str]:
     """Extract village detail URLs from a listing page, trying three strategies in order."""
-    for strategy in (_urls_from_json_attributes, _urls_from_loop_items, _urls_from_headings):
+    for strategy in (
+        _urls_from_json_attributes,
+        _urls_from_loop_items,
+        _urls_from_headings,
+    ):
         links = strategy(soup)
         if links:
             return links
@@ -219,9 +223,9 @@ async def run(config: dict) -> str:
             return scraper.name
 
         semaphore = asyncio.Semaphore(scraper.concurrency)
-        results = await asyncio.gather(*[
-            fetch_village(session, semaphore, url, scraper.headers) for url in urls
-        ])
+        results = await asyncio.gather(
+            *[fetch_village(session, semaphore, url, scraper.headers) for url in urls]
+        )
 
         villages = [r for r in results if r is not None]
 

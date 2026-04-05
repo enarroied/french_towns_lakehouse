@@ -45,7 +45,9 @@ async def main() -> None:
     config = load_config(args.config)
 
     if args.scraper:
-        config["scrapers"] = [s for s in config["scrapers"] if s["name"] == args.scraper]
+        config["scrapers"] = [
+            s for s in config["scrapers"] if s["name"] == args.scraper
+        ]
         if not config["scrapers"]:
             raise SystemExit(f"No scraper named '{args.scraper}' found in config.")
 

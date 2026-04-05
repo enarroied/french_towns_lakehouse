@@ -21,12 +21,16 @@ _DESTINATION_TYPES = {"mer", "montagne", "nature", "ville"}
 
 def _parse_destination_type(article) -> str | None:
     """Return the destination type from an article's CSS classes, or None."""
-    return next((cls for cls in article.get("class", []) if cls in _DESTINATION_TYPES), None)
+    return next(
+        (cls for cls in article.get("class", []) if cls in _DESTINATION_TYPES), None
+    )
 
 
 def _parse_department_code(article) -> str | None:
     """Extract the department code (e.g. '09', '2A') from an article element."""
-    dept_elem = article.find("p", class_="col-4") or article.find("p", class_="align-self-center")
+    dept_elem = article.find("p", class_="col-4") or article.find(
+        "p", class_="align-self-center"
+    )
     if not dept_elem:
         return None
     match = re.search(r"\((\d+|2A|2B)\)", dept_elem.get_text(strip=True))
@@ -97,5 +101,7 @@ async def run(config: dict) -> str:
             pipeline_name="staging_current_labels",
         )
 
-    logger.info("%s: scraped %d destinations → %s", scraper.name, len(destinations), key)
+    logger.info(
+        "%s: scraped %d destinations → %s", scraper.name, len(destinations), key
+    )
     return key
