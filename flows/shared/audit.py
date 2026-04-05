@@ -42,24 +42,26 @@ def log_upload(
     keys: list[str],
     source_url: str | None = None,
     size_mb: float | None = None,
+    md5_hash: str | None = None,
     bucket: str | None = None,
 ) -> None:
     with _conn() as conn:
         conn.execute(
             """INSERT INTO file_metadata
-               (file_id, run_id, filename, source_url, size_mb, bucket, upload_timestamp)
-               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+               (file_id, run_id, filename, source_url, size_mb, md5_hash, bucket, upload_timestamp)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
             [
                 str(uuid.uuid4()),
                 run_id,
                 name,
                 source_url,
                 size_mb,
+                md5_hash,
                 bucket,
                 datetime.now(),
             ],
         )
-    get_run_logger().info(f"✅ {name} → {keys}")
+    get_run_logger().info(f"✅ {name} | {size_mb}MB | {md5_hash} → {keys}")
 
 
 @task

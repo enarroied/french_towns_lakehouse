@@ -17,7 +17,7 @@ DOMAIN_DOWNLOADS = ["french_communes", "arrondissements", "departements", "zip_c
 
 
 @task
-def download_geography_files(run_id: str) -> dict[str, list[str]]:
+def download_geography_files() -> tuple[dict[str, list[dict]], dict[str, str]]:
     config = get_config()
     downloads = [d for d in get_downloads() if d["name"] in DOMAIN_DOWNLOADS]
     temp_dir = Path(get_paths()["temp_dir"])
@@ -31,29 +31,31 @@ def download_geography_files(run_id: str) -> dict[str, list[str]]:
             timeout_seconds=config["download"]["timeout_seconds"],
         )
     )
-
-    # Build a lookup so we can pass source_url per file
     url_by_name = {d["name"]: d.get("url") for d in downloads}
-
-    for name, keys in results.items():
-        log_upload(
-            run_id=run_id,
-            name=name,
-            keys=keys,
-            source_url=url_by_name.get(name),
-            bucket=STAGING_BUCKET,
-            # size_mb: TODO — capture in download.py before unlink()
-        )
-
-    return results
+    return results, url_by_name
 
 
 @flow(name="staging_current_geography")
 def staging_current_geography() -> None:
     run_id = init_run(domain="geography")
     try:
-        results = download_geography_files(run_id=run_id)
-        finalize_run(run_id=run_id, status="SUCCESS", number_files=len(results))
+        results, url_by_name = download_geography_files()
+
+        total = 0
+        for name, file_records in results.items():
+            for record in file_records:
+                log_upload(
+                    run_id=run_id,
+                    name=name,
+                    keys=[record["key"]],
+                    source_url=url_by_name.get(name),
+                    size_mb=record["size_mb"],
+                    md5_hash=record["md5"],
+                    bucket=STAGING_BUCKET,
+                )
+                total += 1
+
+        finalize_run(run_id=run_id, status="SUCCESS", number_files=total)
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")
         raise

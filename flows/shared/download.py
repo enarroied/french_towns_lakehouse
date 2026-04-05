@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import shutil
 import zipfile
 from pathlib import Path
@@ -50,7 +51,7 @@ async def _download_and_upload(
     filename = download_item["filename"]
     file_path = temp_dir / filename
 
-    keys = []
+    file_records = []
     async with semaphore:
         try:
             await _download_file(client, url, file_path)
@@ -69,16 +70,18 @@ async def _download_and_upload(
                         if target_folder
                         else extracted_file.name
                     )
+                    size_mb = round(extracted_file.stat().st_size / 1024**2, 2)
+                    md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
                     minio_client.upload_file(
                         Filename=str(extracted_file),
                         Bucket=STAGING_BUCKET,
                         Key=key,
                     )
-                    keys.append(key)
                     print(f"☁️ Uploaded {extracted_file.name} to {STAGING_BUCKET}/{key}")
                     extracted_file.unlink()
+                    file_records.append({"key": key, "size_mb": size_mb, "md5": md5})
 
-            return keys
+            return file_records
         except Exception as e:
             print(f"❌ Failed to download {filename}: {e}")
             return []
@@ -89,7 +92,7 @@ async def run_async_downloads_to_minio(
     temp_dir: Path,
     concurrency: int = 3,
     timeout_seconds: int = 120,
-) -> dict[str, list[str]]:
+) -> dict[str, list[dict]]:
     semaphore = asyncio.Semaphore(concurrency)
     async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         tasks = [
@@ -104,8 +107,7 @@ async def run_async_downloads_to_minio(
         ]
         results = await asyncio.gather(*tasks)
 
-    result_dict = {}
-    for download, keys in zip(downloads, results, strict=True):
-        result_dict[download["name"]] = keys
-
-    return result_dict
+    return {
+        download["name"]: records
+        for download, records in zip(downloads, results, strict=True)
+    }
