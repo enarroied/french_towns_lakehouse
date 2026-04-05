@@ -1,3 +1,6 @@
+from flows.shared.audit import finalize_run
+from flows.shared.audit import init_run
+from flows.shared.audit import log_upload
 from flows.shared.config import DBT_PROFILES_ARGS
 from flows.shared.config import DBT_PROJECT_DIR
 from flows.shared.config import get_buckets
@@ -39,4 +42,6 @@ __all__ = [
     "create_metadata_sidecar",
     "write_csv_to_staging",
     "upload_and_cleanup",
+    "finalize_runinit_run",
+    "log_upload",
 ]

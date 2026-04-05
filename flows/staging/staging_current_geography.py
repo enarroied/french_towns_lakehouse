@@ -1,30 +1,28 @@
 import asyncio
 from pathlib import Path
 
+from flows.shared import finalize_run
 from flows.shared import get_config
 from flows.shared import get_downloads
 from flows.shared import get_paths
+from flows.shared import init_run
+from flows.shared import log_upload
 from flows.shared.download import run_async_downloads_to_minio
 from prefect import flow
 from prefect import task
 
 
-DOMAIN_DOWNLOADS = [
-    "french_communes",
-    "arrondissements",
-    "departements",
-    "zip_codes",
-]
+DOMAIN_DOWNLOADS = ["french_communes", "arrondissements", "departements", "zip_codes"]
 
 
 @task
-def download_geography_files() -> dict[str, list[str]]:
+def download_geography_files(run_id: str) -> dict[str, list[str]]:
     config = get_config()
     downloads = [d for d in get_downloads() if d["name"] in DOMAIN_DOWNLOADS]
     temp_dir = Path(get_paths()["temp_dir"])
     temp_dir.mkdir(exist_ok=True, parents=True)
 
-    return asyncio.run(
+    results = asyncio.run(
         run_async_downloads_to_minio(
             downloads=downloads,
             temp_dir=temp_dir,
@@ -33,10 +31,21 @@ def download_geography_files() -> dict[str, list[str]]:
         )
     )
 
+    for name, keys in results.items():
+        log_upload(run_id=run_id, name=name, keys=keys)
+
+    return results
+
 
 @flow(name="staging_current_geography")
 def staging_current_geography() -> None:
-    download_geography_files()
+    run_id = init_run(domain="geography")
+    try:
+        download_geography_files(run_id=run_id)
+        finalize_run(run_id=run_id, status="SUCCESS")
+    except Exception:
+        finalize_run(run_id=run_id, status="FAILED")
+        raise
 
 
 if __name__ == "__main__":
