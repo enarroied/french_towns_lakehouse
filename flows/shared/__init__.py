@@ -5,10 +5,7 @@ from flows.shared.audit import log_upload
 from flows.shared.audit import preflight
 from flows.shared.config import DBT_PROFILES_ARGS
 from flows.shared.config import DBT_PROJECT_DIR
-from flows.shared.config import get_buckets
 from flows.shared.config import get_config
-from flows.shared.config import get_custom_parsers
-from flows.shared.config import get_directories
 from flows.shared.config import get_downloads
 from flows.shared.config import get_paths
 from flows.shared.config import get_scrapers
@@ -32,10 +29,7 @@ __all__ = [
     "DBT_PROJECT_DIR",
     "ensure_bucket_exists",
     "finalize_run",
-    "get_buckets",
     "get_config",
-    "get_custom_parsers",
-    "get_directories",
     "get_downloads",
     "get_latest_hashes",
     "get_minio_client",

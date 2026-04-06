@@ -25,24 +25,12 @@ def get_paths() -> dict[str, str]:
     return _config["paths"]
 
 
-def get_directories() -> list[str]:
-    return _config.get("directories", [])
-
-
 def get_downloads() -> list[dict[str, Any]]:
     return _config.get("downloads", [])
 
 
 def get_scrapers() -> list[dict[str, Any]]:
     return _config.get("scrapers", [])
-
-
-def get_custom_parsers() -> list[dict[str, Any]]:
-    return _config.get("custom_parsers", [])
-
-
-def get_buckets() -> dict[str, str]:
-    return _config.get("buckets", {})
 
 
 # MinIO
