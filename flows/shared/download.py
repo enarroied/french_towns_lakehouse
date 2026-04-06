@@ -56,6 +56,99 @@ def _extract_file(file_path: Path, output_dir: Path) -> list[Path]:
     return extracted_files
 
 
+# _download_and_upload helpers
+def _should_skip_file(base_name: str, md5: str, known_hashes: dict[str, dict]) -> bool:
+    """Check if file should be skipped due to unchanged hash."""
+    known = known_hashes.get(base_name)
+    return known and known["md5"] == md5
+
+
+def _archive_existing_file(
+    base_name: str, known_hashes: dict[str, dict], minio_client, staging_bucket: str
+) -> None:
+    """Archive existing file if it exists."""
+    known = known_hashes.get(base_name)
+    if known and known.get("filename_timestamp"):
+        _archive_old_file(minio_client, staging_bucket, known["filename_timestamp"])
+
+
+def _upload_extracted_file(
+    extracted_file: Path,
+    target_folder: str | None,
+    minio_client,
+    staging_bucket: str,
+) -> dict:
+    """Upload a single extracted file to MinIO and return its metadata."""
+    size_mb = round(extracted_file.stat().st_size / 1024**2, 2)
+    md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
+    base_name = extracted_file.name
+
+    ts_name = _timestamped_name(extracted_file)
+    key = f"{target_folder}/{ts_name}" if target_folder else ts_name
+
+    minio_client.upload_file(
+        Filename=str(extracted_file),
+        Bucket=staging_bucket,
+        Key=key,
+    )
+    print(f"☁️ Uploaded {ts_name} to {staging_bucket}/{key}")
+    extracted_file.unlink()
+
+    return {
+        "key": key,
+        "base_name": base_name,
+        "filename_timestamp": ts_name,
+        "size_mb": size_mb,
+        "md5": md5,
+    }
+
+
+def _process_extracted_files(
+    extracted_files: list[Path],
+    known_hashes: dict[str, dict],
+    minio_client,
+    staging_bucket: str,
+    target_folder: str | None = None,
+) -> list[dict]:
+    """Process all extracted files: skip unchanged, archive old, upload new."""
+    file_records = []
+
+    for extracted_file in extracted_files:
+        if not extracted_file.is_file():
+            continue
+
+        base_name = extracted_file.name
+        md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
+
+        # Skip if hash unchanged
+        if _should_skip_file(base_name, md5, known_hashes):
+            print(f"⏭️ Skipping {base_name} — hash unchanged")
+            extracted_file.unlink()
+            continue
+
+        # Archive existing file
+        _archive_existing_file(base_name, known_hashes, minio_client, staging_bucket)
+
+        # Upload new file
+        record = _upload_extracted_file(
+            extracted_file, target_folder, minio_client, staging_bucket
+        )
+        file_records.append(record)
+
+    return file_records
+
+
+def _setup_minio() -> tuple:
+    """Setup MinIO client and ensure staging bucket exists."""
+    from flows.shared.minio import STAGING_BUCKET  # noqa: PLC0415
+    from flows.shared.minio import ensure_bucket_exists  # noqa: PLC0415
+    from flows.shared.minio import get_minio_client  # noqa: PLC0415
+
+    minio_client = get_minio_client()
+    ensure_bucket_exists(STAGING_BUCKET)
+    return minio_client, STAGING_BUCKET
+
+
 async def _download_and_upload(
     semaphore: asyncio.Semaphore,
     client: httpx.AsyncClient,
@@ -64,15 +157,10 @@ async def _download_and_upload(
     known_hashes: dict[str, dict],
     target_folder: str | None = None,
 ) -> list[dict]:
-    from flows.shared.minio import STAGING_BUCKET  # noqa: PLC0415
-    from flows.shared.minio import ensure_bucket_exists  # noqa: PLC0415
-    from flows.shared.minio import get_minio_client  # noqa: PLC0415
-
     url = download_item["url"]
     filename = download_item["filename"]
     file_path = temp_dir / filename
 
-    file_records = []
     async with semaphore:
         try:
             await _download_file(client, url, file_path)
@@ -81,51 +169,18 @@ async def _download_and_upload(
                 None, _extract_file, file_path, temp_dir
             )
 
-            minio_client = get_minio_client()
-            ensure_bucket_exists(STAGING_BUCKET)
+            minio_client, staging_bucket = _setup_minio()
 
-            for extracted_file in extracted_files:
-                if not extracted_file.is_file():
-                    continue
+            return await loop.run_in_executor(
+                None,
+                _process_extracted_files,
+                extracted_files,
+                known_hashes,
+                minio_client,
+                staging_bucket,
+                target_folder,
+            )
 
-                size_mb = round(extracted_file.stat().st_size / 1024**2, 2)
-                md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
-                base_name = extracted_file.name
-
-                # Hash check — skip if identical to latest
-                known = known_hashes.get(base_name)
-                if known and known["md5"] == md5:
-                    print(f"⏭️ Skipping {base_name} — hash unchanged")
-                    extracted_file.unlink()
-                    continue
-
-                # Archive old file if it existed
-                if known and known.get("filename_timestamp"):
-                    _archive_old_file(
-                        minio_client, STAGING_BUCKET, known["filename_timestamp"]
-                    )
-
-                # Upload with timestamped name
-                ts_name = _timestamped_name(extracted_file)
-                key = f"{target_folder}/{ts_name}" if target_folder else ts_name
-                minio_client.upload_file(
-                    Filename=str(extracted_file),
-                    Bucket=STAGING_BUCKET,
-                    Key=key,
-                )
-                print(f"☁️ Uploaded {ts_name} to {STAGING_BUCKET}/{key}")
-                extracted_file.unlink()
-                file_records.append(
-                    {
-                        "key": key,
-                        "base_name": base_name,
-                        "filename_timestamp": ts_name,
-                        "size_mb": size_mb,
-                        "md5": md5,
-                    }
-                )
-
-            return file_records
         except Exception as e:
             print(f"❌ Failed to download {filename}: {e}")
             return []
