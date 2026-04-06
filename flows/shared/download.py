@@ -2,10 +2,23 @@ import asyncio
 import hashlib
 import shutil
 import zipfile
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
 import httpx
+
+
+ARCHIVE_PREFIX = "evidence-archive/staging/"
+
+
+@dataclass
+class FileMetadata:
+    key: str
+    base_name: str
+    filename_timestamp: str
+    size_mb: float
+    md5: str
 
 
 def _timestamped_name(file_path: Path) -> str:
@@ -13,11 +26,19 @@ def _timestamped_name(file_path: Path) -> str:
     return f"{file_path.stem}_{ts}{file_path.suffix}"
 
 
+def calculate_md5(file_path: Path) -> str:
+    md5 = hashlib.md5()
+    with file_path.open("rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            md5.update(chunk)
+    return md5.hexdigest()
+
+
 def _archive_old_file(
     minio_client, staging_bucket: str, old_filename_timestamp: str
 ) -> None:
     """Copy old file to evidence-archive/staging/ then delete from staging."""
-    archive_key = f"evidence-archive/staging/{old_filename_timestamp}"
+    archive_key = f"{ARCHIVE_PREFIX}{old_filename_timestamp}"
     minio_client.copy_object(
         Bucket=staging_bucket,
         CopySource={"Bucket": staging_bucket, "Key": old_filename_timestamp},
@@ -57,10 +78,9 @@ def _extract_file(file_path: Path, output_dir: Path) -> list[Path]:
 
 
 # _download_and_upload helpers
-def _should_skip_file(base_name: str, md5: str, known_hashes: dict[str, dict]) -> bool:
+def _should_skip_file(base_name: str, md5: str, known_hashes: dict) -> bool:
     """Check if file should be skipped due to unchanged hash."""
-    known = known_hashes.get(base_name)
-    return known and known["md5"] == md5
+    return known_hashes.get(base_name, {}).get("md5") == md5
 
 
 def _archive_existing_file(
@@ -77,7 +97,7 @@ def _upload_extracted_file(
     target_folder: str | None,
     minio_client,
     staging_bucket: str,
-) -> dict:
+) -> FileMetadata:
     """Upload a single extracted file to MinIO and return its metadata."""
     size_mb = round(extracted_file.stat().st_size / 1024**2, 2)
     md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
@@ -94,13 +114,13 @@ def _upload_extracted_file(
     print(f"☁️ Uploaded {ts_name} to {staging_bucket}/{key}")
     extracted_file.unlink()
 
-    return {
-        "key": key,
-        "base_name": base_name,
-        "filename_timestamp": ts_name,
-        "size_mb": size_mb,
-        "md5": md5,
-    }
+    return FileMetadata(
+        key=key,
+        base_name=base_name,
+        filename_timestamp=ts_name,
+        size_mb=size_mb,
+        md5=md5,
+    )
 
 
 def _process_extracted_files(
@@ -109,7 +129,7 @@ def _process_extracted_files(
     minio_client,
     staging_bucket: str,
     target_folder: str | None = None,
-) -> list[dict]:
+) -> list[FileMetadata]:
     """Process all extracted files: skip unchanged, archive old, upload new."""
     file_records = []
 

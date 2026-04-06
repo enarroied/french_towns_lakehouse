@@ -50,11 +50,11 @@ def run_staging_flow(domain: str, domain_downloads: list[str]) -> None:
         futures = [
             log_upload.submit(
                 run_id=run_id,
-                name=record["base_name"],
-                filename_timestamp=record["filename_timestamp"],
+                name=record.base_name,
+                filename_timestamp=record.filename_timestamp,
                 source_url=url_by_name.get(name),
-                size_mb=record["size_mb"],
-                md5_hash=record["md5"],
+                size_mb=record.size_mb,
+                md5_hash=record.md5,
                 bucket=STAGING_BUCKET,
             )
             for name, file_records in results.items()
