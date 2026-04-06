@@ -11,6 +11,8 @@ from flows.shared.config import get_downloads
 from flows.shared.config import get_paths
 from flows.shared.download import run_async_downloads_to_minio
 from flows.shared.minio import STAGING_BUCKET
+from flows.shared.minio import ensure_bucket_exists
+from flows.shared.minio import get_minio_client
 from prefect import task
 
 
@@ -22,12 +24,16 @@ def download_files(
     downloads = [d for d in get_downloads() if d["name"] in domain_downloads]
     temp_dir = Path(get_paths()["temp_dir"])
     temp_dir.mkdir(exist_ok=True, parents=True)
+    minio_client = get_minio_client()
+    ensure_bucket_exists(STAGING_BUCKET)
 
     results = asyncio.run(
         run_async_downloads_to_minio(
             downloads=downloads,
             temp_dir=temp_dir,
             known_hashes=known_hashes,
+            minio_client=minio_client,
+            staging_bucket=STAGING_BUCKET,
             concurrency=config["download"]["concurrency"],
             timeout_seconds=config["download"]["timeout_seconds"],
         )

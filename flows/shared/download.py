@@ -1,19 +1,24 @@
 import asyncio
 import hashlib
 import shutil
+import uuid
 import zipfile
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import httpx
 
 
 ARCHIVE_PREFIX = "evidence-archive/"
+EVIDENCE_BUCKET = "evidence-archive"
 
 
 @dataclass
 class FileMetadata:
+    """Metadata about an uploaded file."""
+
     key: str
     base_name: str
     filename_timestamp: str
@@ -22,11 +27,13 @@ class FileMetadata:
 
 
 def _timestamped_name(file_path: Path) -> str:
+    """Generate a timestamped filename while preserving the original stem and suffix."""
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{file_path.stem}_{ts}{file_path.suffix}"
 
 
 def calculate_md5(file_path: Path) -> str:
+    """Calculate MD5 hash of a file using chunked reading for memory efficiency."""
     md5 = hashlib.md5()
     with file_path.open("rb") as f:
         for chunk in iter(lambda: f.read(65536), b""):
@@ -34,13 +41,12 @@ def calculate_md5(file_path: Path) -> str:
     return md5.hexdigest()
 
 
-EVIDENCE_BUCKET = "evidence-archive"
-
-
 def _archive_old_file(
-    minio_client, staging_bucket: str, old_file_location: str
+    minio_client: Any,
+    staging_bucket: str,
+    old_file_location: str,
 ) -> None:
-    """Copy old file from staging to evidence-archive bucket, then delete from staging."""
+    """Copy old file from staging bucket to evidence-archive bucket, then delete from staging."""
     archive_key = old_file_location
     minio_client.copy_object(
         Bucket=EVIDENCE_BUCKET,
@@ -52,8 +58,11 @@ def _archive_old_file(
 
 
 async def _download_file(
-    client: httpx.AsyncClient, url: str, output_path: Path
+    client: httpx.AsyncClient,
+    url: str,
+    output_path: Path,
 ) -> None:
+    """Download a file from URL to the specified output path."""
     print(f"📥 Downloading {url}")
     response = await client.get(url, follow_redirects=True)
     response.raise_for_status()
@@ -63,7 +72,8 @@ async def _download_file(
 
 
 def _extract_file(file_path: Path, output_dir: Path) -> list[Path]:
-    extracted_files = []
+    """Extract zip file contents to output directory. Non-zip files are moved instead."""
+    extracted_files: list[Path] = []
     try:
         with zipfile.ZipFile(file_path, "r") as zip_ref:
             zip_ref.extractall(output_dir)
@@ -80,7 +90,6 @@ def _extract_file(file_path: Path, output_dir: Path) -> list[Path]:
     return extracted_files
 
 
-# _download_and_upload helpers
 def _should_skip_file(base_name: str, md5: str, known_hashes: dict) -> bool:
     """Check if file should be skipped due to unchanged hash."""
     return known_hashes.get(base_name, {}).get("md5") == md5
@@ -94,12 +103,13 @@ def _get_file_location(base_name: str, known_hashes: dict) -> str | None:
 def _upload_extracted_file(
     extracted_file: Path,
     target_folder: str | None,
-    minio_client,
+    minio_client: Any,
     staging_bucket: str,
+    *,
+    md5: str,
 ) -> FileMetadata:
     """Upload a single extracted file to MinIO and return its metadata."""
     size_mb = round(extracted_file.stat().st_size / 1024**2, 2)
-    md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
     base_name = extracted_file.name
 
     ts_name = _timestamped_name(extracted_file)
@@ -125,64 +135,39 @@ def _upload_extracted_file(
 def _process_extracted_files(
     extracted_files: list[Path],
     known_hashes: dict,
-    minio_client,
+    minio_client: Any,
     staging_bucket: str,
     target_folder: str | None = None,
 ) -> list[FileMetadata]:
     """Process all extracted files: skip unchanged, archive old, upload new."""
-    file_records = []
-
-    print(f"DEBUG: known_hashes keys = {list(known_hashes.keys())}", flush=True)
-    print(f"DEBUG: extracted_files = {extracted_files}", flush=True)
+    file_records: list[FileMetadata] = []
 
     for extracted_file in extracted_files:
-        print(
-            f"DEBUG: checking {extracted_file}, exists={extracted_file.exists()}, is_file={extracted_file.is_file()}",
-            flush=True,
-        )
         if not extracted_file.is_file():
-            print(f"DEBUG: SKIPPING {extracted_file} - not a file", flush=True)
             continue
 
         base_name = extracted_file.name
-        md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
-
-        known = known_hashes.get(base_name)
-        known_md5 = known.get("md5") if known else None
-        print(
-            f"DEBUG: base_name={base_name}, calc_md5={md5}, known_md5={known_md5}",
-            flush=True,
-        )
+        md5 = calculate_md5(extracted_file)
 
         if _should_skip_file(base_name, md5, known_hashes):
-            print(f"DEBUG: SKIPPING {base_name} — hash unchanged", flush=True)
             print(f"⏭️ Skipping {base_name} — hash unchanged")
-            extracted_file.unlink()
+            extracted_file.unlink(missing_ok=True)
             continue
 
         existing_location = _get_file_location(base_name, known_hashes)
-        print(f"DEBUG: existing_location = {existing_location}", flush=True)
         if existing_location:
             _archive_old_file(minio_client, staging_bucket, existing_location)
 
         record = _upload_extracted_file(
-            extracted_file, target_folder, minio_client, staging_bucket
+            extracted_file,
+            target_folder,
+            minio_client,
+            staging_bucket,
+            md5=md5,
         )
         file_records.append(record)
 
-    print(f"DEBUG: returning {len(file_records)} records", flush=True)
     return file_records
-
-
-def _setup_minio() -> tuple:
-    """Setup MinIO client and ensure staging bucket exists."""
-    from flows.shared.minio import STAGING_BUCKET  # noqa: PLC0415
-    from flows.shared.minio import ensure_bucket_exists  # noqa: PLC0415
-    from flows.shared.minio import get_minio_client  # noqa: PLC0415
-
-    minio_client = get_minio_client()
-    ensure_bucket_exists(STAGING_BUCKET)
-    return minio_client, STAGING_BUCKET
 
 
 async def _download_and_upload(
@@ -190,26 +175,27 @@ async def _download_and_upload(
     client: httpx.AsyncClient,
     download_item: dict,
     temp_dir: Path,
-    known_hashes: dict[str, dict],
+    known_hashes: dict,
+    minio_client: Any,
+    staging_bucket: str,
     target_folder: str | None = None,
-) -> list[dict]:
-    url = download_item["url"]
-    filename = download_item["filename"]
-    file_path = temp_dir / filename
-
-    print(f"DEBUG _download_and_upload: processing {filename} from {url}", flush=True)
+) -> list[FileMetadata]:
+    """Download a file, extract it, and upload to MinIO."""
+    url = download_item.get("url")
+    filename = download_item.get("filename", url.split("/")[-1] if url else "unknown")
+    download_dir = temp_dir / uuid.uuid4().hex
+    download_dir.mkdir(parents=True, exist_ok=True)
+    file_path = download_dir / filename
 
     async with semaphore:
         try:
             await _download_file(client, url, file_path)
             loop = asyncio.get_event_loop()
             extracted_files = await loop.run_in_executor(
-                None, _extract_file, file_path, temp_dir
+                None, _extract_file, file_path, download_dir
             )
 
-            minio_client, staging_bucket = _setup_minio()
-
-            return await loop.run_in_executor(
+            records = await loop.run_in_executor(
                 None,
                 _process_extracted_files,
                 extracted_files,
@@ -218,39 +204,46 @@ async def _download_and_upload(
                 staging_bucket,
                 target_folder,
             )
+            return records
 
+        except httpx.HTTPStatusError as e:
+            print(f"❌ HTTP error downloading {filename}: {e}")
+            return []
         except Exception as e:
             print(f"❌ Failed to download {filename}: {e}")
             return []
+        finally:
+            shutil.rmtree(download_dir, ignore_errors=True)
 
 
 async def run_async_downloads_to_minio(
     downloads: list[dict],
     temp_dir: Path,
-    known_hashes: dict[str, dict],
+    known_hashes: dict,
+    minio_client: Any,
+    staging_bucket: str,
     concurrency: int = 3,
     timeout_seconds: int = 120,
-) -> dict[str, list[dict]]:
-    print(
-        f"DEBUG run_async_downloads_to_minio: {len(downloads)} downloads, {len(known_hashes)} known_hashes",
-        flush=True,
-    )
+) -> dict[str, list[FileMetadata]]:
+    """Run multiple downloads concurrently and upload extracted files to MinIO."""
     semaphore = asyncio.Semaphore(concurrency)
     async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         tasks = [
             _download_and_upload(
-                semaphore,
-                client,
-                d,
-                temp_dir,
+                semaphore=semaphore,
+                client=client,
+                download_item=d,
+                temp_dir=temp_dir,
                 known_hashes=known_hashes,
+                minio_client=minio_client,
+                staging_bucket=staging_bucket,
                 target_folder=d.get("target_folder"),
             )
             for d in downloads
         ]
-        results = await asyncio.gather(*tasks)
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
     return {
-        download["name"]: records
-        for download, records in zip(downloads, results, strict=True)
+        download["name"]: result if isinstance(result, list) else []
+        for download, result in zip(downloads, results, strict=True)
     }
