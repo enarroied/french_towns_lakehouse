@@ -9,7 +9,7 @@ from pathlib import Path
 import httpx
 
 
-ARCHIVE_PREFIX = "evidence-archive/staging/"
+ARCHIVE_PREFIX = "evidence-archive/"
 
 
 @dataclass
@@ -34,18 +34,21 @@ def calculate_md5(file_path: Path) -> str:
     return md5.hexdigest()
 
 
+EVIDENCE_BUCKET = "evidence-archive"
+
+
 def _archive_old_file(
-    minio_client, staging_bucket: str, old_filename_timestamp: str
+    minio_client, staging_bucket: str, old_file_location: str
 ) -> None:
-    """Copy old file to evidence-archive/staging/ then delete from staging."""
-    archive_key = f"{ARCHIVE_PREFIX}{old_filename_timestamp}"
+    """Copy old file from staging to evidence-archive bucket, then delete from staging."""
+    archive_key = old_file_location
     minio_client.copy_object(
-        Bucket=staging_bucket,
-        CopySource={"Bucket": staging_bucket, "Key": old_filename_timestamp},
+        Bucket=EVIDENCE_BUCKET,
+        CopySource=f"/{staging_bucket}/{old_file_location}",
         Key=archive_key,
     )
-    minio_client.delete_object(Bucket=staging_bucket, Key=old_filename_timestamp)
-    print(f"🗄️ Archived {old_filename_timestamp} → {archive_key}")
+    minio_client.delete_object(Bucket=staging_bucket, Key=old_file_location)
+    print(f"🗄️ Archived {old_file_location} → {EVIDENCE_BUCKET}/{archive_key}")
 
 
 async def _download_file(
@@ -83,13 +86,9 @@ def _should_skip_file(base_name: str, md5: str, known_hashes: dict) -> bool:
     return known_hashes.get(base_name, {}).get("md5") == md5
 
 
-def _archive_existing_file(
-    base_name: str, known_hashes: dict[str, dict], minio_client, staging_bucket: str
-) -> None:
-    """Archive existing file if it exists."""
-    known = known_hashes.get(base_name)
-    if known and known.get("filename_timestamp"):
-        _archive_old_file(minio_client, staging_bucket, known["filename_timestamp"])
+def _get_file_location(base_name: str, known_hashes: dict) -> str | None:
+    """Return MinIO key (file_location) of existing file, or None if none exists."""
+    return known_hashes.get(base_name, {}).get("file_location")
 
 
 def _upload_extracted_file(
@@ -125,7 +124,7 @@ def _upload_extracted_file(
 
 def _process_extracted_files(
     extracted_files: list[Path],
-    known_hashes: dict[str, dict],
+    known_hashes: dict,
     minio_client,
     staging_bucket: str,
     target_folder: str | None = None,
@@ -133,28 +132,45 @@ def _process_extracted_files(
     """Process all extracted files: skip unchanged, archive old, upload new."""
     file_records = []
 
+    print(f"DEBUG: known_hashes keys = {list(known_hashes.keys())}", flush=True)
+    print(f"DEBUG: extracted_files = {extracted_files}", flush=True)
+
     for extracted_file in extracted_files:
+        print(
+            f"DEBUG: checking {extracted_file}, exists={extracted_file.exists()}, is_file={extracted_file.is_file()}",
+            flush=True,
+        )
         if not extracted_file.is_file():
+            print(f"DEBUG: SKIPPING {extracted_file} - not a file", flush=True)
             continue
 
         base_name = extracted_file.name
         md5 = hashlib.md5(extracted_file.read_bytes()).hexdigest()
 
-        # Skip if hash unchanged
+        known = known_hashes.get(base_name)
+        known_md5 = known.get("md5") if known else None
+        print(
+            f"DEBUG: base_name={base_name}, calc_md5={md5}, known_md5={known_md5}",
+            flush=True,
+        )
+
         if _should_skip_file(base_name, md5, known_hashes):
+            print(f"DEBUG: SKIPPING {base_name} — hash unchanged", flush=True)
             print(f"⏭️ Skipping {base_name} — hash unchanged")
             extracted_file.unlink()
             continue
 
-        # Archive existing file
-        _archive_existing_file(base_name, known_hashes, minio_client, staging_bucket)
+        existing_location = _get_file_location(base_name, known_hashes)
+        print(f"DEBUG: existing_location = {existing_location}", flush=True)
+        if existing_location:
+            _archive_old_file(minio_client, staging_bucket, existing_location)
 
-        # Upload new file
         record = _upload_extracted_file(
             extracted_file, target_folder, minio_client, staging_bucket
         )
         file_records.append(record)
 
+    print(f"DEBUG: returning {len(file_records)} records", flush=True)
     return file_records
 
 
@@ -180,6 +196,8 @@ async def _download_and_upload(
     url = download_item["url"]
     filename = download_item["filename"]
     file_path = temp_dir / filename
+
+    print(f"DEBUG _download_and_upload: processing {filename} from {url}", flush=True)
 
     async with semaphore:
         try:
@@ -213,6 +231,10 @@ async def run_async_downloads_to_minio(
     concurrency: int = 3,
     timeout_seconds: int = 120,
 ) -> dict[str, list[dict]]:
+    print(
+        f"DEBUG run_async_downloads_to_minio: {len(downloads)} downloads, {len(known_hashes)} known_hashes",
+        flush=True,
+    )
     semaphore = asyncio.Semaphore(concurrency)
     async with httpx.AsyncClient(timeout=timeout_seconds) as client:
         tasks = [

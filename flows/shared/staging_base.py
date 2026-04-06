@@ -52,6 +52,7 @@ def run_staging_flow(domain: str, domain_downloads: list[str]) -> None:
                 run_id=run_id,
                 name=record.base_name,
                 filename_timestamp=record.filename_timestamp,
+                file_location=record.key,
                 source_url=url_by_name.get(name),
                 size_mb=record.size_mb,
                 md5_hash=record.md5,

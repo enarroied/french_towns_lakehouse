@@ -91,13 +91,20 @@ def init_run(
 
 @task
 def get_latest_hashes() -> dict[str, dict]:
-    """Returns {filename: {md5, filename_timestamp}} for all is_latest=1 rows."""
+    """Returns {filename: {md5, filename_timestamp, file_location}} for all is_latest=1 rows."""
     with _conn() as conn:
         rows = conn.execute(
-            """SELECT filename, md5_hash, filename_timestamp
+            """SELECT filename, md5_hash, filename_timestamp, file_location
                FROM file_metadata WHERE is_latest = 1"""
         ).fetchall()
-    return {row[0]: {"md5": row[1], "filename_timestamp": row[2]} for row in rows}
+    return {
+        row[0]: {
+            "md5": row[1],
+            "filename_timestamp": row[2],
+            "file_location": row[3],
+        }
+        for row in rows
+    }
 
 
 def _write_file_metadata(
@@ -109,6 +116,7 @@ def _write_file_metadata(
     size_mb: float | None,
     md5_hash: str | None,
     bucket: str | None,
+    file_location: str,
     now: datetime,
 ) -> None:
     conn.execute(
@@ -118,8 +126,8 @@ def _write_file_metadata(
     conn.execute(
         """INSERT INTO file_metadata
            (file_id, run_id, filename, filename_timestamp, source_url,
-            size_mb, md5_hash, bucket, upload_timestamp)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            size_mb, md5_hash, bucket, upload_timestamp, file_location)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
         [
             str(uuid.uuid4()),
             run_id,
@@ -130,6 +138,7 @@ def _write_file_metadata(
             md5_hash,
             bucket,
             now,
+            file_location,
         ],
     )
 
@@ -139,6 +148,7 @@ def log_upload(
     run_id: str,
     name: str,
     filename_timestamp: str,
+    file_location: str,
     source_url: str | None = None,
     size_mb: float | None = None,
     md5_hash: str | None = None,
@@ -155,6 +165,7 @@ def log_upload(
             size_mb,
             md5_hash,
             bucket,
+            file_location,
             now,
         )
     get_run_logger().info(
