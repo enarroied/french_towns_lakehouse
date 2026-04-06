@@ -1,29 +1,20 @@
 import asyncio
+import csv
 import hashlib
 import shutil
 import uuid
 import zipfile
-from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import httpx
 
+from scrapers.models import FileMetadata
+
 
 ARCHIVE_PREFIX = "evidence-archive/"
 EVIDENCE_BUCKET = "evidence-archive"
-
-
-@dataclass
-class FileMetadata:
-    """Metadata about an uploaded file."""
-
-    key: str
-    base_name: str
-    filename_timestamp: str
-    size_mb: float
-    md5: str
 
 
 def _timestamped_name(file_path: Path) -> str:
@@ -32,13 +23,34 @@ def _timestamped_name(file_path: Path) -> str:
     return f"{file_path.stem}_{ts}{file_path.suffix}"
 
 
+def _timestamped_csv_name(base_name: str) -> str:
+    """Generate a timestamped CSV filename from a base name (e.g., 'villes_fleuries')."""
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return f"{base_name}_{ts}.csv"
+
+
 def calculate_md5(file_path: Path) -> str:
     """Calculate MD5 hash of a file using chunked reading for memory efficiency."""
-    md5 = hashlib.md5()
+    md5_hash = hashlib.md5()
     with file_path.open("rb") as f:
         for chunk in iter(lambda: f.read(65536), b""):
-            md5.update(chunk)
-    return md5.hexdigest()
+            md5_hash.update(chunk)
+    return md5_hash.hexdigest()
+
+
+def _write_csv_to_temp(
+    data: list[dict],
+    fieldnames: list[str],
+    base_name: str,
+    temp_dir: Path,
+) -> Path:
+    """Write data to a timestamped CSV file in temp directory. Returns the file path."""
+    csv_path = temp_dir / _timestamped_csv_name(base_name)
+    with csv_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+    return csv_path
 
 
 def _archive_old_file(
@@ -100,33 +112,39 @@ def _get_file_location(base_name: str, known_hashes: dict) -> str | None:
     return known_hashes.get(base_name, {}).get("file_location")
 
 
-def _upload_extracted_file(
-    extracted_file: Path,
-    target_folder: str | None,
+def _upload_file(
+    file_path: Path,
     minio_client: Any,
     staging_bucket: str,
-    *,
-    md5: str,
-) -> FileMetadata:
-    """Upload a single extracted file to MinIO and return its metadata."""
-    size_mb = round(extracted_file.stat().st_size / 1024**2, 2)
-    base_name = extracted_file.name
-
-    ts_name = _timestamped_name(extracted_file)
-    key = f"{target_folder}/{ts_name}" if target_folder else ts_name
-
+    key: str,
+) -> None:
+    """Upload a file to MinIO."""
     minio_client.upload_file(
-        Filename=str(extracted_file),
+        Filename=str(file_path),
         Bucket=staging_bucket,
         Key=key,
     )
-    print(f"☁️ Uploaded {ts_name} to {staging_bucket}/{key}")
-    extracted_file.unlink()
+    print(f"☁️ Uploaded {key} to {staging_bucket}")
+    file_path.unlink()
+
+
+def _create_file_metadata(
+    file_path: Path,
+    base_name: str,
+    target_folder: str | None,
+    md5: str,
+) -> FileMetadata:
+    """Create FileMetadata from a file path."""
+    size_mb = round(file_path.stat().st_size / 1024**2, 2)
+    filename_timestamp = file_path.name
+    key = (
+        f"{target_folder}/{filename_timestamp}" if target_folder else filename_timestamp
+    )
 
     return FileMetadata(
         key=key,
         base_name=base_name,
-        filename_timestamp=ts_name,
+        filename_timestamp=filename_timestamp,
         size_mb=size_mb,
         md5=md5,
     )
@@ -158,14 +176,17 @@ def _process_extracted_files(
         if existing_location:
             _archive_old_file(minio_client, staging_bucket, existing_location)
 
-        record = _upload_extracted_file(
-            extracted_file,
-            target_folder,
-            minio_client,
-            staging_bucket,
-            md5=md5,
+        key = (
+            f"{target_folder}/{extracted_file.name}"
+            if target_folder
+            else extracted_file.name
         )
-        file_records.append(record)
+        _upload_file(extracted_file, minio_client, staging_bucket, key)
+
+        metadata = _create_file_metadata(extracted_file, base_name, target_folder, md5)
+        # Re-create file_path since it was unlinked in _upload_file
+        metadata.key = key
+        file_records.append(metadata)
 
     return file_records
 

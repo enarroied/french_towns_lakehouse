@@ -63,3 +63,14 @@ class ScraperResult:
     output_key: str | None = None
     error: str | None = None
     tb: str | None = None
+
+
+@dataclass
+class FileMetadata:
+    """Metadata about an uploaded file."""
+
+    key: str
+    base_name: str
+    filename_timestamp: str
+    size_mb: float
+    md5: str
