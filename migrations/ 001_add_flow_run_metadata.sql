@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS flow_run_metadata (
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP,
     technical_type TEXT, -- scraper, download, api
-    number_files INTEGER
+    number_files INTEGER,
+    is_latest SMALLINT DEFAULT 1
 );
