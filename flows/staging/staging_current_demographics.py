@@ -48,20 +48,22 @@ def staging_current_demographics() -> None:
         known_hashes = get_latest_hashes()
         results, url_by_name = download_demographics_files(known_hashes=known_hashes)
 
-        total = 0
-        for name, file_records in results.items():
-            for record in file_records:
-                log_upload(
-                    run_id=run_id,
-                    name=record["base_name"],
-                    filename_timestamp=record["filename_timestamp"],
-                    keys=[record["key"]],
-                    source_url=url_by_name.get(name),
-                    size_mb=record["size_mb"],
-                    md5_hash=record["md5"],
-                    bucket=STAGING_BUCKET,
-                )
-                total += 1
+        futures = [
+            log_upload.submit(
+                run_id=run_id,
+                name=record["base_name"],
+                filename_timestamp=record["filename_timestamp"],
+                keys=[record["key"]],
+                source_url=url_by_name.get(name),
+                size_mb=record["size_mb"],
+                md5_hash=record["md5"],
+                bucket=STAGING_BUCKET,
+            )
+            for name, file_records in results.items()
+            for record in file_records
+        ]
+        total = len(futures)
+        [f.result() for f in futures]
 
         finalize_run(run_id=run_id, status="SUCCESS", number_files=total)
     except Exception:

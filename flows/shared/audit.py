@@ -18,10 +18,13 @@ TechnicalSubtype = Literal["DOWNLOAD", "SCRAPER", "DBT", "API"]
 
 def _conn():
     _DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = duckdb.connect(str(_DB_PATH))
-    for sql_file in sorted(_MIGRATIONS_DIR.glob("*.sql")):
-        conn.execute(sql_file.read_text())
-    return conn
+    return duckdb.connect(str(_DB_PATH))
+
+
+def _migrate() -> None:
+    with _conn() as conn:
+        for sql_file in sorted(_MIGRATIONS_DIR.glob("*.sql")):
+            conn.execute(sql_file.read_text())
 
 
 @task
@@ -29,8 +32,7 @@ def preflight() -> None:
     logger = get_run_logger()
 
     try:
-        with _conn() as conn:
-            conn.execute("SELECT 1")
+        _migrate()
         logger.info("✅ Metadata DB reachable")
     except Exception as e:
         raise RuntimeError(f"Metadata DB not writable: {e}") from e
