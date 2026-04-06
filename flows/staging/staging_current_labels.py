@@ -2,9 +2,14 @@ import asyncio
 import logging
 from importlib import import_module
 
-from flows.scrapers import SCRAPER_MODULE_MAP
 from flows.shared import get_config
 from flows.shared import get_scrapers
+from flows.shared.audit import finalize_run
+from flows.shared.audit import get_latest_hashes
+from flows.shared.audit import init_run
+from flows.shared.audit import log_upload
+from flows.shared.audit import preflight
+from flows.shared.minio import STAGING_BUCKET
 from prefect import flow
 from prefect import task
 
@@ -13,69 +18,91 @@ logger = logging.getLogger(__name__)
 
 
 @task
-def run_single_scraper(scraper_name: str) -> dict:
-    """Run a single scraper and return a result dict for the summary."""
-    module_path = SCRAPER_MODULE_MAP[scraper_name]
-    module = import_module(module_path)
+def run_single_scraper(scraper: dict, known_hashes: dict) -> tuple[str, str | None]:
+    """Run a single scraper and return (scraper_name, error).
+
+    Returns (name, error_message) on failure, (name, None) on success.
+    The FileMetadata is stored in Prefect context for log_upload to access.
+    """
+    name = scraper["name"]
+    module = import_module(scraper["module"])
     config = get_config()
+
     try:
-        result = asyncio.run(module.run(config))
-        return {"name": scraper_name, "success": True, "result": result}
+        metadata = asyncio.run(module.run(config, known_hashes))
+        if metadata is None:
+            logger.info("⏭️ %s skipped (no changes)", name)
+            return (name, None)
+        logger.info("✅ %s → %s", name, metadata.key)
+        return (name, metadata)
     except Exception as exc:
-        logger.error("Scraper %s failed: %s", scraper_name, exc)
-        return {"name": scraper_name, "success": False, "error": str(exc)}
-
-
-def _print_success(succeeded, results, width=50):
-    return f"""{"-" * width}
-    {len(succeeded)}/{len(results)} scrapers succeeded.
-    {"=" * width}
-    """
-
-
-def _print_summary_header(width=50):
-    return (
-        "\n"
-        + f""" {"=" * width}
-    SCRAPER RUN SUMMARY
-    {"=" * width}
-
-    """
-    )
+        logger.error("❌ %s failed: %s", name, exc)
+        return (name, str(exc))
 
 
 @flow(name="staging_current_labels")
-def staging_current_labels() -> list[dict]:
-    """Run all enabled scrapers concurrently and log a summary."""
-    all_scrapers = get_scrapers()
-    enabled = [s for s in all_scrapers if s.get("enabled", True)]
-    disabled = [s for s in all_scrapers if not s.get("enabled", True)]
+def staging_current_labels() -> list[tuple]:
+    """Run all enabled scrapers and log results to audit DB."""
+    preflight()
+    run_id = init_run(domain="labels", technical_type="SCRAPER")
 
-    for s in disabled:
-        logger.info("Skipping %s (disabled)", s["name"])
+    try:
+        known_hashes = get_latest_hashes()
+        all_scrapers = get_scrapers()
+        enabled = [s for s in all_scrapers if s.get("enabled", True)]
+        disabled = [s for s in all_scrapers if not s.get("enabled", True)]
 
-    futures = [run_single_scraper.submit(s["name"]) for s in enabled]
-    results = [f.result() for f in futures]
+        for s in disabled:
+            logger.info("Skipping %s (disabled)", s["name"])
 
-    succeeded = [r for r in results if r["success"]]
-    failed = [r for r in results if not r["success"]]
+        if not enabled:
+            logger.warning("No scrapers enabled")
+            finalize_run(run_id=run_id, status="SUCCESS", number_files=0)
+            return []
 
-    logger.info(_print_summary_header())
-    for r in results:
-        status = "OK" if r["success"] else "FAILED"
-        result_info = f" → {r.get('result', '')}" if r["success"] else ""
-        logger.info(f" {r['name']:<30} {status}{result_info}")
-        if not r["success"]:
-            logger.info(f"     - {(r.get('error') or 'unknown error')[:60]}")
-    logger.info(_print_success(succeeded, results))
+        futures = [run_single_scraper.submit(s, known_hashes) for s in enabled]
+        results = [f.result() for f in futures]
 
-    if failed:
-        logger.warning("%d scraper(s) failed", len(failed))
+        upload_futures = []
+        file_count = 0
+        failed = 0
 
-    if len(failed) == len(results):
-        raise RuntimeError(f"All {len(results)} scrapers failed")
+        for name, result in results:
+            if isinstance(result, Exception):
+                logger.error("❌ %s: %s", name, result)
+                failed += 1
+            elif result is None:
+                logger.info("⏭️ %s skipped (no changes)", name)
+            else:
+                logger.info("📝 Logging %s to audit DB", name)
+                upload_futures.append(
+                    log_upload.submit(
+                        run_id=run_id,
+                        name=result.base_name,
+                        filename_timestamp=result.filename_timestamp,
+                        file_location=result.key,
+                        source_url=None,
+                        size_mb=result.size_mb,
+                        md5_hash=result.md5,
+                        bucket=STAGING_BUCKET,
+                    )
+                )
+                file_count += 1
 
-    return results
+        [f.result() for f in upload_futures]
+
+        status = "FAILED" if failed == len(results) else "SUCCESS"
+        finalize_run(run_id=run_id, status=status, number_files=file_count)
+
+        if failed > 0:
+            logger.warning("%d scraper(s) failed", failed)
+
+        return results
+
+    except Exception as exc:
+        logger.exception("Flow failed: %s", exc)
+        finalize_run(run_id=run_id, status="FAILED", number_files=0)
+        raise
 
 
 if __name__ == "__main__":
