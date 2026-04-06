@@ -90,14 +90,10 @@ To stop MinIO:
 ```bash
 docker compose down
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   STAGING       │───▶│  TRANSFORMATION  │───▶│   INTEGRATION   │
-│                 │    │                  │    │   (future)      │
-│  MinIO buckets: │    │  dbt models:     │    │                 │
-│  staging-*      │    │  validated/      │    │  LakeHouse:     │
-└─────────────────┘    └──────────────────┘    │  lakehouse/     │
-                                               └─────────────────┘
-```
+
+This is how the process is supposed to look (diagram from specifications, work in progress, changes may still happen):
+
+![](img/specs.png)
 
 ### MinIO Bucket Structure
 
