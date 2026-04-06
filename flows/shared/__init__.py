@@ -23,6 +23,7 @@ from flows.shared.minio import upload_file_to_bucket
 from flows.shared.minio import upload_to_staging
 from flows.shared.minio import upload_to_staging_with_download_metadata
 from flows.shared.minio import write_csv_to_staging
+from flows.shared.staging_base import run_staging_flow
 
 
 __all__ = [
@@ -44,6 +45,7 @@ __all__ = [
     "log_upload",
     "preflight",
     "run_async_downloads_to_minio",
+    "run_staging_flow",
     "upload_and_cleanup",
     "upload_directory_to_bucket",
     "upload_directory_to_staging",
