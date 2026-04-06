@@ -1,8 +1,14 @@
 import logging
+from pathlib import Path
 
 import aiohttp
 from bs4 import BeautifulSoup
-from flows.shared.minio import write_csv_to_staging
+
+from flows.shared.download import _write_csv_to_temp
+from flows.shared.download import calculate_md5
+from flows.shared.minio import get_minio_client
+from flows.shared.minio import STAGING_BUCKET
+from scrapers.models import FileMetadata
 from scrapers.utils import get_scraper_config
 
 
@@ -45,9 +51,10 @@ def parse_table(html: str) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 
-async def run(config: dict) -> str:
+async def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
     """Scrape Villes Prudentes labeled communes and upload to staging."""
     scraper = get_scraper_config(config, MODULE)
+    known_hashes = known_hashes or {}
     logger.info("Starting %s", scraper.name)
 
     async with aiohttp.ClientSession(headers=scraper.headers) as session:
@@ -55,14 +62,46 @@ async def run(config: dict) -> str:
             resp.raise_for_status()
             communes = parse_table(await resp.text())
 
-        key = write_csv_to_staging(
+        if not communes:
+            logger.warning("%s: no communes scraped", scraper.name)
+            return None
+
+        temp_dir = Path("/tmp/french_towns_downloads")
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        csv_path = _write_csv_to_temp(
             data=communes,
             fieldnames=FIELDNAMES,
-            filename=f"{scraper.name}.csv",
-            subfolder=scraper.target_folder,
-            metadata={"source_url": scraper.url},
-            pipeline_name="staging_current_labels",
+            base_name=scraper.name,
+            temp_dir=temp_dir,
         )
 
-    logger.info("%s: scraped %d communes → %s", scraper.name, len(communes), key)
-    return key
+        md5 = calculate_md5(csv_path)
+        size_mb = round(csv_path.stat().st_size / 1024**2, 2)
+
+        if (
+            scraper.name in known_hashes
+            and known_hashes[scraper.name].get("md5") == md5
+        ):
+            logger.info("⏭️ Skipping %s — hash unchanged", scraper.name)
+            csv_path.unlink()
+            return None
+
+        minio_client = get_minio_client()
+        key = f"{scraper.target_folder}/{csv_path.name}"
+
+        minio_client.upload_file(
+            Filename=str(csv_path),
+            Bucket=STAGING_BUCKET,
+            Key=key,
+        )
+        csv_path.unlink()
+
+        logger.info("%s: scraped %d communes → %s", scraper.name, len(communes), key)
+
+        return FileMetadata(
+            key=key,
+            base_name=f"{scraper.name}.csv",
+            filename_timestamp=csv_path.name,
+            size_mb=size_mb,
+            md5=md5,
+        )

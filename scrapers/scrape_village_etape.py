@@ -1,10 +1,16 @@
 import asyncio
 import json
 import logging
+from pathlib import Path
 
 import aiohttp
 from bs4 import BeautifulSoup
-from flows.shared.minio import write_csv_to_staging
+
+from flows.shared.download import _write_csv_to_temp
+from flows.shared.download import calculate_md5
+from flows.shared.minio import get_minio_client
+from flows.shared.minio import STAGING_BUCKET
+from scrapers.models import FileMetadata
 from scrapers.utils import get_scraper_config
 
 
@@ -112,12 +118,7 @@ def _parse_practical_info(soup: BeautifulSoup) -> dict:
 
 
 def parse_village_page(html: str, url: str) -> dict | None:
-    """Parse a village detail page into a structured record.
-
-    Note: ``practical`` is serialised as a JSON string because it contains
-    a variable set of sub-fields. Consider flattening this in a downstream
-    transform rather than here.
-    """
+    """Parse a village detail page into a structured record."""
     soup = BeautifulSoup(html, "html.parser")
 
     h1 = soup.find("h1", class_="elementor-heading-title") or soup.find("h1")
@@ -182,9 +183,8 @@ async def fetch_village_urls(
         page += 1
         await asyncio.sleep(1)
 
-    # Deduplicate while preserving order
     seen: set[str] = set()
-    return [u for u in all_urls if not (u in seen or seen.add(u))]  # type: ignore[func-returns-value]
+    return [u for u in all_urls if not (u in seen or seen.add(u))]
 
 
 async def fetch_village(
@@ -210,9 +210,10 @@ async def fetch_village(
 # ---------------------------------------------------------------------------
 
 
-async def run(config: dict) -> str:
+async def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
     """Scrape Village Étape listings and upload to staging."""
     scraper = get_scraper_config(config, MODULE)
+    known_hashes = known_hashes or {}
     logger.info("Starting %s", scraper.name)
 
     async with aiohttp.ClientSession(headers=scraper.headers) as session:
@@ -220,7 +221,8 @@ async def run(config: dict) -> str:
         logger.info("%s: found %d village URLs", scraper.name, len(urls))
 
         if not urls:
-            return scraper.name
+            logger.warning("%s: no URLs found", scraper.name)
+            return None
 
         semaphore = asyncio.Semaphore(scraper.concurrency)
         results = await asyncio.gather(
@@ -231,16 +233,44 @@ async def run(config: dict) -> str:
 
         if not villages:
             logger.warning("%s: no valid villages scraped", scraper.name)
-            return scraper.name
+            return None
 
-        key = write_csv_to_staging(
+        temp_dir = Path("/tmp/french_towns_downloads")
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        csv_path = _write_csv_to_temp(
             data=villages,
             fieldnames=FIELDNAMES,
-            filename=f"{scraper.name}.csv",
-            subfolder=scraper.target_folder,
-            metadata={"source_url": scraper.url},
-            pipeline_name="staging_current_labels",
+            base_name=scraper.name,
+            temp_dir=temp_dir,
         )
 
-    logger.info("%s: scraped %d villages → %s", scraper.name, len(villages), key)
-    return key
+        md5 = calculate_md5(csv_path)
+        size_mb = round(csv_path.stat().st_size / 1024**2, 2)
+
+        if (
+            scraper.name in known_hashes
+            and known_hashes[scraper.name].get("md5") == md5
+        ):
+            logger.info("⏭️ Skipping %s — hash unchanged", scraper.name)
+            csv_path.unlink()
+            return None
+
+        minio_client = get_minio_client()
+        key = f"{scraper.target_folder}/{csv_path.name}"
+
+        minio_client.upload_file(
+            Filename=str(csv_path),
+            Bucket=STAGING_BUCKET,
+            Key=key,
+        )
+        csv_path.unlink()
+
+        logger.info("%s: scraped %d villages → %s", scraper.name, len(villages), key)
+
+        return FileMetadata(
+            key=key,
+            base_name=f"{scraper.name}.csv",
+            filename_timestamp=csv_path.name,
+            size_mb=size_mb,
+            md5=md5,
+        )
