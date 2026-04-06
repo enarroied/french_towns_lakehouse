@@ -47,6 +47,10 @@ def log_upload(
 ) -> None:
     with _conn() as conn:
         conn.execute(
+            "UPDATE file_metadata SET is_latest = 0 WHERE filename = ?",
+            [name],
+        )
+        conn.execute(
             """INSERT INTO file_metadata
                (file_id, run_id, filename, source_url, size_mb, md5_hash, bucket, upload_timestamp)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
