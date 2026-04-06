@@ -1,6 +1,7 @@
 from flows.shared.audit import finalize_run
 from flows.shared.audit import init_run
 from flows.shared.audit import log_upload
+from flows.shared.audit import preflight
 from flows.shared.config import DBT_PROFILES_ARGS
 from flows.shared.config import DBT_PROJECT_DIR
 from flows.shared.config import get_buckets
@@ -10,6 +11,7 @@ from flows.shared.config import get_directories
 from flows.shared.config import get_downloads
 from flows.shared.config import get_paths
 from flows.shared.config import get_scrapers
+from flows.shared.download import run_async_downloads_to_minio
 from flows.shared.minio import create_metadata_sidecar
 from flows.shared.minio import ensure_bucket_exists
 from flows.shared.minio import get_minio_client
@@ -44,4 +46,8 @@ __all__ = [
     "upload_and_cleanup",
     "finalize_runinit_run",
     "log_upload",
+    "finalize_run",
+    "init_run",
+    "preflight",
+    "run_async_downloads_to_minio",
 ]

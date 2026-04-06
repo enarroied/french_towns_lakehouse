@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import yaml
-
 from scrapers.models import ScraperConfig
 
 

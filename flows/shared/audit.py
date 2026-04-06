@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Literal
 
 import duckdb
+import httpx
 from prefect import get_run_logger
 from prefect import task
 
@@ -20,6 +21,35 @@ def _conn():
     for sql_file in sorted(_MIGRATIONS_DIR.glob("*.sql")):
         conn.execute(sql_file.read_text())
     return conn
+
+
+@task
+def preflight() -> None:
+    logger = get_run_logger()
+
+    # 1. DuckDB writable
+    try:
+        with _conn() as conn:
+            conn.execute("SELECT 1")
+        logger.info("✅ Metadata DB reachable")
+    except Exception as e:
+        raise RuntimeError(f"Metadata DB not writable: {e}") from e
+
+    # 2. MinIO reachable
+    try:
+        from flows.shared.minio import get_minio_client  # noqa: PLC0415
+
+        get_minio_client().list_buckets()
+        logger.info("✅ MinIO reachable")
+    except Exception as e:
+        raise RuntimeError(f"MinIO not reachable: {e}") from e
+
+    # 3. Internet reachable
+    try:
+        httpx.head("https://www.cloudflare.com", timeout=5)
+        logger.info("✅ Internet reachable")
+    except Exception as e:
+        raise RuntimeError(f"No internet connection: {e}") from e
 
 
 @task

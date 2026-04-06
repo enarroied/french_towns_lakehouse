@@ -5,8 +5,8 @@ import logging
 import aiohttp
 from bs4 import BeautifulSoup
 from flows.shared.minio import write_csv_to_staging
-
 from scrapers.utils import get_scraper_config
+
 
 logger = logging.getLogger(__name__)
 

@@ -1,13 +1,14 @@
 import asyncio
 from pathlib import Path
 
+from flows.shared import finalize_run
 from flows.shared import get_config
 from flows.shared import get_downloads
 from flows.shared import get_paths
-from flows.shared.audit import finalize_run
-from flows.shared.audit import init_run
-from flows.shared.audit import log_upload
-from flows.shared.download import run_async_downloads_to_minio
+from flows.shared import init_run
+from flows.shared import log_upload
+from flows.shared import preflight
+from flows.shared import run_async_downloads_to_minio
 from flows.shared.minio import STAGING_BUCKET
 from prefect import flow
 from prefect import task
@@ -37,6 +38,7 @@ def download_geography_files() -> tuple[dict[str, list[dict]], dict[str, str]]:
 
 @flow(name="staging_current_geography")
 def staging_current_geography() -> None:
+    preflight()
     run_id = init_run(domain="geography")
     try:
         results, url_by_name = download_geography_files()

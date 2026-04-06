@@ -5,6 +5,7 @@ from importlib import import_module
 
 from scrapers.models import ScraperResult
 
+
 logger = logging.getLogger(__name__)
 
 
