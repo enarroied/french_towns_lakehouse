@@ -77,11 +77,9 @@ async def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | 
 
         md5 = calculate_md5(csv_path)
         size_mb = round(csv_path.stat().st_size / 1024**2, 2)
+        base_name = f"{scraper.name}.csv"
 
-        if (
-            scraper.name in known_hashes
-            and known_hashes[scraper.name].get("md5") == md5
-        ):
+        if base_name in known_hashes and known_hashes[base_name].get("md5") == md5:
             logger.info("⏭️ Skipping %s — hash unchanged", scraper.name)
             csv_path.unlink()
             return None
