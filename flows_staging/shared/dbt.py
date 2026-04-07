@@ -1,7 +1,7 @@
 import subprocess
 
-from flows.shared.config import DBT_PROFILES_ARGS
-from flows.shared.config import DBT_PROJECT_DIR
+from flows_staging.shared.config import DBT_PROFILES_ARGS
+from flows_staging.shared.config import DBT_PROJECT_DIR
 
 
 def run_dbt_command(

@@ -15,9 +15,9 @@ STAGING_BUCKET = "staging-current"
 
 
 def get_minio_client():
-    from flows.shared.config import MINIO_ACCESS_KEY  # noqa: PLC0415
-    from flows.shared.config import MINIO_ENDPOINT  # noqa: PLC0415
-    from flows.shared.config import MINIO_SECRET_KEY  # noqa: PLC0415
+    from flows_staging.shared.config import MINIO_ACCESS_KEY  # noqa: PLC0415
+    from flows_staging.shared.config import MINIO_ENDPOINT  # noqa: PLC0415
+    from flows_staging.shared.config import MINIO_SECRET_KEY  # noqa: PLC0415
 
     return boto3.client(
         "s3",

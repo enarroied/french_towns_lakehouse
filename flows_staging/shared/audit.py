@@ -44,7 +44,7 @@ def _check_db() -> None:
 def _check_minio() -> None:
     logger = get_run_logger()
     try:
-        from flows.shared.minio import get_minio_client  # noqa: PLC0415
+        from flows_staging.shared.minio import get_minio_client  # noqa: PLC0415
 
         get_minio_client().list_buckets()
         logger.info("✅ MinIO reachable")

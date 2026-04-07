@@ -4,17 +4,17 @@ from pathlib import Path
 import aiohttp
 from bs4 import BeautifulSoup
 
-from flows.shared.download import _write_csv_to_temp
-from flows.shared.download import calculate_md5
-from flows.shared.minio import get_minio_client
-from flows.shared.minio import STAGING_BUCKET
-from scrapers.models import FileMetadata
+from flows_staging.shared.download import _write_csv_to_temp
+from flows_staging.shared.download import calculate_md5
+from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.minio import STAGING_BUCKET
+from flows_staging.scrapers.models import FileMetadata
 from scrapers.utils import get_scraper_config
 
 
 logger = logging.getLogger(__name__)
 
-MODULE = "scrapers.scrape_villes_prudentes"
+MODULE = "scrapers.scrape_plus_beaux_villages"
 FIELDNAMES = ["city", "department"]
 
 
@@ -23,22 +23,20 @@ FIELDNAMES = ["city", "department"]
 # ---------------------------------------------------------------------------
 
 
-def parse_table(html: str) -> list[dict]:
-    """Parse the labeled communes table from a Ville Prudente page."""
+def parse_villages(html: str) -> list[dict]:
+    """Parse village entries from the Les Plus Beaux Villages listing page."""
     soup = BeautifulSoup(html, "html.parser")
-    table = soup.find("table", class_="ea-advanced-data-table")
-    if not table:
-        return []
-
     results = []
-    for row in table.find("tbody").find_all("tr"):
-        cells = row.find_all("td")
-        if len(cells) < 5:
+
+    for div in soup.find_all("div", class_="result"):
+        name_div = div.find("div", class_="name")
+        locality_div = div.find("div", class_="locality")
+
+        if not name_div or not locality_div:
             continue
 
-        city = cells[1].get_text(strip=True).lower()
-        dept_raw = cells[4].get_text(strip=True)
-        department = dept_raw.zfill(2) if dept_raw.isdigit() else dept_raw
+        city = name_div.get_text(strip=True).lower()
+        department = locality_div.get_text(strip=True).lower().split()[-1]
 
         if city and department:
             results.append({"city": city, "department": department})
@@ -52,7 +50,7 @@ def parse_table(html: str) -> list[dict]:
 
 
 async def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
-    """Scrape Villes Prudentes labeled communes and upload to staging."""
+    """Scrape Les Plus Beaux Villages de France and upload to staging."""
     scraper = get_scraper_config(config, MODULE)
     known_hashes = known_hashes or {}
     logger.info("Starting %s", scraper.name)
@@ -60,16 +58,16 @@ async def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | 
     async with aiohttp.ClientSession(headers=scraper.headers) as session:
         async with session.get(scraper.url) as resp:
             resp.raise_for_status()
-            communes = parse_table(await resp.text())
+            villages = parse_villages(await resp.text())
 
-        if not communes:
-            logger.warning("%s: no communes scraped", scraper.name)
+        if not villages:
+            logger.warning("%s: no villages scraped", scraper.name)
             return None
 
         temp_dir = Path("/tmp/french_towns_downloads")
         temp_dir.mkdir(parents=True, exist_ok=True)
         csv_path = _write_csv_to_temp(
-            data=communes,
+            data=villages,
             fieldnames=FIELDNAMES,
             base_name=scraper.name,
             temp_dir=temp_dir,
@@ -94,7 +92,7 @@ async def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | 
         )
         csv_path.unlink()
 
-        logger.info("%s: scraped %d communes → %s", scraper.name, len(communes), key)
+        logger.info("%s: scraped %d villages → %s", scraper.name, len(villages), key)
 
         return FileMetadata(
             key=key,

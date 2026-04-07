@@ -1,5 +1,4 @@
 import re
-import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -7,13 +6,14 @@ import pdfplumber
 import yaml
 
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+from flows_staging.shared.download import _write_csv_to_temp
+from flows_staging.shared.download import calculate_md5
+from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.minio import STAGING_BUCKET
+from flows_staging.scrapers.models import FileMetadata
 
-from flows.shared.minio import write_csv_to_staging
 
-
-def load_config() -> dict:
-    return yaml.safe_load(Path("config.yaml").open())
+FIELDNAMES = ["commune", "dept_code", "nb_lauriers"]
 
 
 SECTION_RE = re.compile(r"\d+\s+villes?\s+\u201c(\d+)\s+LAURIERS?\u201d", re.IGNORECASE)
@@ -91,12 +91,14 @@ def parse_palmares(path: Path) -> list[dict]:
     return results
 
 
-def run(config: dict) -> str:
+def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
+    """Parse ville sportive PDF and upload to staging."""
     parser_config = next(
         s
         for s in config["custom_parsers"]
         if s["module"] == "custom_parsers.parse_ville_sportive"
     )
+    known_hashes = known_hashes or {}
 
     input_dir = Path(parser_config.get("input_dir", "custom_parsers/data_for_parsers"))
     pdf_path = input_dir / parser_config["pdf_file"]
@@ -111,18 +113,54 @@ def run(config: dict) -> str:
     print(f"  4 lauriers: {counts[4]}")
     print(f"  Total     : {len(rows)}")
 
-    key = write_csv_to_staging(
+    if not rows:
+        print("No data parsed")
+        return None
+
+    temp_dir = Path("/tmp/french_towns_downloads")
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = _write_csv_to_temp(
         data=rows,
-        fieldnames=["commune", "dept_code", "nb_lauriers"],
-        filename=f"{parser_config['name']}.csv",
-        subfolder=parser_config.get("target_folder", "labels"),
-        pipeline_name="staging_current_labels",
+        fieldnames=FIELDNAMES,
+        base_name=parser_config["name"],
+        temp_dir=temp_dir,
     )
 
+    md5 = calculate_md5(csv_path)
+    size_mb = round(csv_path.stat().st_size / 1024**2, 2)
+    base_name = f"{parser_config['name']}.csv"
+
+    if base_name in known_hashes and known_hashes[base_name].get("md5") == md5:
+        print(f"⏭️ Skipping {parser_config['name']} — hash unchanged")
+        csv_path.unlink()
+        return None
+
+    minio_client = get_minio_client()
+    key = f"{parser_config.get('target_folder', 'labels')}/{csv_path.name}"
+
+    minio_client.upload_file(
+        Filename=str(csv_path),
+        Bucket=STAGING_BUCKET,
+        Key=key,
+    )
+    csv_path.unlink()
+
     print(f"Uploaded → {key}")
-    return key
+
+    return FileMetadata(
+        key=key,
+        base_name=base_name,
+        filename_timestamp=csv_path.name,
+        size_mb=size_mb,
+        md5=md5,
+    )
+
+
+def load_config() -> dict:
+    return yaml.safe_load(Path("config.yaml").open())
 
 
 if __name__ == "__main__":
     config = load_config()
-    run(config)
+    result = run(config)
+    print(f"Result: {result}")

@@ -10,37 +10,37 @@ pull:
 
 deployments:
 - name: staging-geography
-  entrypoint: flows/staging/staging_current_geography.py:staging_current_geography
+  entrypoint: flows_staging/staging/staging_current_geography.py:staging_current_geography
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-demographics
-  entrypoint: flows/staging/staging_current_demographics.py:staging_current_demographics
+  entrypoint: flows_staging/staging/staging_current_demographics.py:staging_current_demographics
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-labels
-  entrypoint: flows/staging/staging_current_labels.py:staging_current_labels
+  entrypoint: flows_staging/staging/staging_current_labels.py:staging_current_labels
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: transformation-dim-geography
-  entrypoint: flows/transformation/transformation_current_dim_geography.py:transformation_current_dim_geography
+  entrypoint: flows_transformation/transformation/transformation_current_dim_geography.py:transformation_current_dim_geography
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: transformation-fact-demographics
-  entrypoint: flows/transformation/transformation_current_fact_demographics.py:transformation_current_fact_demographics
+  entrypoint: flows_transformation/transformation/transformation_current_fact_demographics.py:transformation_current_fact_demographics
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: transformation-labels
-  entrypoint: flows/transformation/transformation_current_labels.py:transformation_current_labels
+  entrypoint: flows_transformation/transformation/transformation_current_labels.py:transformation_current_labels
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -51,9 +51,9 @@ deployments:
   work_pool:
     name: local-dev-pool
 
-# Individual scraper deployments (all use the same master flow with parameters)
+# Individual scraper deployments
 - name: scraper-petites-cites
-  entrypoint: flows/scrapers/__init__.py:run_scraper
+  entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: petites_cites
   schedules: []
@@ -61,7 +61,7 @@ deployments:
     name: local-dev-pool
 
 - name: scraper-villes-fleuries
-  entrypoint: flows/scrapers/__init__.py:run_scraper
+  entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: villes_fleuries
   schedules: []
@@ -69,7 +69,7 @@ deployments:
     name: local-dev-pool
 
 - name: scraper-plus-beaux-villages
-  entrypoint: flows/scrapers/__init__.py:run_scraper
+  entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: plus_beaux_villages
   schedules: []
@@ -77,7 +77,7 @@ deployments:
     name: local-dev-pool
 
 - name: scraper-villes-prudentes
-  entrypoint: flows/scrapers/__init__.py:run_scraper
+  entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: villes_prudentes
   schedules: []
@@ -85,7 +85,7 @@ deployments:
     name: local-dev-pool
 
 - name: scraper-village-etape
-  entrypoint: flows/scrapers/__init__.py:run_scraper
+  entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: village_etape
   schedules: []
@@ -93,9 +93,18 @@ deployments:
     name: local-dev-pool
 
 - name: scraper-famille-plus
-  entrypoint: flows/scrapers/__init__.py:run_scraper
+  entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: famille_plus
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+# Custom parser deployments
+- name: parser-ville-sportive
+  entrypoint: flows_staging/custom_parsers/__init__.py:run_parser
+  parameters:
+    parser_name: ville_sportive
   schedules: []
   work_pool:
     name: local-dev-pool

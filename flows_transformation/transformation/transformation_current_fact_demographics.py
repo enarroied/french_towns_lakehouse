@@ -1,5 +1,5 @@
-from flows.shared.dbt import run_and_test
-from flows.shared.dbt import stage_external_sources
+from flows_staging.shared.dbt import run_and_test
+from flows_staging.shared.dbt import stage_external_sources
 from prefect import flow
 from prefect import task
 

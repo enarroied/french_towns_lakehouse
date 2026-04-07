@@ -10,7 +10,7 @@ from typing import Any
 
 import httpx
 
-from scrapers.models import FileMetadata
+from flows_staging.scrapers.models import FileMetadata
 
 
 ARCHIVE_PREFIX = "evidence-archive/"
@@ -181,11 +181,11 @@ def _process_extracted_files(
             if target_folder
             else extracted_file.name
         )
-        _upload_file(extracted_file, minio_client, staging_bucket, key)
 
         metadata = _create_file_metadata(extracted_file, base_name, target_folder, md5)
-        # Re-create file_path since it was unlinked in _upload_file
         metadata.key = key
+        _upload_file(extracted_file, minio_client, staging_bucket, key)
+
         file_records.append(metadata)
 
     return file_records
@@ -232,6 +232,13 @@ async def _download_and_upload(
             return []
         except Exception as e:
             print(f"❌ Failed to download {filename}: {e}")
+            return []
+        except Exception as e:
+            import traceback
+
+            print(f"❌ Failed to download {filename}: {e}")
+            print(f"❌ Exception type: {type(e).__name__}")
+            print(f"❌ Traceback: {traceback.format_exc()}")
             return []
         finally:
             shutil.rmtree(download_dir, ignore_errors=True)
