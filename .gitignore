@@ -13,7 +13,8 @@ data/evidence-archive/
 data/lakehouse/
 
 # Audit database (DuckDB file)
-audit/*.duckdb
+.data/*.duckdb
+.data/*.db
 
 .vscode
 

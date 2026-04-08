@@ -1,13 +1,15 @@
-from flows.staging.staging_current_demographics import staging_current_demographics
-from flows.staging.staging_current_geography import staging_current_geography
-from flows.staging.staging_current_labels import staging_current_labels
-from flows.transformation.transformation_current_dim_geography import (
+from flows_staging.staging.staging_current_demographics import (
+    staging_current_demographics,
+)
+from flows_staging.staging.staging_current_geography import staging_current_geography
+from flows_staging.staging.staging_current_labels import staging_current_labels
+from flows_transformation.transformation.transformation_current_dim_geography import (
     transformation_current_dim_geography,
 )
-from flows.transformation.transformation_current_fact_demographics import (
+from flows_transformation.transformation.transformation_current_fact_demographics import (
     transformation_current_fact_demographics,
 )
-from flows.transformation.transformation_current_labels import (
+from flows_transformation.transformation.transformation_current_labels import (
     transformation_current_labels,
 )
 from prefect import flow
