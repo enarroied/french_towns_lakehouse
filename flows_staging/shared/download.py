@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Any
 
 import httpx
-
 from flows_staging.scrapers.models import FileMetadata
 
 
@@ -216,7 +215,7 @@ async def _download_and_upload(
                 None, _extract_file, file_path, download_dir
             )
 
-            records = await loop.run_in_executor(
+            return await loop.run_in_executor(
                 None,
                 _process_extracted_files,
                 extracted_files,
@@ -225,20 +224,12 @@ async def _download_and_upload(
                 staging_bucket,
                 target_folder,
             )
-            return records
 
         except httpx.HTTPStatusError as e:
             print(f"❌ HTTP error downloading {filename}: {e}")
             return []
         except Exception as e:
             print(f"❌ Failed to download {filename}: {e}")
-            return []
-        except Exception as e:
-            import traceback
-
-            print(f"❌ Failed to download {filename}: {e}")
-            print(f"❌ Exception type: {type(e).__name__}")
-            print(f"❌ Traceback: {traceback.format_exc()}")
             return []
         finally:
             shutil.rmtree(download_dir, ignore_errors=True)

@@ -64,7 +64,7 @@ downloads:
 scrapers:
   # url = the sitemap; city detail URLs are derived from it
   - name: "petites_cites"
-    module: "scrapers.scrape_petites_cites"
+    module: "flows_staging.scrapers.scrape_petites_cites"
     enabled: true
     domain: "labels"
     target_folder: "labels"
@@ -75,7 +75,7 @@ scrapers:
   # url = the human-readable listing page (also used as HTTP Referer)
   # endpoint = the XHR POST target (scraper-specific, lives in extra)
   - name: "villes_fleuries"
-    module: "scrapers.scrape_villes_fleuries"
+    module: "flows_staging.scrapers.scrape_villes_fleuries"
     enabled: true
     domain: "labels"
     target_folder: "labels"
@@ -86,7 +86,7 @@ scrapers:
     crawl_delay: 1
 
   - name: "plus_beaux_villages"
-    module: "scrapers.scrape_plus_beaux_villages"
+    module: "flows_staging.scrapers.scrape_plus_beaux_villages"
     enabled: true
     domain: "labels"
     target_folder: "labels"
@@ -94,7 +94,7 @@ scrapers:
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "villes_prudentes"
-    module: "scrapers.scrape_villes_prudentes"
+    module: "flows_staging.scrapers.scrape_villes_prudentes"
     enabled: true
     domain: "labels"
     target_folder: "labels"
@@ -102,7 +102,7 @@ scrapers:
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "village_etape"
-    module: "scrapers.scrape_village_etape"
+    module: "flows_staging.scrapers.scrape_village_etape"
     enabled: true
     domain: "labels"
     target_folder: "labels"
@@ -111,7 +111,7 @@ scrapers:
     concurrency: 3
 
   - name: "famille_plus"
-    module: "scrapers.scrape_famille_plus"
+    module: "flows_staging.scrapers.scrape_famille_plus"
     enabled: true
     domain: "labels"
     target_folder: "labels"
@@ -120,9 +120,9 @@ scrapers:
 
 custom_parsers:
   - name: "ville_sportive"
-    module: "custom_parsers.parse_ville_sportive"
+    module: "flows_staging.custom_parsers.parse_ville_sportive"
     enabled: true
     domain: "labels"
     target_folder: "labels"
-    input_dir: "custom_parsers/data_for_parsers/ville_active_sportive"
+    input_dir: "flows_staging/custom_parsers/data_for_parsers/ville_active_sportive"
     pdf_file: "2025-palmares.pdf"

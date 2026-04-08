@@ -4,18 +4,17 @@ from pathlib import Path
 
 import aiohttp
 from bs4 import BeautifulSoup
-
+from flows_staging.scrapers.models import FileMetadata
+from flows_staging.scrapers.utils import get_scraper_config
 from flows_staging.shared.download import _write_csv_to_temp
 from flows_staging.shared.download import calculate_md5
-from flows_staging.shared.minio import get_minio_client
 from flows_staging.shared.minio import STAGING_BUCKET
-from flows_staging.scrapers.models import FileMetadata
-from scrapers.utils import get_scraper_config
+from flows_staging.shared.minio import get_minio_client
 
 
 logger = logging.getLogger(__name__)
 
-MODULE = "scrapers.scrape_famille_plus"
+MODULE = "flows_staging.scrapers.scrape_famille_plus"
 FIELDNAMES = ["name", "department_code", "type"]
 _DESTINATION_TYPES = {"mer", "montagne", "nature", "ville"}
 

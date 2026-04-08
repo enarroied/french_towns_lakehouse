@@ -4,13 +4,11 @@ from pathlib import Path
 
 import pdfplumber
 import yaml
-
-
+from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.download import _write_csv_to_temp
 from flows_staging.shared.download import calculate_md5
-from flows_staging.shared.minio import get_minio_client
 from flows_staging.shared.minio import STAGING_BUCKET
-from flows_staging.scrapers.models import FileMetadata
+from flows_staging.shared.minio import get_minio_client
 
 
 FIELDNAMES = ["commune", "dept_code", "nb_lauriers"]
@@ -96,7 +94,7 @@ def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
     parser_config = next(
         s
         for s in config["custom_parsers"]
-        if s["module"] == "custom_parsers.parse_ville_sportive"
+        if s["module"] == "flows_staging.custom_parsers.parse_ville_sportive"
     )
     known_hashes = known_hashes or {}
 

@@ -14,8 +14,8 @@ import argparse
 import asyncio
 import logging
 
-from scrapers import run_all_scrapers
-from scrapers.utils import load_config
+from flows_staging.scrapers import run_all_scrapers
+from flows_staging.scrapers.utils import load_config
 
 
 def _parse_args() -> argparse.Namespace:

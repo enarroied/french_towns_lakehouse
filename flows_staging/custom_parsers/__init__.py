@@ -1,5 +1,4 @@
 import logging
-
 from importlib import import_module
 
 from flows_staging.shared import get_config
@@ -54,15 +53,20 @@ def run_parser(parser_name: str) -> dict:
         known_hashes = get_latest_hashes()
         name, result = run_single_parser(parser, known_hashes)
 
-        if isinstance(result, Exception) or (isinstance(result, str) and result):
-            logger.error("❌ %s: %s", name, result)
-            finalize_run(run_id=run_id, status="FAILED", number_files=0)
-            return {"name": name, "success": False, "error": str(result)}
-
         if result is None:
             logger.info("⏭️ %s skipped (no changes)", name)
             finalize_run(run_id=run_id, status="SUCCESS", number_files=0)
             return {"name": name, "success": True, "result": None}
+
+        if isinstance(result, Exception):
+            logger.error("❌ %s raised exception: %s", name, result)
+            finalize_run(run_id=run_id, status="FAILED", number_files=0)
+            return {"name": name, "success": False, "error": str(result)}
+
+        if isinstance(result, str):
+            logger.error("❌ %s failed: %s", name, result)
+            finalize_run(run_id=run_id, status="FAILED", number_files=0)
+            return {"name": name, "success": False, "error": result}
 
         log_upload(
             run_id=run_id,
@@ -88,5 +92,5 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:
-        raise SystemExit("Usage: python -m custom_parsers <parser_name>")
+        raise SystemExit("Usage: python -m flows_staging.custom_parsers <parser_name>")
     run_parser(sys.argv[1])
