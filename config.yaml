@@ -124,5 +124,5 @@ custom_parsers:
     enabled: true
     domain: "labels"
     target_folder: "labels"
-    input_dir: "flows_staging/custom_parsers/data_for_parsers/ville_active_sportive"
+    input_dir: "data_sources/ville_active_sportive"
     pdf_file: "2025-palmares.pdf"
