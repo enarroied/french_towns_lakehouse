@@ -1,13 +1,11 @@
 paths:
   temp_dir: "/tmp/french_towns_downloads"
-  input_dir: "input"
   output_dir: "data/processed"
   scraper_dir: "data/scraper"
   custom_dir: "data/custom"
 
 directories:
   - temp_dir
-  - input_dir
   - scraper_dir
   - custom_dir
 
