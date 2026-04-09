@@ -41,6 +41,9 @@ python_functions = ["test_*"]
 asyncio_mode = "auto"
 addopts = "-v --tb=short"
 pythonpath = ["."]
+markers = [
+    "integration: marks tests that require external services (e.g., Prefect API)",
+]
 [tool.ruff]
 line-length = 88
 target-version = "py310"

@@ -1,10 +1,7 @@
-import csv
-import io
 import json
 from datetime import datetime
 from datetime import timezone
 from pathlib import Path
-from typing import Any
 
 import boto3
 from botocore.config import Config
@@ -170,79 +167,3 @@ def upload_directory_to_staging(
                 )
 
     return uploaded_keys
-
-
-def write_csv_to_staging(
-    data: list[dict[str, Any]],
-    fieldnames: list[str],
-    filename: str,
-    subfolder: str = "",
-    metadata: dict | None = None,
-    pipeline_name: str | None = None,
-) -> str:
-    buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=fieldnames)
-    writer.writeheader()
-    writer.writerows(data)
-    csv_content = buffer.getvalue().encode("utf-8")
-
-    key = f"{subfolder}/{filename}" if subfolder else filename
-
-    client = get_minio_client()
-    ensure_bucket_exists(STAGING_BUCKET)
-    client.put_object(
-        Bucket=STAGING_BUCKET,
-        Key=key,
-        Body=csv_content,
-        ContentType="text/csv",
-    )
-
-    sidecar_metadata = metadata or {}
-    sidecar_metadata.setdefault("pipeline_name", pipeline_name)
-    sidecar_metadata.setdefault(
-        "collection_timestamp", datetime.now(timezone.utc).isoformat()
-    )
-
-    sidecar_key = f"{key}.meta.json"
-    client.put_object(
-        Bucket=STAGING_BUCKET,
-        Key=sidecar_key,
-        Body=json.dumps(sidecar_metadata, indent=2).encode("utf-8"),
-        ContentType="application/json",
-    )
-
-    return key
-
-
-def upload_and_cleanup(
-    file_path: Path,
-    key: str,
-    metadata: dict | None = None,
-    pipeline_name: str | None = None,
-) -> str:
-    client = get_minio_client()
-    ensure_bucket_exists(STAGING_BUCKET)
-
-    client.upload_file(
-        Filename=str(file_path),
-        Bucket=STAGING_BUCKET,
-        Key=key,
-    )
-
-    sidecar_metadata = metadata or {}
-    sidecar_metadata.setdefault("pipeline_name", pipeline_name)
-    sidecar_metadata.setdefault(
-        "collection_timestamp", datetime.now(timezone.utc).isoformat()
-    )
-
-    sidecar_key = f"{key}.meta.json"
-    client.put_object(
-        Bucket=STAGING_BUCKET,
-        Key=sidecar_key,
-        Body=json.dumps(sidecar_metadata, indent=2).encode("utf-8"),
-        ContentType="application/json",
-    )
-
-    file_path.unlink(missing_ok=True)
-
-    return key

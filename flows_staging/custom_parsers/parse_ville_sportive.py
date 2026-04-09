@@ -5,10 +5,7 @@ from pathlib import Path
 import pdfplumber
 import yaml
 from flows_staging.scrapers.models import FileMetadata
-from flows_staging.shared.download import _write_csv_to_temp
-from flows_staging.shared.download import calculate_md5
-from flows_staging.shared.minio import STAGING_BUCKET
-from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.download import upload_scraper_output
 
 
 FIELDNAMES = ["commune", "dept_code", "nb_lauriers"]
@@ -115,42 +112,12 @@ def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
         print("No data parsed")
         return None
 
-    temp_dir = Path("/tmp/french_towns_downloads")
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = _write_csv_to_temp(
+    return upload_scraper_output(
         data=rows,
         fieldnames=FIELDNAMES,
-        base_name=parser_config["name"],
-        temp_dir=temp_dir,
-    )
-
-    md5 = calculate_md5(csv_path)
-    size_mb = round(csv_path.stat().st_size / 1024**2, 2)
-    base_name = f"{parser_config['name']}.csv"
-
-    if base_name in known_hashes and known_hashes[base_name].get("md5") == md5:
-        print(f"⏭️ Skipping {parser_config['name']} — hash unchanged")
-        csv_path.unlink()
-        return None
-
-    minio_client = get_minio_client()
-    key = f"{parser_config.get('target_folder', 'labels')}/{csv_path.name}"
-
-    minio_client.upload_file(
-        Filename=str(csv_path),
-        Bucket=STAGING_BUCKET,
-        Key=key,
-    )
-    csv_path.unlink()
-
-    print(f"Uploaded → {key}")
-
-    return FileMetadata(
-        key=key,
-        base_name=base_name,
-        filename_timestamp=csv_path.name,
-        size_mb=size_mb,
-        md5=md5,
+        scraper_name=parser_config["name"],
+        target_folder=parser_config.get("target_folder", "labels"),
+        known_hashes=known_hashes,
     )
 
 

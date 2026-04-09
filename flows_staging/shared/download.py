@@ -10,16 +10,12 @@ from typing import Any
 
 import httpx
 from flows_staging.scrapers.models import FileMetadata
+from flows_staging.shared.minio import get_minio_client
 
 
 ARCHIVE_PREFIX = "evidence-archive/"
 EVIDENCE_BUCKET = "evidence-archive"
-
-
-def _timestamped_name(file_path: Path) -> str:
-    """Generate a timestamped filename while preserving the original stem and suffix."""
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    return f"{file_path.stem}_{ts}{file_path.suffix}"
+TEMP_DOWNLOAD_DIR = Path("/tmp/french_towns_downloads")
 
 
 def _timestamped_csv_name(base_name: str) -> str:
@@ -37,7 +33,7 @@ def calculate_md5(file_path: Path) -> str:
     return md5_hash.hexdigest()
 
 
-def _write_csv_to_temp(
+def write_csv_to_temp(
     data: list[dict],
     fieldnames: list[str],
     base_name: str,
@@ -50,6 +46,43 @@ def _write_csv_to_temp(
         writer.writeheader()
         writer.writerows(data)
     return csv_path
+
+
+def upload_scraper_output(
+    data: list[dict],
+    fieldnames: list[str],
+    scraper_name: str,
+    target_folder: str,
+    known_hashes: dict,
+    temp_dir: Path = TEMP_DOWNLOAD_DIR,
+) -> FileMetadata | None:
+    """
+    Write data to CSV, check hash against known_hashes, upload to MinIO, and cleanup.
+    Returns None if hash unchanged (file should be skipped), FileMetadata on success.
+    """
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = write_csv_to_temp(data, fieldnames, scraper_name, temp_dir)
+
+    md5 = calculate_md5(csv_path)
+    base_name = f"{scraper_name}.csv"
+
+    if _should_skip_file(base_name, md5, known_hashes):
+        print(f"⏭️ Skipping {scraper_name} — hash unchanged")
+        csv_path.unlink()
+        return None
+
+    minio_client = get_minio_client()
+    key = f"{target_folder}/{csv_path.name}"
+
+    _upload_file(csv_path, minio_client, "staging-current", key)
+
+    return FileMetadata(
+        key=key,
+        base_name=base_name,
+        filename_timestamp=csv_path.name,
+        size_mb=round(csv_path.stat().st_size / 1024**2, 2),
+        md5=md5,
+    )
 
 
 def _archive_old_file(
