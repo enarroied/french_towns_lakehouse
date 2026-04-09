@@ -1,33 +1,46 @@
 # French Towns LakeHouse
 
+- [French Towns LakeHouse](#french-towns-lakehouse)
+  - [What does this build?](#what-does-this-build)
+  - [Technology Stack](#technology-stack)
+  - [Setup](#setup)
+  - [Pipeline Architecture](#pipeline-architecture)
+    - [MinIO Bucket Structure](#minio-bucket-structure)
+    - [dbt Model Layers](#dbt-model-layers)
+  - [Naming Conventions](#naming-conventions)
+    - [Pipeline Naming](#pipeline-naming)
+    - [Domain Categories](#domain-categories)
+  - [Running the Pipeline](#running-the-pipeline)
+    - [Run All Flows (for testing)](#run-all-flows-for-testing)
+    - [Run Individual Flows](#run-individual-flows)
+    - [Start a dev worker](#start-a-dev-worker)
+    - [What the Pipeline Does](#what-the-pipeline-does)
+    - [Run dbt in isolation](#run-dbt-in-isolation)
+  - [Prefect Deployments](#prefect-deployments)
+  - [Project Structure](#project-structure)
+  - [Data Sources](#data-sources)
+  - [Query the LakeHouse](#query-the-lakehouse)
+  - [Documentation](#documentation)
+  - [Development](#development)
+    - [Running Tests](#running-tests)
+    - [Linting \& Code Quality](#linting--code-quality)
+    - [Adding a New Scraper](#adding-a-new-scraper)
+
 A self-hosted data lakehouse of French municipal data. The pipeline downloads open government datasets, transforms them into clean Parquet files using DuckDB and dbt, and uploads the results to MinIO object storage.
 
 **dbt model documentation:** [https://enarroied.github.io/french_towns_lakehouse/](https://enarroied.github.io/french_towns_lakehouse/)
 
 ---
 
-## Quick Links
-
-| Topic | Location |
-|-------|----------|
-| [Project Structure](#project-structure) | Directory layout |
-| [Naming Conventions](#naming-conventions) | Pipelines, buckets, models |
-| [Pipeline Architecture](#pipeline-architecture) | Staging → Transformation → Integration |
-| [Setup & Running](#setup) | Prerequisites, installation, execution |
-| [Deployment](#prefect-deployments) | Deploying flows to Prefect |
-| [Full Specifications](private/Specifications/specifications.md) | Detailed design document |
-
----
-
 ## What does this build?
 
-Three analytics-ready tables available as Parquet files:
+This is a work in progress.
 
-- `dim_communes_france` — all French communes with geometry, administrative hierarchy, spatial metrics, and flags
-- `fact_population` — historical population per commune by census year
-- `fact_salaries` — mean annual salary by sex per commune (2023)
+The goal is to build an data LakeHouse using public data. The LakeHouse contains information about French communes.
 
-All tables join on the INSEE commune code (`id`, `CHAR(5)`).
+The pipeline follows a medallion architecture, with 3 layers.
+
+The data model follows a star schema.
 
 ---
 
@@ -217,32 +230,40 @@ Each flow can be deployed independently and scheduled with cron or interval sche
 
 ```
 french_towns_lakehouse/
-├── flows/                           # Prefect orchestration
+├── flows/                           # Main pipeline orchestration
+├── flows_staging/                   # Staging pipelines + scrapers
 │   ├── shared/                      # Shared utilities
 │   │   ├── config.py                # Config loader
-│   │   ├── minio.py                 # MinIO helpers + sidecar generation
-│   │   ├── download.py               # Async download utilities
-│   │   └── dbt.py                   # dbt runner utilities
-│   ├── staging/                     # Staging pipelines
-│   │   ├── staging_current_geography.py
-│   │   ├── staging_current_demographics.py
-│   │   └── staging_current_labels.py
-│   └── transformation/               # Transformation pipelines
-│       ├── transformation_current_dim_geography.py
-│       ├── transformation_current_fact_demographics.py
-│       └── transformation_current_labels.py
-├── french_towns_dbt/                # dbt project
+│   │   ├── minio.py                 # MinIO helpers
+│   │   ├── download.py              # Download + upload utilities
+│   │   ├── audit.py                 # Audit logging (Prefect tasks)
+│   │   └── __init__.py
+│   ├── scrapers/                    # Web scrapers
+│   │   ├── scrape_villes_fleuries.py
+│   │   ├── scrape_village_etape.py
+│   │   ├── scrape_petites_cites.py
+│   │   ├── scrape_famille_plus.py
+│   │   └── ...
+│   ├── staging/                     # Staging flow definitions
+│   └── custom_parsers/              # PDF parsers
+│       └── parse_ville_sportive.py
+├── flows_transformation/           # Transformation pipelines
+├── flows_integration/               # Integration pipelines
+├── french_towns_dbt/               # dbt project
 │   └── models/
-│       ├── staging/                 # Raw staging models
-│       ├── validated/               # Schema-enforced models
+│       ├── staging/                # Raw staging models
+│       ├── validated/              # Schema-enforced models
 │       │   ├── dim/
 │       │   └── fact/
-│       └── lakehouse/               # SCD Type 2 models
-├── audit/                          # Audit database
-│   └── audit_schema.sql            # audit.duckdb schema
+│       └── lakehouse/              # SCD Type 2 models
+├── tests/                          # Test suite (145 tests)
+│   ├── conftest.py
+│   ├── shared/                     # Tests for shared modules
+│   ├── scrapers/                   # Tests for web scrapers
+│   └── custom_parsers/             # Tests for PDF parsers
 ├── config.yaml                     # Pipeline configuration
 ├── docker-compose.yml              # MinIO service
-└── pyproject.toml
+└── pyproject.toml                 # Project config + linting
 ```
 
 ---
@@ -306,6 +327,42 @@ ORDER BY gap_pct DESC;
 
 - **dbt Docs:** Auto-generated on push to `master` → [GitHub Pages](https://enarroied.github.io/french_towns_lakehouse/)
 - **Full Specifications:** [private/Specifications/specifications.md](private/Specifications/specifications.md)
-- **Audit Database:** [audit/README.md](audit/README.md)
-- **Custom Parsers:** [custom_parsers/README.md](custom_parsers/README.md)
-- **Integration Pipelines:** [flows/integration/README.md](flows/integration/README.md)
+- **Custom Parsers:** [flows_staging/custom_parsers/README.md](flows_staging/custom_parsers/README.md)
+- **Integration Pipelines:** [flows_integration/integration/README.md](flows_integration/integration/README.md)
+
+---
+
+## Development
+
+### Running Tests
+
+```bash
+# Run all tests
+uv run pytest tests/ -v
+
+# Skip integration tests (require Prefect API)
+uv run pytest tests/ -v -m "not integration"
+
+# Run specific test file
+uv run pytest tests/scrapers/test_scrape_villes_fleuries.py -v
+```
+
+### Linting & Code Quality
+
+```bash
+# Check linting
+ruff check flows_staging/ tests/
+
+# Auto-fix linting issues
+ruff check flows_staging/ tests/ --fix
+
+# Check for dead code
+vulture flows_staging --min-confidence 80
+```
+
+### Adding a New Scraper
+
+1. Create scraper in `flows_staging/scrapers/scrape_<name>.py`
+2. Use `upload_scraper_output()` from `flows_staging.shared.download` for CSV upload
+3. Add config entry in `config.yaml` under `scrapers`
+4. Add tests in `tests/scrapers/test_scrape_<name>.py`

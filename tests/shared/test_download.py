@@ -6,31 +6,8 @@ from flows_staging.shared.download import _get_file_location
 from flows_staging.shared.download import _process_extracted_files
 from flows_staging.shared.download import _should_skip_file
 from flows_staging.shared.download import _timestamped_csv_name
-from flows_staging.shared.download import _timestamped_name
-from flows_staging.shared.download import _write_csv_to_temp
 from flows_staging.shared.download import calculate_md5
-
-
-class TestTimestampedName:
-    """Tests for _timestamped_name function."""
-
-    def test_preserves_stem_and_suffix(self):
-        """File stem and suffix should be preserved in the new name."""
-        file_path = Path("data.csv")
-        result = _timestamped_name(file_path)
-
-        assert result.startswith("data")
-        assert result.endswith(".csv")
-
-    def test_includes_timestamp(self):
-        """Result should include a timestamp component."""
-        file_path = Path("report.pdf")
-        result = _timestamped_name(file_path)
-
-        # Timestamp format: YYYYMMDD_HHMMSS (14 chars)
-        assert len(result) > len("report.pdf")
-        # Check timestamp pattern: 8 digits, underscore, 6 digits
-        assert "_" in result
+from flows_staging.shared.download import write_csv_to_temp
 
 
 class TestTimestampedCsvName:
@@ -81,14 +58,14 @@ class TestCalculateMD5:
 
 
 class TestWriteCsvToTemp:
-    """Tests for _write_csv_to_temp function."""
+    """Tests for write_csv_to_temp function."""
 
     def test_creates_csv_file(self, tmp_path):
         """Should create a CSV file in the temp directory."""
         data = [{"name": "Alice", "age": "30"}]
         fieldnames = ["name", "age"]
 
-        result = _write_csv_to_temp(data, fieldnames, "test", tmp_path)
+        result = write_csv_to_temp(data, fieldnames, "test", tmp_path)
 
         assert result.exists()
         assert result.suffix == ".csv"
@@ -98,7 +75,7 @@ class TestWriteCsvToTemp:
         data = [{"name": "Alice"}]
         fieldnames = ["name", "age"]
 
-        result = _write_csv_to_temp(data, fieldnames, "test", tmp_path)
+        result = write_csv_to_temp(data, fieldnames, "test", tmp_path)
 
         content = result.read_text()
         assert "name" in content
@@ -108,7 +85,7 @@ class TestWriteCsvToTemp:
         data = [{"name": "Alice", "age": "30"}]
         fieldnames = ["name", "age"]
 
-        result = _write_csv_to_temp(data, fieldnames, "test", tmp_path)
+        result = write_csv_to_temp(data, fieldnames, "test", tmp_path)
 
         content = result.read_text()
         assert "Alice" in content
@@ -119,7 +96,7 @@ class TestWriteCsvToTemp:
         data = [{"name": "Bob"}]
         fieldnames = ["name"]
 
-        result = _write_csv_to_temp(data, fieldnames, "myfile", tmp_path)
+        result = write_csv_to_temp(data, fieldnames, "myfile", tmp_path)
 
         assert isinstance(result, Path)
         assert result.name.startswith("myfile_")
