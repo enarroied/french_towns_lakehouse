@@ -2,6 +2,7 @@ import asyncio
 import logging
 from importlib import import_module
 
+from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared import get_config
 from flows_staging.shared import get_scrapers
 from flows_staging.shared.audit import finalize_run
@@ -18,11 +19,15 @@ logger = logging.getLogger(__name__)
 
 
 @task
-def run_single_scraper(scraper: dict, known_hashes: dict) -> tuple[str, str | None]:
-    """Run a single scraper and return (scraper_name, error).
+def run_single_scraper(
+    scraper: dict, known_hashes: dict
+) -> tuple[str, FileMetadata | str | None]:
+    """Run a single scraper and return (scraper_name, result).
 
-    Returns (name, error_message) on failure, (name, None) on success.
-    The FileMetadata is stored in Prefect context for log_upload to access.
+    Returns:
+        - (name, FileMetadata) on success
+        - (name, None) if skipped (no changes)
+        - (name, "error message") on failure
     """
     name = scraper["name"]
     module = import_module(scraper["module"])
@@ -68,7 +73,7 @@ def staging_current_labels() -> list[tuple]:
         failed = 0
 
         for name, result in results:
-            if isinstance(result, Exception):
+            if isinstance(result, str):
                 logger.error("❌ %s: %s", name, result)
                 failed += 1
             elif result is None:
