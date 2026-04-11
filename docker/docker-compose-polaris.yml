@@ -1,0 +1,19 @@
+services:
+  polaris:
+    image: apache/polaris:latest
+    container_name: polaris-lakehouse
+    ports:
+      - "8181:8181"
+    environment:
+      CLIENT_ID: ${POLARIS_CLIENT_ID}
+      CLIENT_SECRET: ${POLARIS_CLIENT_SECRET}
+      POLARIS_BOOTSTRAP_CREDENTIALS: default-realm,${POLARIS_CLIENT_ID},${POLARIS_CLIENT_SECRET}
+      POLARIS_FEATURES_ALLOW_SETTING_S3_ENDPOINTS: "true"
+    networks:
+      - lakehouse-net
+    restart: unless-stopped
+
+networks:
+  lakehouse-net:
+    external: true
+    name: docker_lakehouse-net
