@@ -6,13 +6,11 @@ services:
       - "19000:9000"   # API / S3 endpoint
       - "19001:9001"   # Web console (https://localhost:9001 in browser)
     environment:
-      MINIO_ROOT_USER:     ${MINIO_ROOT_USER:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
-      # auto-create buckets on startup:
+      MINIO_ROOT_USER:     ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_DEFAULT_BUCKETS: staging-current,staging-historical,validated,validated-historical,rejected,evidence-archive,lakehouse
     volumes:
-      - ./data/minio:/data
-      - ./input:/input:ro   # ro: Read-only
+      - ~/.lakehouse/minio:/data
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -21,3 +19,9 @@ services:
       retries: 3
       start_period: 20s
     restart: unless-stopped
+    networks:
+      - lakehouse-net
+
+networks:
+  lakehouse-net:
+    driver: bridge
