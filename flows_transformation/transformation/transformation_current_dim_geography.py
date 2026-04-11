@@ -4,7 +4,7 @@ from prefect import flow
 from prefect import task
 
 
-MODEL_SELECTOR = "validated_dim_dim_communes_france"
+MODEL_SELECTOR = "dim_communes_france"
 
 
 @task

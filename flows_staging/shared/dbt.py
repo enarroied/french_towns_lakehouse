@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from flows_staging.shared.config import DBT_PROFILES_ARGS
@@ -7,16 +8,20 @@ from flows_staging.shared.config import DBT_PROJECT_DIR
 def run_dbt_command(
     args: list[str], failure_message: str
 ) -> subprocess.CompletedProcess:
-    result = subprocess.run(
-        ["dbt"] + args + DBT_PROFILES_ARGS,
-        cwd=DBT_PROJECT_DIR,
-        check=False,
-        capture_output=False,
-        text=True,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(failure_message)
-    return result
+    env = os.environ.copy()
+    try:
+        return subprocess.run(
+            ["dbt"] + args + DBT_PROFILES_ARGS,
+            cwd=DBT_PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            check=True,  # Raises CalledProcessError if returncode != 0
+        )
+    except subprocess.CalledProcessError as e:
+        # e.stdout and e.stderr contain the output from the failed process
+        error_detail = f"{e.stdout}\n{e.stderr}".strip()
+        raise RuntimeError(f"{failure_message}\n{error_detail}") from e
 
 
 def stage_external_sources() -> None:
@@ -35,8 +40,8 @@ def run_models(model_selector: str) -> None:
 
 def test_models(model_selector: str) -> None:
     run_dbt_command(
-        ["test", "--select", model_selector],
-        f"dbt test --select {model_selector} failed — check logs above",
+        ["test", "--select", model_selector, "--indirect-selection", "cautious"],
+        f"dbt test --select {model_selector} --indirect-selection cautious failed — check logs above",
     )
 
 
