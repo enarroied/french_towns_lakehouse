@@ -53,6 +53,7 @@ The data model follows a star schema.
 | Transformation | dbt-core + dbt-duckdb |
 | Compute | DuckDB |
 | Object Storage | MinIO (S3-compatible) |
+| Iceberg Catalog | Apache Polaris |
 | Package Manager | uv |
 
 ---
@@ -71,21 +72,91 @@ uv pip install -e .
 cd french_towns_dbt && dbt deps && cd ..
 ```
 
-Create `.env`:
+Create `.env` (see `.env.example` for required variables):
 ```bash
-MINIO_ENDPOINT=http://localhost:19000
-MINIO_ROOT_USER=minio_user
-MINIO_ROOT_PASSWORD=minioadmin
-
-AWS_ACCESS_KEY_ID=minio_user
-AWS_SECRET_ACCESS_KEY=minioadmin
-AWS_ENDPOINT=localhost:19000
-AWS_DEFAULT_REGION=us-east-1
+cp .env.example .env
+# Edit .env with your credentials
 ```
 
-Start MinIO:
+Start infrastructure services:
 ```bash
-docker compose up -d
+# Start MinIO first (creates the shared network)
+docker compose -f docker/docker-compose-minio.yml up -d
+
+# Start Polaris (Iceberg catalog)
+docker compose -f docker/docker-compose-polaris.yml --env-file .env up -d
+```
+
+---
+
+## Infrastructure Services
+
+### MinIO
+
+S3-compatible object storage for the data lake.
+
+| Access Point | URL |
+|--------------|-----|
+| S3 API | localhost:19000 |
+| Web Console | http://localhost:19001 |
+
+MinIO buckets are auto-created on startup.
+
+### Apache Polaris
+
+Iceberg REST catalog for managing Iceberg tables. Enables ACID transactions, time-travel queries, and schema evolution on S3-compatible storage.
+
+| Access Point | URL |
+|--------------|-----|
+| REST API | localhost:8181 |
+| Health Check | http://localhost:8181/api.catalog/v1/health |
+
+#### Setup
+
+1. Start MinIO first:
+   ```bash
+   docker compose -f docker/docker-compose-minio.yml up -d
+   ```
+
+2. Start Polaris:
+   ```bash
+   docker compose -f docker/docker-compose-polaris.yml --env-file .env up -d
+   ```
+
+3. Verify Polaris is running:
+   ```bash
+   curl http://localhost:8181/api.catalog/v1/health
+   ```
+   Expected response: `{"failures":[],"healthy":true}`
+
+4. Configure DuckDB to use Polaris:
+   ```sql
+   INSTALL iceberg;
+   LOAD iceberg;
+   
+   CREATE SECRET (
+       TYPEiceberg,
+       HOST 'localhost',
+       PORT 8181,
+       URI 'http://localhost:8181',
+       CLIENT_ID 'your_client_id',
+       CLIENT_SECRET 'your_client_secret'
+   );
+   ```
+
+#### Polaris Credentials
+
+Credentials are configured via `.env`:
+
+```bash
+POLARIS_CLIENT_ID=your_client_id
+POLARIS_CLIENT_SECRET=your_client_secret
+```
+
+#### Stopping Services
+
+```bash
+docker compose -f docker/docker-compose-minio.yml -f docker/docker-compose-polaris.yml --env-file .env down
 ```
 
 ---
@@ -98,10 +169,10 @@ You can access your MinIO service from your browser:
 
 The pipeline uploads parquet files to the `validated` bucket. You can browse uploaded files in the web console or query them directly via the S3 API.
 
-To stop MinIO:
+To stop services:
 
 ```bash
-docker compose down
+docker compose -f docker/docker-compose-minio.yml -f docker/docker-compose-polaris.yml --env-file .env down
 ```
 
 This is how the process is supposed to look (diagram from specifications, work in progress, changes may still happen):
@@ -262,7 +333,10 @@ french_towns_lakehouse/
 │   ├── scrapers/                   # Tests for web scrapers
 │   └── custom_parsers/             # Tests for PDF parsers
 ├── config.yaml                     # Pipeline configuration
-├── docker-compose.yml              # MinIO service
+├── docker/                         # Docker configs
+│   ├── docker-compose-minio.yml   # MinIO S3 storage
+│   └── docker-compose-polaris.yml  # Polaris Iceberg catalog
+├── .env.example                   # Environment variables template
 └── pyproject.toml                 # Project config + linting
 ```
 
