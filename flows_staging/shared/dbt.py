@@ -40,8 +40,8 @@ def run_models(model_selector: str) -> None:
 
 def test_models(model_selector: str) -> None:
     run_dbt_command(
-        ["test", "--select", model_selector],
-        f"dbt test --select {model_selector} failed — check logs above",
+        ["test", "--select", model_selector, "--indirect-selection", "cautious"],
+        f"dbt test --select {model_selector} --indirect-selection cautious failed — check logs above",
     )
 
 

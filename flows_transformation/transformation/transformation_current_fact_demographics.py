@@ -4,7 +4,7 @@ from prefect import flow
 from prefect import task
 
 
-MODEL_SELECTOR = "fact_population,fact_salaries"
+MODEL_SELECTOR = "fact_population fact_salaries"
 
 
 @task

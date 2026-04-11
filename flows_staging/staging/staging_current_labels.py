@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from importlib import import_module
 
@@ -18,8 +17,8 @@ from prefect import task
 logger = logging.getLogger(__name__)
 
 
-@task
-def run_single_scraper(
+@task(retries=2, retry_delay_seconds=30)
+async def run_single_scraper(
     scraper: dict, known_hashes: dict
 ) -> tuple[str, FileMetadata | str | None]:
     """Run a single scraper and return (scraper_name, result).
@@ -34,7 +33,7 @@ def run_single_scraper(
     config = get_config()
 
     try:
-        metadata = asyncio.run(module.run(config, known_hashes))
+        metadata = await module.run(config, known_hashes)
         if metadata is None:
             logger.info("⏭️ %s skipped (no changes)", name)
             return (name, None)

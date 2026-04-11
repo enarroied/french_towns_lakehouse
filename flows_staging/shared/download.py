@@ -73,6 +73,7 @@ def upload_scraper_output(
 
     minio_client = get_minio_client()
     key = f"{target_folder}/{csv_path.name}"
+    size_mb = round(csv_path.stat().st_size / 1024**2, 2)
 
     _upload_file(csv_path, minio_client, "staging-current", key)
 
@@ -80,7 +81,7 @@ def upload_scraper_output(
         key=key,
         base_name=base_name,
         filename_timestamp=csv_path.name,
-        size_mb=round(csv_path.stat().st_size / 1024**2, 2),
+        size_mb=size_mb,
         md5=md5,
     )
 
