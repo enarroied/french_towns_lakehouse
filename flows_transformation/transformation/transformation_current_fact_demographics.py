@@ -1,5 +1,6 @@
 from flows_staging.shared.dbt import run_and_test
 from flows_staging.shared.dbt import stage_external_sources
+from flows_transformation.shared.database import ensure_work_database_exists
 from prefect import flow
 from prefect import task
 
@@ -19,6 +20,7 @@ def run_fact_models() -> None:
 
 @flow(name="transformation_current_fact_demographics")
 def transformation_current_fact_demographics() -> None:
+    ensure_work_database_exists()
     run_stage_external_sources()
     run_fact_models()
 

@@ -1,7 +1,9 @@
 import asyncio
 import logging
 from importlib import import_module
+from typing import Any
 
+from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared import get_config
 from flows_staging.shared.audit import finalize_run
 from flows_staging.shared.audit import get_latest_hashes
@@ -16,8 +18,41 @@ from prefect import task
 logger = logging.getLogger(__name__)
 
 
+async def run_all_scrapers(config: dict[str, Any]) -> list[dict[str, Any]]:
+    """Run all enabled scrapers from config."""
+    results = []
+    enabled = [s for s in config.get("scrapers", []) if s.get("enabled", True)]
+    known_hashes = get_latest_hashes()
+
+    for scraper in enabled:
+        result = await run_single_scraper_async(scraper, known_hashes)
+        results.append(result)
+
+    return results
+
+
+async def run_single_scraper_async(scraper: dict, known_hashes: dict) -> dict[str, Any]:
+    """Run a single scraper asynchronously and return result dict."""
+    name = scraper["name"]
+    module = import_module(scraper["module"])
+    config = get_config()
+
+    try:
+        metadata = await module.run(config, known_hashes)
+        if metadata is None:
+            logger.info("⏭️ %s skipped (no changes)", name)
+            return {"name": name, "success": True, "result": None}
+        logger.info("✅ %s → %s", name, metadata.key)
+        return {"name": name, "success": True, "result": metadata}
+    except Exception as exc:
+        logger.error("❌ %s failed: %s", name, exc)
+        return {"name": name, "success": False, "error": str(exc)}
+
+
 @task
-def run_single_scraper(scraper: dict, known_hashes: dict) -> tuple[str, str | None]:
+def run_single_scraper(
+    scraper: dict, known_hashes: dict
+) -> tuple[str, FileMetadata | str | None]:
     """Run a single scraper and return (scraper_name, error_or_metadata)."""
     name = scraper["name"]
     module = import_module(scraper["module"])
@@ -63,6 +98,11 @@ def run_scraper(scraper_name: str) -> dict:
             logger.info("⏭️ %s skipped (no changes)", name)
             finalize_run(run_id=run_id, status="SUCCESS", number_files=0)
             return {"name": name, "success": True, "result": None}
+
+        if isinstance(result, str):
+            logger.error("❌ %s: %s", name, result)
+            finalize_run(run_id=run_id, status="FAILED", number_files=0)
+            return {"name": name, "success": False, "error": result}
 
         log_upload(
             run_id=run_id,

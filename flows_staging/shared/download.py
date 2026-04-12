@@ -13,7 +13,6 @@ from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.minio import get_minio_client
 
 
-ARCHIVE_PREFIX = "evidence-archive/"
 EVIDENCE_BUCKET = "evidence-archive"
 TEMP_DOWNLOAD_DIR = Path("/tmp/french_towns_downloads")
 
@@ -240,6 +239,10 @@ async def _download_and_upload(
     download_dir = temp_dir / uuid.uuid4().hex
     download_dir.mkdir(parents=True, exist_ok=True)
     file_path = download_dir / filename
+
+    if url is None:
+        print("⚠️ No URL provided for download item, skipping")
+        return []
 
     async with semaphore:
         try:

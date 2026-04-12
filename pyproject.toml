@@ -9,8 +9,10 @@ dependencies = [
     "beautifulsoup4>=4.14.3",
     "boto3>=1.42.51",
     "clear>=2.0.0",
+    "cryptography>=46.0.5",
     "dbt-core>=1.11.6",
     "dbt-duckdb>=1.10.1",
+    "deepdiff>=8.6.1",
     "duckdb>=1.4.4",
     "folium>=0.20.0",
     "geopandas>=1.1.3",
@@ -22,8 +24,10 @@ dependencies = [
     "pdfplumber>=0.11.9",
     "prefect>=3.6.17",
     "pyarrow>=23.0.1",
+    "pygments>=2.19.2",
     "pyproj>=3.7.2",
     "pyyaml>=6.0.3",
+    "requests>=2.32.5",
 ]
 
 [dependency-groups]
@@ -32,6 +36,10 @@ dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.25.0",
     "pytest-mock>=3.14.0",
+    "vulture>=2.16",
+    "pip-audit>=2.10.0",
+    "ty>=0.0.29",
+    "pre-commit>=4.0.0",
 ]
 
 [tool.pytest.ini_options]
@@ -81,3 +89,14 @@ convention = "google"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["flows*", "scrapers*", "custom_parsers*"]
+
+[tool.ty.rules]
+no-matching-overload = "ignore"
+not-iterable = "ignore"
+invalid-return-type = "ignore"
+not-subscriptable = "ignore"
+
+[tool.ty.src]
+exclude = [
+    "tests/**",
+]

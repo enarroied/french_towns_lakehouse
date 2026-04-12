@@ -45,7 +45,7 @@ async def run_single_scraper(
 
 
 @flow(name="staging_current_labels")
-def staging_current_labels() -> list[tuple]:
+def staging_current_labels() -> list[tuple[str, FileMetadata | str | None]]:
     """Run all enabled scrapers and log results to audit DB."""
     preflight()
     run_id = init_run(domain="labels", technical_type="SCRAPER")
@@ -65,13 +65,13 @@ def staging_current_labels() -> list[tuple]:
             return []
 
         futures = [run_single_scraper.submit(s, known_hashes) for s in enabled]
-        results = [f.result() for f in futures]
+        results = [f.result() for f in futures]  # type: ignore[misc]
 
         upload_futures = []
         file_count = 0
         failed = 0
 
-        for name, result in results:
+        for name, result in results:  # type: ignore[union-attr]
             if isinstance(result, str):
                 logger.error("❌ %s: %s", name, result)
                 failed += 1

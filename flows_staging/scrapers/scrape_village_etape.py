@@ -25,7 +25,10 @@ def _urls_from_json_attributes(soup: BeautifulSoup) -> list[str]:
     links = []
     for element in soup.find_all(attrs={"data-ha-element-link": True}):
         try:
-            info = json.loads(element["data-ha-element-link"])
+            raw = element.get("data-ha-element-link")
+            if not isinstance(raw, str):
+                continue
+            info = json.loads(raw)
             if "url" in info:
                 links.append(info["url"])
         except (json.JSONDecodeError, KeyError):
@@ -82,7 +85,10 @@ def has_next_page(soup: BeautifulSoup, current_page: int) -> bool:
 def _parse_region_and_road(soup: BeautifulSoup) -> tuple[str | None, str | None]:
     """Extract region and road from the inline icon list."""
     icon_list = soup.find("ul", class_="elementor-icon-list-items")
-    if not icon_list or "elementor-inline-items" not in icon_list.get("class", []):
+    if not icon_list:
+        return None, None
+    classes = icon_list.get("class")
+    if not isinstance(classes, list) or "elementor-inline-items" not in classes:
         return None, None
 
     texts = [

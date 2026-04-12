@@ -46,7 +46,12 @@ def parse_destinations(html: str) -> list[dict]:
     for article in soup.find_all("article", class_="node--type-destination"):
         dest_type = _parse_destination_type(article)
         h5 = article.find("h5")
-        name = h5.find("a").get_text(strip=True) if h5 and h5.find("a") else None
+        if not h5:
+            continue
+        a = h5.find("a")
+        if not a:
+            continue
+        name = a.get_text(strip=True)
         dept = _parse_department_code(article)
 
         if name and dept and dest_type:

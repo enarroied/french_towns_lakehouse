@@ -28,10 +28,14 @@ def _extract_text(html: str) -> str:
 def _extract_flower_count(html: str) -> int:
     """Extract the flower count from an image src path (e.g. ``.../3.png`` → 3)."""
     img = BeautifulSoup(html, "html.parser").find("img")
-    if img and img.get("src"):
-        match = re.search(r"/(\d+)\.png$", img["src"])
-        if match:
-            return int(match.group(1))
+    if not img:
+        return 0
+    src = img.get("src")
+    if not isinstance(src, str):
+        return 0
+    match = re.search(r"/(\d+)\.png$", src)
+    if match:
+        return int(match.group(1))
     return 0
 
 

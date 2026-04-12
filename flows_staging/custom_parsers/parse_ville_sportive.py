@@ -60,10 +60,12 @@ def extract_col_tokens(path: Path) -> dict:
                 for w in ws:
                     c = col_index(w["x0"])
                     if c != current_col:
-                        _flush(current_col, chunk, col_tokens, pnum)
+                        if current_col is not None:
+                            _flush(current_col, chunk, col_tokens, pnum)
                         current_col, chunk = c, []
                     chunk.append(w)
-                _flush(current_col, chunk, col_tokens, pnum)
+                if current_col is not None:
+                    _flush(current_col, chunk, col_tokens, pnum)
     return col_tokens
 
 
