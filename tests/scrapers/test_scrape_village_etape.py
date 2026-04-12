@@ -1,6 +1,5 @@
 """Tests for flows_staging.scrapers.scrape_village_etape module."""
 
-
 import pytest
 from bs4 import BeautifulSoup
 from flows_staging.scrapers.scrape_village_etape import _parse_practical_info

@@ -1,6 +1,5 @@
 """Tests for flows_staging.scrapers.scrape_villes_fleuries module."""
 
-
 from flows_staging.scrapers.scrape_villes_fleuries import _extract_flower_count
 from flows_staging.scrapers.scrape_villes_fleuries import _extract_text
 from flows_staging.scrapers.scrape_villes_fleuries import build_search_payload

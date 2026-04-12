@@ -1,6 +1,5 @@
 """Tests for flows_staging.shared.config module."""
 
-
 from flows_staging.shared.config import get_config
 from flows_staging.shared.config import get_downloads
 from flows_staging.shared.config import get_paths
