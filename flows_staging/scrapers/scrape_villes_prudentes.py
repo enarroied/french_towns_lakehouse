@@ -26,7 +26,10 @@ def parse_table(html: str) -> list[dict]:
         return []
 
     results = []
-    for row in table.find("tbody").find_all("tr"):
+    tbody = table.find("tbody")
+    if not tbody:
+        return []
+    for row in tbody.find_all("tr"):
         cells = row.find_all("td")
         if len(cells) < 5:
             continue

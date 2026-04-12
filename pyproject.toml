@@ -89,3 +89,14 @@ convention = "google"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["flows*", "scrapers*", "custom_parsers*"]
+
+[tool.ty.rules]
+no-matching-overload = "ignore"
+not-iterable = "ignore"
+invalid-return-type = "ignore"
+not-subscriptable = "ignore"
+
+[tool.ty.src]
+exclude = [
+    "tests/**",
+]

@@ -240,6 +240,10 @@ async def _download_and_upload(
     download_dir.mkdir(parents=True, exist_ok=True)
     file_path = download_dir / filename
 
+    if url is None:
+        print("⚠️ No URL provided for download item, skipping")
+        return []
+
     async with semaphore:
         try:
             await _download_file(client, url, file_path)
