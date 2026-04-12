@@ -1,5 +1,6 @@
 from flows_staging.shared.dbt import run_and_test
 from flows_staging.shared.dbt import stage_external_sources
+from flows_transformation.shared.database import ensure_work_database_exists
 from prefect import flow
 from prefect import task
 
@@ -19,6 +20,7 @@ def run_dim_communes() -> None:
 
 @flow(name="transformation_current_dim_geography")
 def transformation_current_dim_geography() -> None:
+    ensure_work_database_exists()
     run_stage_external_sources()
     run_dim_communes()
 
