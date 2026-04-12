@@ -13,7 +13,6 @@ from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.minio import get_minio_client
 
 
-ARCHIVE_PREFIX = "evidence-archive/"
 EVIDENCE_BUCKET = "evidence-archive"
 TEMP_DOWNLOAD_DIR = Path("/tmp/french_towns_downloads")
 

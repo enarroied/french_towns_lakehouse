@@ -17,7 +17,6 @@ TechnicalSubtype = Literal["DOWNLOAD", "SCRAPER", "DBT", "API"]
 RunStatus = Literal["STARTED", "SUCCESS", "FAILED"]
 
 RUN_STATUS_SUCCESS: RunStatus = "SUCCESS"
-RUN_STATUS_FAILED: RunStatus = "FAILED"
 RUN_STATUS_STARTED: RunStatus = "STARTED"
 
 
