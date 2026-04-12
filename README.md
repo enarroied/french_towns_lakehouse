@@ -1,7 +1,7 @@
 # French Towns LakeHouse
 
 ![Python](https://img.shields.io/badge/dynamic/toml?url=https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/pyproject.toml&query=$.project.requires-python&label=Python&logo=python&logoColor=white)
-[![codecov](https://codecov.io/github/enarroied/french_towns_lakehouse/branch/master/graph/badge.svg?token=HLZVB6WFMT)](https://codecov.io/github/enarroied/hierarchy_app)
+[![codecov](https://codecov.io/github/enarroied/french_towns_lakehouse/branch/master/graph/badge.svg?token=HLZVB6WFMT)](https://codecov.io/github/enarroied/french_towns_lakehouse)
 ![Tests](https://github.com/enarroied/french_towns_lakehouse/actions/workflows/tests.yml/badge.svg)
 ![Prefect](https://img.shields.io/badge/Prefect-F02D5E?logo=prefect)
 ![MinIO](https://img.shields.io/badge/MinIO-C5A572)
