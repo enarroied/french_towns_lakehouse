@@ -1,9 +1,24 @@
 # French Towns LakeHouse
 
+![Python](https://img.shields.io/badge/dynamic/toml?url=https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/pyproject.toml&query=$.project.requires-python&label=Python&logo=python&logoColor=white)
+[![codecov](https://codecov.io/github/enarroied/french_towns_lakehouse/branch/master/graph/badge.svg?token=HLZVB6WFMT)](https://codecov.io/github/enarroied/hierarchy_app)
+![Tests](https://github.com/enarroied/french_towns_lakehouse/actions/workflows/tests.yml/badge.svg)
+![Prefect](https://img.shields.io/badge/Prefect-F02D5E?logo=prefect)
+![MinIO](https://img.shields.io/badge/MinIO-C5A572)
+![dbt](https://img.shields.io/badge/dbt-FF694B)
+![DuckDB](https://img.shields.io/badge/DuckDB-FFF?logo=duckdb&logoColor=374151)
+![License](https://img.shields.io/github/license/enarroied/french_towns_lakehouse)
+
 - [French Towns LakeHouse](#french-towns-lakehouse)
   - [What does this build?](#what-does-this-build)
   - [Technology Stack](#technology-stack)
   - [Setup](#setup)
+  - [Infrastructure Services](#infrastructure-services)
+    - [MinIO](#minio)
+    - [Apache Polaris](#apache-polaris)
+      - [Setup](#setup-1)
+      - [Polaris Credentials](#polaris-credentials)
+      - [Stopping Services](#stopping-services)
   - [Pipeline Architecture](#pipeline-architecture)
     - [MinIO Bucket Structure](#minio-bucket-structure)
     - [dbt Model Layers](#dbt-model-layers)
@@ -133,7 +148,7 @@ Iceberg REST catalog for managing Iceberg tables. Enables ACID transactions, tim
    ```sql
    INSTALL iceberg;
    LOAD iceberg;
-   
+
    CREATE SECRET (
        TYPEiceberg,
        HOST 'localhost',
