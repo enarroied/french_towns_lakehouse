@@ -82,12 +82,7 @@ def staging_current_labels() -> list[tuple[str, FileMetadata | str | None]]:
                 upload_futures.append(
                     log_upload.submit(
                         run_id=run_id,
-                        name=result.base_name,
-                        filename_timestamp=result.filename_timestamp,
-                        file_location=result.key,
-                        source_url=None,
-                        size_mb=result.size_mb,
-                        md5_hash=result.md5,
+                        file_metadata=result,
                         bucket=STAGING_BUCKET,
                     )
                 )

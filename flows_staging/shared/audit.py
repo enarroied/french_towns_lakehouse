@@ -1,12 +1,17 @@
 import uuid
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 from typing import Literal
 
 import duckdb
 import httpx
 from prefect import get_run_logger
 from prefect import task
+
+
+if TYPE_CHECKING:
+    from flows_staging.scrapers.models import FileMetadata
 
 
 _DB_PATH = Path(__file__).parent.parent.parent / ".data/metadata.db"
@@ -145,12 +150,7 @@ def _write_file_metadata(
 @task
 def log_upload(
     run_id: str,
-    name: str,
-    filename_timestamp: str,
-    file_location: str,
-    source_url: str | None = None,
-    size_mb: float | None = None,
-    md5_hash: str | None = None,
+    file_metadata: "FileMetadata",
     bucket: str | None = None,
 ) -> None:
     now = datetime.now()
@@ -158,17 +158,17 @@ def log_upload(
         _write_file_metadata(
             conn,
             run_id,
-            name,
-            filename_timestamp,
-            source_url,
-            size_mb,
-            md5_hash,
+            file_metadata.base_name,
+            file_metadata.filename_timestamp,
+            file_metadata.source_url,
+            file_metadata.size_mb,
+            file_metadata.md5,
             bucket,
-            file_location,
+            file_metadata.key,
             now,
         )
     get_run_logger().info(
-        f"✅ {name} → {filename_timestamp} | {size_mb}MB | {md5_hash}"
+        f"✅ {file_metadata.base_name} → {file_metadata.filename_timestamp} | {file_metadata.size_mb}MB | {file_metadata.md5}"
     )
 
 

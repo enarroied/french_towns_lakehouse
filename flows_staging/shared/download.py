@@ -1,6 +1,7 @@
 import asyncio
 import csv
 import hashlib
+import re
 import shutil
 import uuid
 import zipfile
@@ -21,6 +22,28 @@ def _timestamped_csv_name(base_name: str) -> str:
     """Generate a timestamped CSV filename from a base name (e.g., 'villes_fleuries')."""
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{base_name}_{ts}.csv"
+
+
+def _timestamped_file_name(url: str) -> str:
+    """Generate a timestamped filename from a URL (e.g., 'communes_france_20260412_153000.geojson')."""
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    path = Path(url)
+    stem = path.stem if path.stem else "file"
+    ext = path.suffix if path.suffix else ""
+    return f"{stem}_{ts}{ext}"
+
+
+def _timestamped_from_base(base_name: str) -> str:
+    """Generate a timestamped filename from a base name. Skips if already has timestamp."""
+    # Skip if already has timestamp pattern (e.g., _20260413_000349)
+    if re.search(r"_\d{8}_\d{6}", base_name):
+        return base_name
+
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    path = Path(base_name)
+    stem = path.stem if path.stem else "file"
+    ext = path.suffix if path.suffix else ""
+    return f"{stem}_{ts}{ext}"
 
 
 def calculate_md5(file_path: Path) -> str:
@@ -53,6 +76,7 @@ def upload_scraper_output(
     scraper_name: str,
     target_folder: str,
     known_hashes: dict,
+    source_url: str | None = None,
     temp_dir: Path = TEMP_DOWNLOAD_DIR,
 ) -> FileMetadata | None:
     """
@@ -82,6 +106,7 @@ def upload_scraper_output(
         filename_timestamp=csv_path.name,
         size_mb=size_mb,
         md5=md5,
+        source_url=source_url,
     )
 
 
@@ -165,6 +190,7 @@ def _create_file_metadata(
     base_name: str,
     target_folder: str | None,
     md5: str,
+    source_url: str | None = None,
 ) -> FileMetadata:
     """Create FileMetadata from a file path."""
     size_mb = round(file_path.stat().st_size / 1024**2, 2)
@@ -179,6 +205,7 @@ def _create_file_metadata(
         filename_timestamp=filename_timestamp,
         size_mb=size_mb,
         md5=md5,
+        source_url=source_url,
     )
 
 
@@ -188,6 +215,7 @@ def _process_extracted_files(
     minio_client: Any,
     staging_bucket: str,
     target_folder: str | None = None,
+    source_url: str | None = None,
 ) -> list[FileMetadata]:
     """Process all extracted files: skip unchanged, archive old, upload new."""
     file_records: list[FileMetadata] = []
@@ -196,27 +224,38 @@ def _process_extracted_files(
         if not extracted_file.is_file():
             continue
 
-        base_name = extracted_file.name
-        md5 = calculate_md5(extracted_file)
+        original_name = extracted_file.name
+        # GDAL's ST_Read doesn't support wildcards, so keep geojson files with exact name
+        if original_name.endswith(".geojson"):
+            renamed_file = extracted_file
+        else:
+            timestamped_name = _timestamped_from_base(original_name)
+            timestamped_path = extracted_file.parent / timestamped_name
+            extracted_file.rename(timestamped_path)
+            renamed_file = timestamped_path
 
-        if _should_skip_file(base_name, md5, known_hashes):
-            print(f"⏭️ Skipping {base_name} — hash unchanged")
-            extracted_file.unlink(missing_ok=True)
+        md5 = calculate_md5(renamed_file)
+
+        if _should_skip_file(original_name, md5, known_hashes):
+            print(f"⏭️ Skipping {original_name} — hash unchanged")
+            renamed_file.unlink(missing_ok=True)
             continue
 
-        existing_location = _get_file_location(base_name, known_hashes)
+        existing_location = _get_file_location(original_name, known_hashes)
         if existing_location:
             _archive_old_file(minio_client, staging_bucket, existing_location)
 
         key = (
-            f"{target_folder}/{extracted_file.name}"
+            f"{target_folder}/{renamed_file.name}"
             if target_folder
-            else extracted_file.name
+            else renamed_file.name
         )
 
-        metadata = _create_file_metadata(extracted_file, base_name, target_folder, md5)
+        metadata = _create_file_metadata(
+            renamed_file, original_name, target_folder, md5, source_url
+        )
         metadata.key = key
-        _upload_file(extracted_file, minio_client, staging_bucket, key)
+        _upload_file(renamed_file, minio_client, staging_bucket, key)
 
         file_records.append(metadata)
 
@@ -235,7 +274,15 @@ async def _download_and_upload(
 ) -> list[FileMetadata]:
     """Download a file, extract it, and upload to MinIO."""
     url = download_item.get("url")
-    filename = download_item.get("filename", url.split("/")[-1] if url else "unknown")
+    # Use config name (e.g., "french_communes") + timestamp instead of URL-derived name
+    base_name = download_item.get("name", "unknown")
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # Force .geojson extension for french_communes (URL has no extension)
+    if base_name == "french_communes":
+        ext = ".geojson"
+    else:
+        ext = Path(url).suffix if url else ""
+    filename = f"{base_name}_{ts}{ext}" if url else "unknown"
     download_dir = temp_dir / uuid.uuid4().hex
     download_dir.mkdir(parents=True, exist_ok=True)
     file_path = download_dir / filename
@@ -260,6 +307,7 @@ async def _download_and_upload(
                 minio_client,
                 staging_bucket,
                 target_folder,
+                url,
             )
 
         except httpx.HTTPStatusError as e:

@@ -70,12 +70,7 @@ def run_parser(parser_name: str) -> dict:
 
         log_upload(
             run_id=run_id,
-            name=result.base_name,
-            filename_timestamp=result.filename_timestamp,
-            file_location=result.key,
-            source_url=None,
-            size_mb=result.size_mb,
-            md5_hash=result.md5,
+            file_metadata=result,
             bucket=STAGING_BUCKET,
         )
 

@@ -74,3 +74,4 @@ class FileMetadata:
     filename_timestamp: str
     size_mb: float
     md5: str
+    source_url: str | None = None

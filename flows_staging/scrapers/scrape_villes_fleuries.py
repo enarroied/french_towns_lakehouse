@@ -189,4 +189,5 @@ async def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | 
             scraper_name=scraper.name,
             target_folder=scraper.target_folder,
             known_hashes=known_hashes,
+            source_url=scraper.url,
         )
