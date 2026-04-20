@@ -6,6 +6,7 @@ from typing import Literal
 
 import duckdb
 import httpx
+from flows_staging.shared.models import KnownFileHash
 from prefect import get_run_logger
 from prefect import task
 
@@ -94,19 +95,19 @@ def init_run(
 
 
 @task
-def get_latest_hashes() -> dict[str, dict]:
-    """Returns {filename: {md5, filename_timestamp, file_location}} for all is_latest=1 rows."""
+def get_latest_hashes() -> dict[str, KnownFileHash]:
+    """Returns {filename: KnownFileHash} for all is_latest=1 rows."""
     with _conn() as conn:
         rows = conn.execute(
             """SELECT filename, md5_hash, filename_timestamp, file_location
                FROM file_metadata WHERE is_latest = 1"""
         ).fetchall()
     return {
-        row[0]: {
-            "md5": row[1],
-            "filename_timestamp": row[2],
-            "file_location": row[3],
-        }
+        row[0]: KnownFileHash(
+            md5=row[1],
+            filename_timestamp=row[2],
+            file_location=row[3],
+        )
         for row in rows
     }
 

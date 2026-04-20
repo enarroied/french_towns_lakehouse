@@ -12,6 +12,7 @@ from typing import Any
 import httpx
 from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.models import KnownHashes
 
 
 EVIDENCE_BUCKET = "evidence-archive"
@@ -66,7 +67,7 @@ def upload_scraper_output(
     fieldnames: list[str],
     scraper_name: str,
     target_folder: str,
-    known_hashes: dict,
+    known_hashes: KnownHashes,
     source_url: str | None = None,
     temp_dir: Path = TEMP_DOWNLOAD_DIR,
 ) -> FileMetadata | None:
@@ -150,14 +151,16 @@ def _extract_file(file_path: Path, output_dir: Path) -> list[Path]:
     return extracted_files
 
 
-def _should_skip_file(base_name: str, md5: str, known_hashes: dict) -> bool:
+def _should_skip_file(base_name: str, md5: str, known_hashes: KnownHashes) -> bool:
     """Check if file should be skipped due to unchanged hash."""
-    return known_hashes.get(base_name, {}).get("md5") == md5
+    known_file = known_hashes.get(base_name)
+    return known_file is not None and known_file.md5 == md5
 
 
-def _get_file_location(base_name: str, known_hashes: dict) -> str | None:
+def _get_file_location(base_name: str, known_hashes: KnownHashes) -> str | None:
     """Return MinIO key (file_location) of existing file, or None if none exists."""
-    return known_hashes.get(base_name, {}).get("file_location")
+    known_file = known_hashes.get(base_name)
+    return known_file.file_location if known_file else None
 
 
 def _upload_file(
@@ -202,7 +205,7 @@ def _create_file_metadata(
 
 def _process_extracted_files(
     extracted_files: list[Path],
-    known_hashes: dict,
+    known_hashes: KnownHashes,
     minio_client: Any,
     staging_bucket: str,
     base_name: str,
@@ -259,7 +262,7 @@ async def _download_and_upload(
     client: httpx.AsyncClient,
     download_item: dict,
     temp_dir: Path,
-    known_hashes: dict,
+    known_hashes: KnownHashes,
     minio_client: Any,
     staging_bucket: str,
     target_folder: str | None = None,
@@ -316,7 +319,7 @@ async def _download_and_upload(
 async def run_async_downloads_to_minio(
     downloads: list[dict],
     temp_dir: Path,
-    known_hashes: dict,
+    known_hashes: KnownHashes,
     minio_client: Any,
     staging_bucket: str,
     concurrency: int = 3,

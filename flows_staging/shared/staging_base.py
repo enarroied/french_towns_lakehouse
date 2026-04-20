@@ -12,12 +12,13 @@ from flows_staging.shared.download import run_async_downloads_to_minio
 from flows_staging.shared.minio import STAGING_BUCKET
 from flows_staging.shared.minio import ensure_bucket_exists
 from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.models import KnownHashes
 from prefect import task
 
 
 @task
 def download_files(
-    domain_downloads: list[str], known_hashes: dict
+    domain_downloads: list[str], known_hashes: KnownHashes
 ) -> tuple[dict, dict]:
     config = get_config()
     downloads = [d for d in get_downloads() if d["name"] in domain_downloads]

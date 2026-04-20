@@ -8,6 +8,7 @@ from flows_staging.shared.download import _should_skip_file
 from flows_staging.shared.download import _timestamped_csv_name
 from flows_staging.shared.download import calculate_md5
 from flows_staging.shared.download import write_csv_to_temp
+from flows_staging.shared.models import KnownFileHash
 
 
 class TestTimestampedCsvName:
@@ -108,7 +109,7 @@ class TestShouldSkipFile:
     def test_returns_true_when_hash_matches(self, sample_known_hashes):
         """Should return True when file hash matches known hash."""
         result = _should_skip_file(
-            base_name="populations_historiques.csv",
+            base_name="populations_historiques",
             md5="abc123def456",
             known_hashes=sample_known_hashes,
         )
@@ -117,7 +118,7 @@ class TestShouldSkipFile:
     def test_returns_false_when_hash_differs(self, sample_known_hashes):
         """Should return False when file hash differs from known hash."""
         result = _should_skip_file(
-            base_name="populations_historiques.csv",
+            base_name="populations_historiques",
             md5="different_hash",
             known_hashes=sample_known_hashes,
         )
@@ -126,7 +127,7 @@ class TestShouldSkipFile:
     def test_returns_false_when_file_unknown(self, sample_known_hashes):
         """Should return False when file is not in known_hashes."""
         result = _should_skip_file(
-            base_name="unknown_file.csv",
+            base_name="unknown_file",
             md5="any_hash",
             known_hashes=sample_known_hashes,
         )
@@ -139,7 +140,7 @@ class TestGetFileLocation:
     def test_returns_location_when_exists(self, sample_known_hashes):
         """Should return file_location when file is in known_hashes."""
         result = _get_file_location(
-            base_name="populations_historiques.csv",
+            base_name="populations_historiques",
             known_hashes=sample_known_hashes,
         )
         assert result == "demographics/DS_POPULATIONS_HISTORIQUES_data.csv"
@@ -180,7 +181,11 @@ class TestProcessExtractedFiles:
         actual_hash = calculate_md5(file_path)
 
         # Update known_hashes to match the file content (use base_name as key)
-        sample_known_hashes["populations_historiques"] = {"md5": actual_hash}
+        sample_known_hashes["populations_historiques"] = KnownFileHash(
+            md5=actual_hash,
+            filename_timestamp="20240101_120000",
+            file_location="demographics/DS_POPULATIONS_HISTORIQUES_data.csv",
+        )
 
         result = _process_extracted_files(
             extracted_files=[file_path],

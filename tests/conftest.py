@@ -6,6 +6,7 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
+from flows_staging.shared.models import KnownFileHash
 
 
 # -----------------------------------------------------------------------------
@@ -203,14 +204,14 @@ def temp_zip_file(tmp_path):
 def sample_known_hashes():
     """Sample known hashes for testing hash comparison."""
     return {
-        "populations_historiques.csv": {
-            "md5": "abc123def456",
-            "file_location": "demographics/DS_POPULATIONS_HISTORIQUES_data.csv",
-            "last_modified": "2024-01-01T00:00:00Z",
-        },
-        "villes_fleuries.csv": {
-            "md5": "xyz789ghi012",
-            "file_location": "labels/villes_fleuries_20240101_120000.csv",
-            "last_modified": "2024-01-01T00:00:00Z",
-        },
+        "populations_historiques": KnownFileHash(
+            md5="abc123def456",
+            filename_timestamp="20240101_120000",
+            file_location="demographics/DS_POPULATIONS_HISTORIQUES_data.csv",
+        ),
+        "villes_fleuries": KnownFileHash(
+            md5="xyz789ghi012",
+            filename_timestamp="20240101_120000",
+            file_location="labels/villes_fleuries_20240101_120000.csv",
+        ),
     }
