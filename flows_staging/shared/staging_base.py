@@ -18,16 +18,23 @@ from prefect import task
 
 
 @task
-def download_files(
-    domain_downloads: list[str], known_hashes: KnownHashes
-) -> tuple[dict, dict]:
+def download_files(domain_downloads: list[str], known_hashes: KnownHashes) -> dict:
+    """Download files from configured sources to MinIO.
+
+    Args:
+        domain_downloads: List of download names to process.
+        known_hashes: Dict of known file hashes for change detection.
+
+    Returns:
+        Dict mapping base_name to list of file metadata records.
+    """
     config = get_config()
     downloads = get_downloads(domain_downloads)
     temp_dir = make_temp_dir()
     minio_client = get_minio_client()
     ensure_bucket_exists(STAGING_BUCKET)
 
-    results = asyncio.run(
+    return asyncio.run(
         run_async_downloads_to_minio(
             downloads=downloads,
             temp_dir=temp_dir,
@@ -38,8 +45,6 @@ def download_files(
             timeout_seconds=config["download"]["timeout_seconds"],
         )
     )
-    url_by_name = {d["name"]: d.get("url") for d in downloads}
-    return results, url_by_name
 
 
 def run_staging_flow(params: StagingFlowParams) -> None:
@@ -52,7 +57,7 @@ def run_staging_flow(params: StagingFlowParams) -> None:
     run_id = init_run(domain=params.domain, technical_type=params.technical_type)
     try:
         known_hashes = get_latest_hashes()
-        results, url_by_name = download_files(
+        results = download_files(
             domain_downloads=params.domain_downloads,
             known_hashes=known_hashes,
         )
@@ -63,7 +68,7 @@ def run_staging_flow(params: StagingFlowParams) -> None:
                 file_metadata=record,
                 bucket=STAGING_BUCKET,
             )
-            for name, file_records in results.items()
+            for file_records in results.values()
             for record in file_records
         ]
         [f.result() for f in futures]
