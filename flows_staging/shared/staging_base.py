@@ -13,6 +13,7 @@ from flows_staging.shared.minio import STAGING_BUCKET
 from flows_staging.shared.minio import ensure_bucket_exists
 from flows_staging.shared.minio import get_minio_client
 from flows_staging.shared.models import KnownHashes
+from flows_staging.shared.models import StagingFlowParams
 from prefect import task
 
 
@@ -41,14 +42,18 @@ def download_files(
     return results, url_by_name
 
 
-def run_staging_flow(domain: str, domain_downloads: list[str]) -> None:
-    """Shared body for all download-based staging flows."""
+def run_staging_flow(params: StagingFlowParams) -> None:
+    """Shared body for all download-based staging flows.
+
+    Args:
+        params: StagingFlowParams containing domain, domain_downloads, and technical_type.
+    """
     preflight()
-    run_id = init_run(domain=domain, technical_type="DOWNLOAD")
+    run_id = init_run(domain=params.domain, technical_type=params.technical_type)
     try:
         known_hashes = get_latest_hashes()
         results, url_by_name = download_files(
-            domain_downloads=domain_downloads,
+            domain_downloads=params.domain_downloads,
             known_hashes=known_hashes,
         )
 

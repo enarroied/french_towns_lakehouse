@@ -29,3 +29,18 @@ class KnownFileHash:
 
 
 KnownHashes: TypeAlias = dict[str, KnownFileHash]
+
+
+@dataclass
+class StagingFlowParams:
+    """Parameters for run_staging_flow.
+
+    Attributes:
+        domain: The domain name (e.g., 'demographics', 'geography').
+        domain_downloads: List of download names for this domain.
+        technical_type: The technical type (default: 'DOWNLOAD').
+    """
+
+    domain: str
+    domain_downloads: list[str]
+    technical_type: str = "DOWNLOAD"
