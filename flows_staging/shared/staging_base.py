@@ -21,7 +21,7 @@ def download_files(
     domain_downloads: list[str], known_hashes: KnownHashes
 ) -> tuple[dict, dict]:
     config = get_config()
-    downloads = [d for d in get_downloads() if d["name"] in domain_downloads]
+    downloads = get_downloads(domain_downloads)
     temp_dir = make_temp_dir()
     minio_client = get_minio_client()
     ensure_bucket_exists(STAGING_BUCKET)
