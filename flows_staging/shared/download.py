@@ -12,6 +12,7 @@ from typing import Any
 import httpx
 from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.models import AsyncDownloadParams
 from flows_staging.shared.models import KnownHashes
 
 
@@ -317,33 +318,34 @@ async def _download_and_upload(
 
 
 async def run_async_downloads_to_minio(
-    downloads: list[dict],
-    temp_dir: Path,
-    known_hashes: KnownHashes,
-    minio_client: Any,
-    staging_bucket: str,
-    concurrency: int = 3,
-    timeout_seconds: int = 120,
+    params: AsyncDownloadParams,
 ) -> dict[str, list[FileMetadata]]:
-    """Run multiple downloads concurrently and upload extracted files to MinIO."""
-    semaphore = asyncio.Semaphore(concurrency)
-    async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+    """Run multiple downloads concurrently and upload extracted files to MinIO.
+
+    Args:
+        params: AsyncDownloadParams containing download configuration.
+
+    Returns:
+        Dict mapping download name to list of FileMetadata records.
+    """
+    semaphore = asyncio.Semaphore(params.concurrency)
+    async with httpx.AsyncClient(timeout=params.timeout_seconds) as client:
         tasks = [
             _download_and_upload(
                 semaphore=semaphore,
                 client=client,
                 download_item=d,
-                temp_dir=temp_dir,
-                known_hashes=known_hashes,
-                minio_client=minio_client,
-                staging_bucket=staging_bucket,
+                temp_dir=params.temp_dir,
+                known_hashes=params.known_hashes,
+                minio_client=params.minio_client,
+                staging_bucket=params.staging_bucket,
                 target_folder=d.get("target_folder"),
             )
-            for d in downloads
+            for d in params.downloads
         ]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
     return {
         download["name"]: result if isinstance(result, list) else []
-        for download, result in zip(downloads, results, strict=True)
+        for download, result in zip(params.downloads, results, strict=True)
     }

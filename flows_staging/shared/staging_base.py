@@ -12,6 +12,7 @@ from flows_staging.shared.download import run_async_downloads_to_minio
 from flows_staging.shared.minio import STAGING_BUCKET
 from flows_staging.shared.minio import ensure_bucket_exists
 from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.models import AsyncDownloadParams
 from flows_staging.shared.models import KnownHashes
 from flows_staging.shared.models import StagingFlowParams
 from prefect import task
@@ -34,17 +35,17 @@ def download_files(domain_downloads: list[str], known_hashes: KnownHashes) -> di
     minio_client = get_minio_client()
     ensure_bucket_exists(STAGING_BUCKET)
 
-    return asyncio.run(
-        run_async_downloads_to_minio(
-            downloads=downloads,
-            temp_dir=temp_dir,
-            known_hashes=known_hashes,
-            minio_client=minio_client,
-            staging_bucket=STAGING_BUCKET,
-            concurrency=config["download"]["concurrency"],
-            timeout_seconds=config["download"]["timeout_seconds"],
-        )
+    params = AsyncDownloadParams(
+        downloads=downloads,
+        temp_dir=temp_dir,
+        known_hashes=known_hashes,
+        minio_client=minio_client,
+        staging_bucket=STAGING_BUCKET,
+        concurrency=config["download"]["concurrency"],
+        timeout_seconds=config["download"]["timeout_seconds"],
     )
+
+    return asyncio.run(run_async_downloads_to_minio(params))
 
 
 def run_staging_flow(params: StagingFlowParams) -> None:
