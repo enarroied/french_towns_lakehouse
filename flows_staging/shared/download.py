@@ -24,15 +24,6 @@ def _timestamped_csv_name(base_name: str) -> str:
     return f"{base_name}_{ts}.csv"
 
 
-def _timestamped_file_name(url: str) -> str:
-    """Generate a timestamped filename from a URL (e.g., 'communes_france_20260412_153000.geojson')."""
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    path = Path(url)
-    stem = path.stem if path.stem else "file"
-    ext = path.suffix if path.suffix else ""
-    return f"{stem}_{ts}{ext}"
-
-
 def _timestamped_from_base(base_name: str) -> str:
     """Generate a timestamped filename from a base name. Skips if already has timestamp."""
     # Skip if already has timestamp pattern (e.g., _20260413_000349)
@@ -214,6 +205,7 @@ def _process_extracted_files(
     known_hashes: dict,
     minio_client: Any,
     staging_bucket: str,
+    base_name: str,
     target_folder: str | None = None,
     source_url: str | None = None,
 ) -> list[FileMetadata]:
@@ -236,12 +228,12 @@ def _process_extracted_files(
 
         md5 = calculate_md5(renamed_file)
 
-        if _should_skip_file(original_name, md5, known_hashes):
-            print(f"⏭️ Skipping {original_name} — hash unchanged")
+        if _should_skip_file(base_name, md5, known_hashes):
+            print(f"⏭️ Skipping {base_name} — hash unchanged")
             renamed_file.unlink(missing_ok=True)
             continue
 
-        existing_location = _get_file_location(original_name, known_hashes)
+        existing_location = _get_file_location(base_name, known_hashes)
         if existing_location:
             _archive_old_file(minio_client, staging_bucket, existing_location)
 
@@ -252,7 +244,7 @@ def _process_extracted_files(
         )
 
         metadata = _create_file_metadata(
-            renamed_file, original_name, target_folder, md5, source_url
+            renamed_file, base_name, target_folder, md5, source_url
         )
         metadata.key = key
         _upload_file(renamed_file, minio_client, staging_bucket, key)
@@ -306,6 +298,7 @@ async def _download_and_upload(
                 known_hashes,
                 minio_client,
                 staging_bucket,
+                base_name,
                 target_folder,
                 url,
             )

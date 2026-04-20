@@ -65,7 +65,7 @@ def _check_internet_connection() -> None:
         raise RuntimeError(f"No internet connection: {e}") from e
 
 
-@task
+@task(retries=3, retry_delay_seconds=30)
 def preflight() -> None:
     _check_db()
     _check_minio()

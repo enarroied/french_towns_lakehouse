@@ -166,6 +166,7 @@ class TestProcessExtractedFiles:
             known_hashes=sample_known_hashes,
             minio_client=mock_minio_client,
             staging_bucket="test-bucket",
+            base_name="any_file",
         )
         assert result == []
 
@@ -178,14 +179,15 @@ class TestProcessExtractedFiles:
         file_path.write_text("dummy content")
         actual_hash = calculate_md5(file_path)
 
-        # Update known_hashes to match the file content
-        sample_known_hashes["populations_historiques.csv"]["md5"] = actual_hash
+        # Update known_hashes to match the file content (use base_name as key)
+        sample_known_hashes["populations_historiques"] = {"md5": actual_hash}
 
         result = _process_extracted_files(
             extracted_files=[file_path],
             known_hashes=sample_known_hashes,
             minio_client=mock_minio_client,
             staging_bucket="test-bucket",
+            base_name="populations_historiques",
         )
         # No upload should happen for unchanged file
         assert mock_minio_client.upload_file.call_count == 0
@@ -201,11 +203,12 @@ class TestProcessExtractedFiles:
             known_hashes=sample_known_hashes,
             minio_client=mock_minio_client,
             staging_bucket="test-bucket",
+            base_name="new_file",
         )
 
         assert mock_minio_client.upload_file.called
         assert len(result) == 1
-        assert result[0].base_name == "new_file.csv"
+        assert result[0].base_name == "new_file"
 
     def test_uploads_to_target_folder(
         self, tmp_path, mock_minio_client, sample_known_hashes
@@ -219,6 +222,7 @@ class TestProcessExtractedFiles:
             known_hashes={},
             minio_client=mock_minio_client,
             staging_bucket="test-bucket",
+            base_name="data",
             target_folder="demographics",
         )
 

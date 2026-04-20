@@ -1,5 +1,4 @@
 import asyncio
-from pathlib import Path
 
 from flows_staging.shared.audit import finalize_run
 from flows_staging.shared.audit import get_latest_hashes
@@ -8,7 +7,7 @@ from flows_staging.shared.audit import log_upload
 from flows_staging.shared.audit import preflight
 from flows_staging.shared.config import get_config
 from flows_staging.shared.config import get_downloads
-from flows_staging.shared.config import get_paths
+from flows_staging.shared.config import make_temp_dir
 from flows_staging.shared.download import run_async_downloads_to_minio
 from flows_staging.shared.minio import STAGING_BUCKET
 from flows_staging.shared.minio import ensure_bucket_exists
@@ -22,8 +21,7 @@ def download_files(
 ) -> tuple[dict, dict]:
     config = get_config()
     downloads = [d for d in get_downloads() if d["name"] in domain_downloads]
-    temp_dir = Path(get_paths()["temp_dir"])
-    temp_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = make_temp_dir()
     minio_client = get_minio_client()
     ensure_bucket_exists(STAGING_BUCKET)
 

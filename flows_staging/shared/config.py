@@ -25,6 +25,13 @@ def get_paths() -> dict[str, str]:
     return _config["paths"]
 
 
+def make_temp_dir() -> Path:
+    """Create and return the temp directory from config."""
+    temp_dir = Path(get_paths()["temp_dir"])
+    temp_dir.mkdir(exist_ok=True, parents=True)
+    return temp_dir
+
+
 def get_downloads() -> list[dict[str, Any]]:
     return _config.get("downloads", [])
 

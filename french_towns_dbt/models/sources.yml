@@ -19,12 +19,12 @@ sources:
 
       - name: populations_historiques
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/DS_POPULATIONS_HISTORIQUES_*.csv', sample_size=-1)"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/DS_POPULATIONS_HISTORIQUES_data_*.csv', sample_size=-1)"
 
       - name: salaries
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/DS_BTS_SAL_*.csv', sample_size=-1)"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/DS_BTS_SAL_*_data_*.csv', sample_size=-1)"
 
       - name: zip_codes
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/019HexaSmal_*.csv', sample_size=-1, encoding='latin-1', delim=';')"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/zip_codes_*.csv', sample_size=-1, encoding='latin-1', delim=';')"
