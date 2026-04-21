@@ -20,19 +20,23 @@ EVIDENCE_BUCKET = "evidence-archive"
 TEMP_DOWNLOAD_DIR = Path("/tmp/french_towns_downloads")
 
 
+def _get_timestamp() -> str:
+    """Generate current timestamp in YYYYMMDD_HHMMSS format."""
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
 def _timestamped_csv_name(base_name: str) -> str:
     """Generate a timestamped CSV filename from a base name (e.g., 'villes_fleuries')."""
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ts = _get_timestamp()
     return f"{base_name}_{ts}.csv"
 
 
 def _timestamped_from_base(base_name: str) -> str:
     """Generate a timestamped filename from a base name. Skips if already has timestamp."""
-    # Skip if already has timestamp pattern (e.g., _20260413_000349)
     if re.search(r"_\d{8}_\d{6}", base_name):
         return base_name
 
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ts = _get_timestamp()
     path = Path(base_name)
     stem = path.stem if path.stem else "file"
     ext = path.suffix if path.suffix else ""
@@ -270,9 +274,8 @@ async def _download_and_upload(
 ) -> list[FileMetadata]:
     """Download a file, extract it, and upload to MinIO."""
     url = download_item.get("url")
-    # Use config name (e.g., "french_communes") + timestamp instead of URL-derived name
     base_name = download_item.get("name", "unknown")
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ts = _get_timestamp()
     # Force .geojson extension for french_communes (URL has no extension)
     if base_name == "french_communes":
         ext = ".geojson"
