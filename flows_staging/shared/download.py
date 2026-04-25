@@ -10,30 +10,11 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+from flows.shared import log
 from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.minio import get_minio_client
 from flows_staging.shared.models import AsyncDownloadParams
 from flows_staging.shared.models import KnownHashes
-from prefect import get_run_logger
-
-
-def _log(level: str, message: str, logger: Any | None = None) -> None:
-    """Log a message using Prefect logger if available, else print.
-
-    Args:
-        level: Log level ('info', 'warning', 'error')
-        message: Message to log
-        logger: Optional Prefect logger to use. If None, tries to get from Prefect context.
-    """
-    if logger:
-        getattr(logger, level)(message)
-    else:
-        try:
-            logger = get_run_logger()
-            getattr(logger, level)(message)
-        except Exception:
-            timestamp = datetime.now().isoformat()
-            print(f"[{timestamp}] {message}")
 
 
 EVIDENCE_BUCKET = "evidence-archive"
@@ -107,7 +88,7 @@ def upload_scraper_output(
     base_name = f"{scraper_name}.csv"
 
     if _should_skip_file(base_name, md5, known_hashes):
-        _log("info", f"⏭️ Skipping {scraper_name} — hash unchanged")
+        log("info", f"⏭️ Skipping {scraper_name} — hash unchanged")
         csv_path.unlink()
         return None
 
@@ -141,7 +122,7 @@ def _archive_old_file(
         Key=archive_key,
     )
     minio_client.delete_object(Bucket=staging_bucket, Key=old_file_location)
-    _log(
+    log(
         "info",
         f"🗄️ Archived {old_file_location} → {EVIDENCE_BUCKET}/{archive_key}",
         logger=logger,
@@ -155,12 +136,12 @@ async def _download_file(
     logger: Any | None = None,
 ) -> None:
     """Download a file from URL to the specified output path."""
-    _log("info", f"📥 Downloading {url}", logger=logger)
+    log("info", f"📥 Downloading {url}", logger=logger)
     response = await client.get(url, follow_redirects=True)
     response.raise_for_status()
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, output_path.write_bytes, response.content)
-    _log("info", f"✅ Saved to {output_path}", logger=logger)
+    log("info", f"✅ Saved to {output_path}", logger=logger)
 
 
 def _extract_file(
@@ -173,15 +154,15 @@ def _extract_file(
     try:
         with zipfile.ZipFile(file_path, "r") as zip_ref:
             zip_ref.extractall(output_dir)
-        _log("info", f"✅ Extracted to {output_dir}", logger=logger)
+        log("info", f"✅ Extracted to {output_dir}", logger=logger)
         for name in zip_ref.namelist():
             extracted_files.append(output_dir / name)
         file_path.unlink()
-        _log("info", f"🗑️ Removed {file_path}", logger=logger)
+        log("info", f"🗑️ Removed {file_path}", logger=logger)
     except zipfile.BadZipFile:
         dest_path = output_dir / file_path.name
         shutil.move(str(file_path), str(dest_path))
-        _log("info", f"✅ Moved to {dest_path}", logger=logger)
+        log("info", f"✅ Moved to {dest_path}", logger=logger)
         extracted_files.append(dest_path)
     return extracted_files
 
@@ -211,7 +192,7 @@ def _upload_file(
         Bucket=staging_bucket,
         Key=key,
     )
-    _log("info", f"☁️ Uploaded {key} to {staging_bucket}", logger=logger)
+    log("info", f"☁️ Uploaded {key} to {staging_bucket}", logger=logger)
     file_path.unlink()
 
 
@@ -268,7 +249,7 @@ def _process_extracted_files(
         md5 = calculate_md5(renamed_file)
 
         if _should_skip_file(base_name, md5, known_hashes):
-            _log("info", f"⏭️ Skipping {base_name} — hash unchanged", logger=logger)
+            log("info", f"⏭️ Skipping {base_name} — hash unchanged", logger=logger)
             renamed_file.unlink(missing_ok=True)
             continue
 
@@ -320,7 +301,7 @@ async def _download_and_upload(
     file_path = download_dir / filename
 
     if url is None:
-        _log("warning", "⚠️ No URL provided for download item, skipping", logger=logger)
+        log("warning", "⚠️ No URL provided for download item, skipping", logger=logger)
         return []
 
     async with semaphore:
@@ -345,10 +326,10 @@ async def _download_and_upload(
             )
 
         except httpx.HTTPStatusError as e:
-            _log("error", f"❌ HTTP error downloading {filename}: {e}", logger=logger)
+            log("error", f"❌ HTTP error downloading {filename}: {e}", logger=logger)
             return []
         except Exception as e:
-            _log("error", f"❌ Failed to download {filename}: {e}", logger=logger)
+            log("error", f"❌ Failed to download {filename}: {e}", logger=logger)
             return []
         finally:
             shutil.rmtree(download_dir, ignore_errors=True)

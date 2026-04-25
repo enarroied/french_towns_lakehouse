@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import duckdb
+from flows.shared import log
 from flows_staging.shared.minio import get_minio_client
-from prefect import get_run_logger
 from prefect import task
 
 
@@ -36,7 +36,6 @@ def _conn():
 @task
 def validate_inputs(source_names: list[str]) -> None:
     """Validate that exactly 1 file exists in MinIO and audit DB for each source."""
-    logger = get_run_logger()
     minio_client = get_minio_client()
     staging_bucket = "staging-current"
 
@@ -80,4 +79,4 @@ def validate_inputs(source_names: list[str]) -> None:
 
         md5 = rows[0][1]
         timestamp = rows[0][2]
-        logger.info(f"✅ {source_name} validated: {timestamp} | md5: {md5}")
+        log("info", f"✅ {source_name} validated: {timestamp} | md5: {md5}")

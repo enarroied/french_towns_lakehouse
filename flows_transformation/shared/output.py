@@ -1,10 +1,10 @@
 import hashlib
 from pathlib import Path
 
+from flows.shared import log
 from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.audit import log_upload
 from flows_staging.shared.minio import get_minio_client
-from prefect import get_run_logger
 from prefect import task
 
 
@@ -27,13 +27,12 @@ def _archive_old_file(minio_client, bucket: str, key: str) -> None:
         Key=archive_key,
     )
     minio_client.delete_object(Bucket=bucket, Key=key)
-    get_run_logger().info(f"🗄️ Archived {key} → {EVIDENCE_BUCKET}/{archive_key}")
+    log("info", f"🗄️ Archived {key} → {EVIDENCE_BUCKET}/{archive_key}")
 
 
 @task
 def handle_outputs(model_names: list[str], run_id: str) -> None:
     """Handle dbt output files: archive old, calculate md5, log to audit DB via log_upload."""
-    logger = get_run_logger()
     minio_client = get_minio_client()
     validated_bucket = "validated"
 
@@ -43,7 +42,7 @@ def handle_outputs(model_names: list[str], run_id: str) -> None:
         response = minio_client.list_objects(Bucket=validated_bucket, Prefix=prefix)
         existing = response.get("Contents", [])
         if not existing:
-            logger.warning(f"No output files found for {model_name}")
+            log("warning", f"No output files found for {model_name}")
             continue
 
         current_file = existing[0]["Key"]
@@ -73,4 +72,4 @@ def handle_outputs(model_names: list[str], run_id: str) -> None:
         )
         log_upload(run_id=run_id, file_metadata=file_metadata, bucket=validated_bucket)
 
-        logger.info(f"✅ {prefix} → {size_mb}MB | md5: {md5}")
+        log("info", f"✅ {prefix} → {size_mb}MB | md5: {md5}")

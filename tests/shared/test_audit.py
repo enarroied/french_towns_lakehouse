@@ -114,7 +114,7 @@ class TestCheckDB:
         """Should call _migrate function."""
         with (
             patch("flows_staging.shared.audit._migrate") as mock_migrate,
-            patch("flows_staging.shared.audit.get_run_logger") as mock_logger,
+            patch("flows.shared.logging.get_run_logger") as mock_logger,
         ):
             mock_logger.return_value = MagicMock()
             _check_db()
@@ -126,7 +126,7 @@ class TestCheckDB:
             patch(
                 "flows_staging.shared.audit._migrate", side_effect=Exception("DB Error")
             ),
-            patch("flows_staging.shared.audit.get_run_logger") as mock_logger,
+            patch("flows.shared.logging.get_run_logger") as mock_logger,
         ):
             mock_logger.return_value = MagicMock()
             with pytest.raises(RuntimeError, match="Metadata DB not writable"):
@@ -144,7 +144,7 @@ class TestCheckMinIO:
                 "flows_staging.shared.minio.get_minio_client",
                 return_value=mock_client,
             ),
-            patch("flows_staging.shared.audit.get_run_logger") as mock_logger,
+            patch("flows.shared.logging.get_run_logger") as mock_logger,
         ):
             mock_logger.return_value = MagicMock()
             _check_minio()
@@ -157,7 +157,7 @@ class TestCheckMinIO:
                 "flows_staging.shared.minio.get_minio_client",
                 side_effect=Exception("Connection refused"),
             ),
-            patch("flows_staging.shared.audit.get_run_logger") as mock_logger,
+            patch("flows.shared.logging.get_run_logger") as mock_logger,
         ):
             mock_logger.return_value = MagicMock()
             with pytest.raises(RuntimeError, match="MinIO not reachable"):
@@ -171,7 +171,7 @@ class TestCheckInternetConnection:
         """Should use httpx to check internet connection."""
         with (
             patch("flows_staging.shared.audit.httpx.head") as mock_head,
-            patch("flows_staging.shared.audit.get_run_logger") as mock_logger,
+            patch("flows.shared.logging.get_run_logger") as mock_logger,
         ):
             mock_logger.return_value = MagicMock()
             _check_internet_connection()
@@ -184,7 +184,7 @@ class TestCheckInternetConnection:
                 "flows_staging.shared.audit.httpx.head",
                 side_effect=Exception("Network unreachable"),
             ),
-            patch("flows_staging.shared.audit.get_run_logger") as mock_logger,
+            patch("flows.shared.logging.get_run_logger") as mock_logger,
         ):
             mock_logger.return_value = MagicMock()
             with pytest.raises(RuntimeError, match="No internet connection"):

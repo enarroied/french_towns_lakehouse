@@ -6,8 +6,8 @@ from typing import Literal
 
 import duckdb
 import httpx
+from flows.shared import log
 from flows_staging.shared.models import KnownFileHash
-from prefect import get_run_logger
 from prefect import task
 
 
@@ -38,30 +38,27 @@ def _migrate() -> None:
 
 
 def _check_db() -> None:
-    logger = get_run_logger()
     try:
         _migrate()
-        logger.info("✅ Metadata DB reachable")
+        log("info", "✅ Metadata DB reachable")
     except Exception as e:
         raise RuntimeError(f"Metadata DB not writable: {e}") from e
 
 
 def _check_minio() -> None:
-    logger = get_run_logger()
     try:
         from flows_staging.shared.minio import get_minio_client  # noqa: PLC0415
 
         get_minio_client().list_buckets()
-        logger.info("✅ MinIO reachable")
+        log("info", "✅ MinIO reachable")
     except Exception as e:
         raise RuntimeError(f"MinIO not reachable: {e}") from e
 
 
 def _check_internet_connection() -> None:
-    logger = get_run_logger()
     try:
         httpx.head("https://www.cloudflare.com", timeout=5)
-        logger.info("✅ Internet reachable")
+        log("info", "✅ Internet reachable")
     except Exception as e:
         raise RuntimeError(f"No internet connection: {e}") from e
 
@@ -88,9 +85,7 @@ def init_run(
                VALUES (?, ?, ?, ?, ?, ?)""",
             [run_id, domain, layer, RUN_STATUS_STARTED, now, technical_type],
         )
-    get_run_logger().info(
-        f"▶ Run started: {domain}/{layer}/{technical_type} [{run_id[:8]}]"
-    )
+    log("info", f"▶ Run started: {domain}/{layer}/{technical_type} [{run_id[:8]}]")
     return run_id
 
 
@@ -168,7 +163,7 @@ def log_upload(
             file_metadata.key,
             now,
         )
-    get_run_logger().info(
+    log(
         f"✅ {file_metadata.base_name} → {file_metadata.filename_timestamp} | {file_metadata.size_mb}MB | {file_metadata.md5}"
     )
 
@@ -210,6 +205,4 @@ def finalize_run(
         _update_run_status(conn, run_id, status, number_files, now)
 
     icon = "✅" if status == RUN_STATUS_SUCCESS else "❌"
-    get_run_logger().info(
-        f"{icon} Run {status} [{run_id[:8]}] — {number_files} file(s)"
-    )
+    log(f"{icon} Run {status} [{run_id[:8]}] — {number_files} file(s)")
