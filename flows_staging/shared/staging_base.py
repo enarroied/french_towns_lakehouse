@@ -15,6 +15,7 @@ from flows_staging.shared.minio import get_minio_client
 from flows_staging.shared.models import AsyncDownloadParams
 from flows_staging.shared.models import KnownHashes
 from flows_staging.shared.models import StagingFlowParams
+from prefect import get_run_logger
 from prefect import task
 
 
@@ -35,6 +36,8 @@ def download_files(domain_downloads: list[str], known_hashes: KnownHashes) -> di
     minio_client = get_minio_client()
     ensure_bucket_exists(STAGING_BUCKET)
 
+    logger = get_run_logger()
+
     params = AsyncDownloadParams(
         downloads=downloads,
         temp_dir=temp_dir,
@@ -43,6 +46,7 @@ def download_files(domain_downloads: list[str], known_hashes: KnownHashes) -> di
         staging_bucket=STAGING_BUCKET,
         concurrency=config["download"]["concurrency"],
         timeout_seconds=config["download"]["timeout_seconds"],
+        logger=logger,
     )
 
     return asyncio.run(run_async_downloads_to_minio(params))

@@ -59,6 +59,7 @@ class AsyncDownloadParams:
         staging_bucket: Name of the staging bucket.
         concurrency: Max concurrent downloads (default: 3).
         timeout_seconds: HTTP timeout in seconds (default: 120).
+        logger: Optional Prefect logger for logging.
     """
 
     downloads: list[dict]
@@ -68,3 +69,4 @@ class AsyncDownloadParams:
     staging_bucket: str
     concurrency: int = 3
     timeout_seconds: int = 120
+    logger: Any = None

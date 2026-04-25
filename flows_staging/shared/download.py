@@ -14,6 +14,26 @@ from flows_staging.scrapers.models import FileMetadata
 from flows_staging.shared.minio import get_minio_client
 from flows_staging.shared.models import AsyncDownloadParams
 from flows_staging.shared.models import KnownHashes
+from prefect import get_run_logger
+
+
+def _log(level: str, message: str, logger: Any | None = None) -> None:
+    """Log a message using Prefect logger if available, else print.
+
+    Args:
+        level: Log level ('info', 'warning', 'error')
+        message: Message to log
+        logger: Optional Prefect logger to use. If None, tries to get from Prefect context.
+    """
+    if logger:
+        getattr(logger, level)(message)
+    else:
+        try:
+            logger = get_run_logger()
+            getattr(logger, level)(message)
+        except Exception:
+            timestamp = datetime.now().isoformat()
+            print(f"[{timestamp}] {message}")
 
 
 EVIDENCE_BUCKET = "evidence-archive"
@@ -87,7 +107,7 @@ def upload_scraper_output(
     base_name = f"{scraper_name}.csv"
 
     if _should_skip_file(base_name, md5, known_hashes):
-        print(f"⏭️ Skipping {scraper_name} — hash unchanged")
+        _log("info", f"⏭️ Skipping {scraper_name} — hash unchanged")
         csv_path.unlink()
         return None
 
@@ -111,6 +131,7 @@ def _archive_old_file(
     minio_client: Any,
     staging_bucket: str,
     old_file_location: str,
+    logger: Any | None = None,
 ) -> None:
     """Copy old file from staging bucket to evidence-archive bucket, then delete from staging."""
     archive_key = old_file_location
@@ -120,38 +141,47 @@ def _archive_old_file(
         Key=archive_key,
     )
     minio_client.delete_object(Bucket=staging_bucket, Key=old_file_location)
-    print(f"🗄️ Archived {old_file_location} → {EVIDENCE_BUCKET}/{archive_key}")
+    _log(
+        "info",
+        f"🗄️ Archived {old_file_location} → {EVIDENCE_BUCKET}/{archive_key}",
+        logger=logger,
+    )
 
 
 async def _download_file(
     client: httpx.AsyncClient,
     url: str,
     output_path: Path,
+    logger: Any | None = None,
 ) -> None:
     """Download a file from URL to the specified output path."""
-    print(f"📥 Downloading {url}")
+    _log("info", f"📥 Downloading {url}", logger=logger)
     response = await client.get(url, follow_redirects=True)
     response.raise_for_status()
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, output_path.write_bytes, response.content)
-    print(f"✅ Saved to {output_path}")
+    _log("info", f"✅ Saved to {output_path}", logger=logger)
 
 
-def _extract_file(file_path: Path, output_dir: Path) -> list[Path]:
+def _extract_file(
+    file_path: Path,
+    output_dir: Path,
+    logger: Any | None = None,
+) -> list[Path]:
     """Extract zip file contents to output directory. Non-zip files are moved instead."""
     extracted_files: list[Path] = []
     try:
         with zipfile.ZipFile(file_path, "r") as zip_ref:
             zip_ref.extractall(output_dir)
-        print(f"✅ Extracted to {output_dir}")
+        _log("info", f"✅ Extracted to {output_dir}", logger=logger)
         for name in zip_ref.namelist():
             extracted_files.append(output_dir / name)
         file_path.unlink()
-        print(f"🗑️ Removed {file_path}")
+        _log("info", f"🗑️ Removed {file_path}", logger=logger)
     except zipfile.BadZipFile:
         dest_path = output_dir / file_path.name
         shutil.move(str(file_path), str(dest_path))
-        print(f"✅ Moved to {dest_path}")
+        _log("info", f"✅ Moved to {dest_path}", logger=logger)
         extracted_files.append(dest_path)
     return extracted_files
 
@@ -173,6 +203,7 @@ def _upload_file(
     minio_client: Any,
     staging_bucket: str,
     key: str,
+    logger: Any | None = None,
 ) -> None:
     """Upload a file to MinIO."""
     minio_client.upload_file(
@@ -180,7 +211,7 @@ def _upload_file(
         Bucket=staging_bucket,
         Key=key,
     )
-    print(f"☁️ Uploaded {key} to {staging_bucket}")
+    _log("info", f"☁️ Uploaded {key} to {staging_bucket}", logger=logger)
     file_path.unlink()
 
 
@@ -216,6 +247,7 @@ def _process_extracted_files(
     base_name: str,
     target_folder: str | None = None,
     source_url: str | None = None,
+    logger: Any | None = None,
 ) -> list[FileMetadata]:
     """Process all extracted files: skip unchanged, archive old, upload new."""
     file_records: list[FileMetadata] = []
@@ -225,7 +257,6 @@ def _process_extracted_files(
             continue
 
         original_name = extracted_file.name
-        # GDAL's ST_Read doesn't support wildcards, so keep geojson files with exact name
         if original_name.endswith(".geojson"):
             renamed_file = extracted_file
         else:
@@ -237,13 +268,15 @@ def _process_extracted_files(
         md5 = calculate_md5(renamed_file)
 
         if _should_skip_file(base_name, md5, known_hashes):
-            print(f"⏭️ Skipping {base_name} — hash unchanged")
+            _log("info", f"⏭️ Skipping {base_name} — hash unchanged", logger=logger)
             renamed_file.unlink(missing_ok=True)
             continue
 
         existing_location = _get_file_location(base_name, known_hashes)
         if existing_location:
-            _archive_old_file(minio_client, staging_bucket, existing_location)
+            _archive_old_file(
+                minio_client, staging_bucket, existing_location, logger=logger
+            )
 
         key = (
             f"{target_folder}/{renamed_file.name}"
@@ -255,7 +288,7 @@ def _process_extracted_files(
             renamed_file, base_name, target_folder, md5, source_url
         )
         metadata.key = key
-        _upload_file(renamed_file, minio_client, staging_bucket, key)
+        _upload_file(renamed_file, minio_client, staging_bucket, key, logger=logger)
 
         file_records.append(metadata)
 
@@ -271,12 +304,12 @@ async def _download_and_upload(
     minio_client: Any,
     staging_bucket: str,
     target_folder: str | None = None,
+    logger: Any | None = None,
 ) -> list[FileMetadata]:
     """Download a file, extract it, and upload to MinIO."""
     url = download_item.get("url")
     base_name = download_item.get("name", "unknown")
     ts = _get_timestamp()
-    # Force .geojson extension for french_communes (URL has no extension)
     if base_name == "french_communes":
         ext = ".geojson"
     else:
@@ -287,15 +320,15 @@ async def _download_and_upload(
     file_path = download_dir / filename
 
     if url is None:
-        print("⚠️ No URL provided for download item, skipping")
+        _log("warning", "⚠️ No URL provided for download item, skipping", logger=logger)
         return []
 
     async with semaphore:
         try:
-            await _download_file(client, url, file_path)
+            await _download_file(client, url, file_path, logger=logger)
             loop = asyncio.get_event_loop()
             extracted_files = await loop.run_in_executor(
-                None, _extract_file, file_path, download_dir
+                None, _extract_file, file_path, download_dir, logger
             )
 
             return await loop.run_in_executor(
@@ -308,13 +341,14 @@ async def _download_and_upload(
                 base_name,
                 target_folder,
                 url,
+                logger,
             )
 
         except httpx.HTTPStatusError as e:
-            print(f"❌ HTTP error downloading {filename}: {e}")
+            _log("error", f"❌ HTTP error downloading {filename}: {e}", logger=logger)
             return []
         except Exception as e:
-            print(f"❌ Failed to download {filename}: {e}")
+            _log("error", f"❌ Failed to download {filename}: {e}", logger=logger)
             return []
         finally:
             shutil.rmtree(download_dir, ignore_errors=True)
@@ -343,6 +377,7 @@ async def run_async_downloads_to_minio(
                 minio_client=params.minio_client,
                 staging_bucket=params.staging_bucket,
                 target_folder=d.get("target_folder"),
+                logger=params.logger,
             )
             for d in params.downloads
         ]
