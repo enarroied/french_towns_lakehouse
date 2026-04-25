@@ -22,19 +22,19 @@ def french_towns_pipeline() -> None:
     Unified pipeline for testing all child flows end-to-end.
     In production, each child flow is deployed and scheduled independently.
     """
-    log("info", "Starting French Towns Pipeline")
+    log("Starting French Towns Pipeline")
 
-    log("info", "=== STAGING PHASE ===")
+    log("=== STAGING PHASE ===")
     staging_current_geography()
     staging_current_demographics()
     staging_current_labels()
 
-    log("info", "=== TRANSFORMATION PHASE ===")
+    log("=== TRANSFORMATION PHASE ===")
     transformation_current_dim_geography()
     transformation_current_fact_demographics()
     transformation_current_labels()
 
-    log("info", "Pipeline complete")
+    log("Pipeline complete")
 
 
 if __name__ == "__main__":

@@ -79,4 +79,4 @@ def validate_inputs(source_names: list[str]) -> None:
 
         md5 = rows[0][1]
         timestamp = rows[0][2]
-        log("info", f"✅ {source_name} validated: {timestamp} | md5: {md5}")
+        log(f"✅ {source_name} validated: {timestamp} | md5: {md5}")

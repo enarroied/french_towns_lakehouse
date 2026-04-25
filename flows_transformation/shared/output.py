@@ -27,7 +27,7 @@ def _archive_old_file(minio_client, bucket: str, key: str) -> None:
         Key=archive_key,
     )
     minio_client.delete_object(Bucket=bucket, Key=key)
-    log("info", f"🗄️ Archived {key} → {EVIDENCE_BUCKET}/{archive_key}")
+    log(f"🗄️ Archived {key} → {EVIDENCE_BUCKET}/{archive_key}")
 
 
 @task
@@ -42,7 +42,7 @@ def handle_outputs(model_names: list[str], run_id: str) -> None:
         response = minio_client.list_objects(Bucket=validated_bucket, Prefix=prefix)
         existing = response.get("Contents", [])
         if not existing:
-            log("warning", f"No output files found for {model_name}")
+            log(f"No output files found for {model_name}", "warning")
             continue
 
         current_file = existing[0]["Key"]
@@ -72,4 +72,4 @@ def handle_outputs(model_names: list[str], run_id: str) -> None:
         )
         log_upload(run_id=run_id, file_metadata=file_metadata, bucket=validated_bucket)
 
-        log("info", f"✅ {prefix} → {size_mb}MB | md5: {md5}")
+        log(f"✅ {prefix} → {size_mb}MB | md5: {md5}")

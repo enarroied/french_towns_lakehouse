@@ -40,7 +40,7 @@ def _migrate() -> None:
 def _check_db() -> None:
     try:
         _migrate()
-        log("info", "✅ Metadata DB reachable")
+        log("✅ Metadata DB reachable")
     except Exception as e:
         raise RuntimeError(f"Metadata DB not writable: {e}") from e
 
@@ -50,7 +50,7 @@ def _check_minio() -> None:
         from flows_staging.shared.minio import get_minio_client  # noqa: PLC0415
 
         get_minio_client().list_buckets()
-        log("info", "✅ MinIO reachable")
+        log("✅ MinIO reachable")
     except Exception as e:
         raise RuntimeError(f"MinIO not reachable: {e}") from e
 
@@ -58,7 +58,7 @@ def _check_minio() -> None:
 def _check_internet_connection() -> None:
     try:
         httpx.head("https://www.cloudflare.com", timeout=5)
-        log("info", "✅ Internet reachable")
+        log("✅ Internet reachable")
     except Exception as e:
         raise RuntimeError(f"No internet connection: {e}") from e
 
@@ -85,7 +85,7 @@ def init_run(
                VALUES (?, ?, ?, ?, ?, ?)""",
             [run_id, domain, layer, RUN_STATUS_STARTED, now, technical_type],
         )
-    log("info", f"▶ Run started: {domain}/{layer}/{technical_type} [{run_id[:8]}]")
+    log(f"▶ Run started: {domain}/{layer}/{technical_type} [{run_id[:8]}]")
     return run_id
 
 
