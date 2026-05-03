@@ -167,3 +167,46 @@ def upload_directory_to_staging(
                 )
 
     return uploaded_keys
+
+
+def _archive_old_file(
+    minio_client: boto3.client,
+    staging_bucket: str,
+    evidence_bucket: str,
+    file_location: str,
+) -> None:
+    """Copy an existing file from staging to evidence-archive, then delete from staging.
+
+    Args:
+        minio_client: Initialized boto3 S3 client.
+        staging_bucket: Current staging bucket name.
+        evidence_bucket: Evidence archive bucket name.
+        file_location: MinIO key of the file to archive.
+    """
+    minio_client.copy_object(
+        Bucket=evidence_bucket,
+        CopySource={"Bucket": staging_bucket, "Key": file_location},
+        Key=file_location,
+    )
+    minio_client.delete_object(Bucket=staging_bucket, Key=file_location)
+
+
+def _upload_file_to_staging(
+    minio_client: boto3.client,
+    file_path: Path,
+    staging_bucket: str,
+    key: str,
+) -> None:
+    """Upload a local file to the staging bucket under the given key.
+
+    Args:
+        minio_client: Initialized boto3 S3 client.
+        file_path: Path to the local file to upload.
+        staging_bucket: Target MinIO bucket name.
+        key: MinIO object key (path within the bucket).
+    """
+    minio_client.upload_file(
+        Filename=str(file_path),
+        Bucket=staging_bucket,
+        Key=key,
+    )

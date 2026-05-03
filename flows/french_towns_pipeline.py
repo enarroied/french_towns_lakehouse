@@ -1,9 +1,9 @@
 from flows.shared import log
-from flows_staging.staging.staging_current_demographics import (
-    staging_current_demographics,
-)
 from flows_staging.staging.staging_current_geography import staging_current_geography
 from flows_staging.staging.staging_current_labels import staging_current_labels
+from flows_staging.staging.staging_historical_population import (
+    staging_historical_population,
+)
 from flows_transformation.transformation.transformation_current_dim_geography import (
     transformation_current_dim_geography,
 )
@@ -26,7 +26,7 @@ def french_towns_pipeline() -> None:
 
     log("=== STAGING PHASE ===")
     staging_current_geography()
-    staging_current_demographics()
+    staging_historical_population()
     staging_current_labels()
 
     log("=== TRANSFORMATION PHASE ===")

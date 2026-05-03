@@ -12,6 +12,8 @@ from flows_staging.shared.audit import _update_latest_run  # noqa: PLC0415
 from flows_staging.shared.audit import _update_run_status  # noqa: PLC0415
 from flows_staging.shared.audit import _write_file_metadata  # noqa: PLC0415
 from flows_staging.shared.audit import get_latest_hashes  # noqa: PLC0415
+from flows_staging.shared.models import FileMetadataRecord
+from flows_staging.shared.models import StageConfig
 
 
 class TestGetLatestHashes:
@@ -34,9 +36,9 @@ class TestWriteFileMetadata:
 
     def test_marks_old_files_as_not_latest(self, mock_duckdb_conn):
         """Should set is_latest=0 for existing files with same name."""
-        _write_file_metadata(
-            conn=mock_duckdb_conn,
-            run_id="test-run-id",
+        config = MagicMock(spec=StageConfig)
+        config.run_id = "test-run-id"
+        record = FileMetadataRecord(
             name="test.csv",
             filename_timestamp="test_20240101.csv",
             source_url=None,
@@ -44,8 +46,10 @@ class TestWriteFileMetadata:
             md5_hash="abc123",
             bucket="test-bucket",
             file_location="path/test.csv",
-            now=datetime.now(),
         )
+
+        with patch("flows_staging.shared.audit._conn", return_value=mock_duckdb_conn):
+            _write_file_metadata(config, record, datetime.now())
 
         calls = mock_duckdb_conn.execute.call_args_list
         assert len(calls) >= 1
@@ -53,9 +57,9 @@ class TestWriteFileMetadata:
 
     def test_inserts_new_file_record(self, mock_duckdb_conn):
         """Should insert new file record."""
-        _write_file_metadata(
-            conn=mock_duckdb_conn,
-            run_id="test-run-id",
+        config = MagicMock(spec=StageConfig)
+        config.run_id = "test-run-id"
+        record = FileMetadataRecord(
             name="test.csv",
             filename_timestamp="test_20240101.csv",
             source_url="https://example.com/test.csv",
@@ -63,8 +67,10 @@ class TestWriteFileMetadata:
             md5_hash="abc123",
             bucket="test-bucket",
             file_location="path/test.csv",
-            now=datetime.now(),
         )
+
+        with patch("flows_staging.shared.audit._conn", return_value=mock_duckdb_conn):
+            _write_file_metadata(config, record, datetime.now())
 
         calls = mock_duckdb_conn.execute.call_args_list
         assert len(calls) >= 2
@@ -75,14 +81,17 @@ class TestUpdateLatestRun:
     """Tests for _update_latest_run function."""
 
     def test_marks_previous_runs_as_not_latest(self, mock_duckdb_conn):
-        """Should set is_latest=0 for previous runs of same domain."""
+        """Should set is_latest=0 for previous runs and is_latest=1 for the new run."""
         _update_latest_run(mock_duckdb_conn, "new-run-id", "demographics")
 
-        mock_duckdb_conn.execute.assert_called_once()
-        call_args = mock_duckdb_conn.execute.call_args[0]
-        assert "UPDATE flow_run_metadata SET is_latest = 0" in call_args[0]
-        assert "demographics" in call_args[1]
-        assert "new-run-id" in call_args[1]
+        assert mock_duckdb_conn.execute.call_count == 2
+        call_args_1 = mock_duckdb_conn.execute.call_args_list[0][0]
+        call_args_2 = mock_duckdb_conn.execute.call_args_list[1][0]
+        assert "UPDATE flow_run_metadata SET is_latest = 0" in call_args_1[0]
+        assert "demographics" in call_args_1[1]
+        assert "new-run-id" in call_args_1[1]
+        assert "UPDATE flow_run_metadata SET is_latest = 1" in call_args_2[0]
+        assert "new-run-id" in call_args_2[1]
 
 
 class TestUpdateRunStatus:

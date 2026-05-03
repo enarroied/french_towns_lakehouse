@@ -15,8 +15,8 @@ deployments:
   work_pool:
     name: local-dev-pool
 
-- name: staging-demographics
-  entrypoint: flows_staging/staging/staging_current_demographics.py:staging_current_demographics
+- name: staging-historical-population
+  entrypoint: flows_staging/staging/staging_historical_population.py:staging_historical_population
   schedules: []
   work_pool:
     name: local-dev-pool

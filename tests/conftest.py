@@ -48,6 +48,8 @@ def mock_duckdb_conn():
     mock_conn = MagicMock()
     mock_conn.execute.return_value = MagicMock()
     mock_conn.close.return_value = None
+    mock_conn.__enter__ = MagicMock(return_value=mock_conn)
+    mock_conn.__exit__ = MagicMock(return_value=False)
 
     with patch("flows_staging.shared.audit._conn", return_value=mock_conn):
         yield mock_conn

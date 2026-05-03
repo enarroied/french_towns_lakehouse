@@ -23,39 +23,76 @@ download:
   timeout_seconds: 120
 
 downloads:
-  - name: "populations_historiques"
+  - name: "historical_population"
     url: "https://api.insee.fr/melodi/file/DS_POPULATIONS_HISTORIQUES/DS_POPULATIONS_HISTORIQUES_CSV_FR"
-    filename: "populations_historiques.zip"
+    source_file_patterns:
+      - "DS_POPULATIONS_HISTORIQUES_data.csv"
+    file_targets:
+      - historical_population
+    extensions:
+      - .csv
+    domain: "demographics"
+    target_folder: "demographics"
+
+  - name: "salaries"
+    url: "https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS/DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR"
+    filename: "salaries"
+    source_file_patterns:
+      - DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv
+    file_targets:
+      - historical_salaries
+    extensions:
+      - .csv
     domain: "demographics"
     target_folder: "demographics"
 
   - name: "french_communes"
     url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
-    filename: "communes_france.geojson"
+    filename: "communes_france"
+    source_file_patterns:
+      - "communes_france.geojson"
+    file_targets:
+      - french_towns
+    extensions:
+      - .geojson
     domain: "geography"
     target_folder: "geography"
 
   - name: "arrondissements"
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/arrondissement_2022.csv"
-    filename: "arrondissements.csv"
+    filename: "arrondissements"
+    source_file_patterns:
+      - arrondissements.csv
+    file_targets:
+      - arrondissements.csv
+    extensions:
+      - .csv
     domain: "geography"
     target_folder: "geography"
 
   - name: "departements"
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/departement_2022.csv"
-    filename: "departements.csv"
+    filename: "departements"
+    source_file_patterns:
+      - departements.csv
+    file_targets:
+      - departements.csv
+    extensions:
+      - .csv
     domain: "geography"
     target_folder: "geography"
 
-  - name: "salaries"
-    url: "https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS/DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR"
-    filename: "salaries.csv"
-    domain: "demographics"
-    target_folder: "demographics"
+
 
   - name: "zip_codes"
     url: "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/data-files/019HexaSmal.csv"
-    filename: "019HexaSmal.csv"
+    filename: "zip_codes"
+    source_file_patterns:
+      - 019HexaSmal.csv
+    file_targets:
+      - zip_codes.csv
+    extensions:
+      - .csv
     domain: "geography"
     target_folder: "geography"
 

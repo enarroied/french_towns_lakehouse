@@ -7,13 +7,13 @@ deployments:
       - current
       - geography
 
-  - name: staging-demographics
-    entrypoint: flows/staging/staging_current_demographics.py:staging_current_demographics
+  - name: staging-historical-population
+    entrypoint: flows/staging/staging_historical_population.py:staging_historical_population
     schedule: null
     tags:
       - staging
-      - current
-      - demographics
+      - historical
+      - population
 
   - name: staging-labels
     entrypoint: flows/staging/staging_current_labels.py:staging_current_labels
