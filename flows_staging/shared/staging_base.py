@@ -230,21 +230,17 @@ def _process_single_file(
     return True
 
 
-def run_staging_flow(params: StagingFlowParams, stage_files_task) -> None:
+def run_staging_flow(params: StagingFlowParams) -> None:
     """Shared body for all download-based staging flows.
 
-    Handles preflight, run init, task execution, finalization, and error handling.
-    The actual staging logic is delegated to `stage_files_task`, which is a
-    Prefect task specific to each flow (downloader or scraper).
-
     Args:
-        params: StagingFlowParams containing domain and technical_type.
-        stage_files_task: A callable Prefect task that returns number of files staged.
+        params: StagingFlowParams containing domain, domain_download, and technical_type.
     """
     preflight()
     run_id = init_run(domain=params.domain, technical_type=params.technical_type)
     try:
-        number_files = stage_files_task(run_id=run_id)
+        config = get_specific_config(params.domain_download, run_id)
+        number_files = stage_files(config)
         finalize_run(
             run_id=run_id, status=RUN_STATUS_SUCCESS, number_files=number_files
         )

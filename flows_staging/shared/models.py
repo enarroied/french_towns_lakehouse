@@ -27,10 +27,12 @@ class StagingFlowParams:
 
     Attributes:
         domain: The domain name (e.g., 'demographics', 'geography').
+        domain_download: The download item name from config.yaml (e.g., 'historical_population').
         technical_type: The technical type (default: 'DOWNLOAD').
     """
 
     domain: str
+    domain_download: str
     technical_type: str = "DOWNLOAD"
 
 
