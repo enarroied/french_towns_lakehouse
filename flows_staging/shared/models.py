@@ -73,6 +73,7 @@ class StageConfig:
         run_id: Unique ID for the current flow run.
         staging_bucket: MinIO staging bucket name.
         evidence_bucket: MinIO evidence archive bucket name.
+        filename: Optional filename hint for the downloaded file (from config.yaml).
         source_file_patterns: Regex patterns matching files inside the archive (downloaders only).
         file_targets: Target filenames after extraction/renaming (downloaders only).
         extensions: File extensions for each target, e.g. ['.csv'] (downloaders only).
@@ -84,6 +85,7 @@ class StageConfig:
     run_id: str
     staging_bucket: str
     evidence_bucket: str
+    filename: str | None = None
     source_file_patterns: list[str] = field(default_factory=list)
     file_targets: list[str] = field(default_factory=list)
     extensions: list[str] = field(default_factory=list)

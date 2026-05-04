@@ -65,6 +65,7 @@ def get_specific_config(domain_download: str, run_id: str) -> StageConfig:
     return StageConfig(
         name=item["name"],
         url=item["url"],
+        filename=item.get("filename"),
         source_file_patterns=item["source_file_patterns"],
         file_targets=item["file_targets"],
         extensions=item["extensions"],
@@ -111,7 +112,9 @@ async def _stage_files(config: StageConfig) -> int:
 
     with tempfile.TemporaryDirectory() as tmpdir:
         temp_path = Path(tmpdir)
-        temp_filename = Path(urlparse(config.url).path).name or config.name
+        temp_filename = (
+            config.filename or Path(urlparse(config.url).path).name or config.name
+        )
 
         await _download_file(config.url, temp_path, temp_filename)
 

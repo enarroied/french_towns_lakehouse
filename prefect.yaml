@@ -21,6 +21,36 @@ deployments:
   work_pool:
     name: local-dev-pool
 
+- name: staging-salaries
+  entrypoint: flows_staging/staging/staging_salaries.py:staging_salaries
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: staging-french-communes
+  entrypoint: flows_staging/staging/staging_french_communes.py:staging_french_communes
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: staging-arrondissements
+  entrypoint: flows_staging/staging/staging_arrondissements.py:staging_arrondissements
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: staging-departements
+  entrypoint: flows_staging/staging/staging_departements.py:staging_departements
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: staging-zip-codes
+  entrypoint: flows_staging/staging/staging_zip_codes.py:staging_zip_codes
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
 - name: staging-labels
   entrypoint: flows_staging/staging/staging_current_labels.py:staging_current_labels
   schedules: []

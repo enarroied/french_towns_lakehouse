@@ -72,7 +72,10 @@ async def _download_file(url: str, dest: pathlib.Path, filename: str) -> None:
         filename: Name for the downloaded file.
     """
     filepath = dest / filename
-    async with httpx.AsyncClient() as client, client.stream("GET", url) as response:
+    async with (
+        httpx.AsyncClient(follow_redirects=True) as client,
+        client.stream("GET", url) as response,
+    ):
         response.raise_for_status()
         with filepath.open("wb") as f:
             async for chunk in response.aiter_bytes(chunk_size=8192):

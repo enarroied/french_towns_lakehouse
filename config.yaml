@@ -50,7 +50,7 @@ downloads:
     url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
     filename: "communes_france"
     source_file_patterns:
-      - "communes_france.geojson"
+      - "communes_france"
     file_targets:
       - french_towns
     extensions:
