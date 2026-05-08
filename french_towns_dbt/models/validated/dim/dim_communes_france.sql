@@ -63,7 +63,7 @@ SELECT
     ST_Perimeter(geom)                                              AS perimeter,
     ST_NumInteriorRings(geom)                                       AS number_enclaves
 FROM ST_Read(
-    {{ latest_file(var("input_dir") ~ "/geography/french_communes_*.geojson") }}
+    {{ latest_file(var("input_dir") ~ "/geography/french_towns_*.geojson") }}
 )
 LEFT JOIN {{ source('french_towns', 'departements') }} AS dpt
     ON dpt.CHEFLIEU = com_code[1]

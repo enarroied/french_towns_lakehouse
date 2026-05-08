@@ -19,12 +19,12 @@ SOURCE_FOLDERS: dict[str, str] = {
 
 # Map flow source names to actual MinIO file prefixes
 SOURCE_PREFIXES: dict[str, str] = {
-    "french_communes": "french_communes",
+    "french_communes": "french_towns",
     "arrondissements": "arrondissements",
     "departements": "departements",
     "zip_codes": "zip_codes",
-    "populations_historiques": "DS_POPULATIONS_HISTORIQUES_data",
-    "salaries": "DS_BTS_SAL_EQTP_SEX_PCS_2023_data",
+    "populations_historiques": "historical_population",
+    "salaries": "historical_salaries",
 }
 
 
