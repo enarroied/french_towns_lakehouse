@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-lakehouse
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: french_towns
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: french_towns
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-postgres.sh:/docker-entrypoint-initdb.d/init.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U french_towns -d french_towns"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - lakehouse-net
+
+volumes:
+  pgdata:
+
+networks:
+  lakehouse-net:
+    external: true
+    name: docker_lakehouse-net
