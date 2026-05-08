@@ -62,7 +62,9 @@ SELECT
     ST_YMax(geom)                                                   AS bbox_ymax,
     ST_Perimeter(geom)                                              AS perimeter,
     ST_NumInteriorRings(geom)                                       AS number_enclaves
-FROM {{ source('french_towns', 'communes_france') }}
+FROM ST_Read(
+    {{ latest_file(var("input_dir") ~ "/geography/french_towns_*.geojson") }}
+)
 LEFT JOIN {{ source('french_towns', 'departements') }} AS dpt
     ON dpt.CHEFLIEU = com_code[1]
 LEFT JOIN {{ source('french_towns', 'arrondissements') }} AS arr

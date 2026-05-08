@@ -25,8 +25,20 @@ def get_paths() -> dict[str, str]:
     return _config["paths"]
 
 
-def get_downloads() -> list[dict[str, Any]]:
-    return _config.get("downloads", [])
+def get_downloads(domain_downloads: list[str] | None = None) -> list[dict[str, Any]]:
+    """Get downloads from config, optionally filtered by domain.
+
+    Args:
+        domain_downloads: Optional list of download names to filter by.
+            If None, returns all downloads.
+
+    Returns:
+        List of download configuration dictionaries.
+    """
+    downloads = _config.get("downloads", [])
+    if domain_downloads is not None:
+        downloads = [d for d in downloads if d["name"] in domain_downloads]
+    return downloads
 
 
 def get_scrapers() -> list[dict[str, Any]]:

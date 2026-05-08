@@ -1,14 +1,19 @@
 import re
+import tempfile
 from collections import defaultdict
 from pathlib import Path
 
 import pdfplumber
 import yaml
-from flows_staging.scrapers.models import FileMetadata
-from flows_staging.shared.download import upload_scraper_output
+from flows_staging.shared.config import get_config
+from flows_staging.shared.download import write_csv_for_staging
+from flows_staging.shared.minio import get_minio_client
+from flows_staging.shared.models import StageConfig
+from flows_staging.shared.staging_base import _process_single_file
 
 
 FIELDNAMES = ["commune", "dept_code", "nb_lauriers"]
+EXTENSION = ".csv"
 
 
 SECTION_RE = re.compile(r"\d+\s+villes?\s+\u201c(\d+)\s+LAURIERS?\u201d", re.IGNORECASE)
@@ -88,14 +93,25 @@ def parse_palmares(path: Path) -> list[dict]:
     return results
 
 
-def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
-    """Parse ville sportive PDF and upload to staging."""
+def run(config: dict, run_id: str) -> bool:
+    """Parse ville sportive PDF and stage via the shared pipeline.
+
+    Parses the PDF, writes output to a temporary CSV, then hands off to
+    `_process_single_file` which handles MD5 comparison, archiving the old
+    version, uploading, and writing metadata.
+
+    Args:
+        config: Full config dict (from config.yaml custom_parsers section).
+        run_id: Unique flow run identifier.
+
+    Returns:
+        True if a file was staged, False if skipped or failed.
+    """
     parser_config = next(
         s
         for s in config["custom_parsers"]
         if s["module"] == "flows_staging.custom_parsers.parse_ville_sportive"
     )
-    known_hashes = known_hashes or {}
 
     input_dir = Path(parser_config.get("input_dir", "custom_parsers/data_for_parsers"))
     pdf_path = input_dir / parser_config["pdf_file"]
@@ -112,15 +128,28 @@ def run(config: dict, known_hashes: dict | None = None) -> FileMetadata | None:
 
     if not rows:
         print("No data parsed")
-        return None
+        return False
 
-    return upload_scraper_output(
-        data=rows,
-        fieldnames=FIELDNAMES,
-        scraper_name=parser_config["name"],
+    all_config = get_config()
+    staging_bucket = all_config["buckets"]["staging_current"]
+    evidence_bucket = all_config["buckets"]["evidence_archive"]
+    minio_client = get_minio_client()
+
+    stage_config = StageConfig(
+        name=parser_config["name"],
+        url="",  # No source URL for PDF parsers
         target_folder=parser_config.get("target_folder", "labels"),
-        known_hashes=known_hashes,
+        run_id=run_id,
+        staging_bucket=staging_bucket,
+        evidence_bucket=evidence_bucket,
     )
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        temp_path = Path(tmpdir)
+        write_csv_for_staging(rows, FIELDNAMES, parser_config["name"], temp_path)
+        return _process_single_file(
+            stage_config, minio_client, parser_config["name"], EXTENSION, temp_path
+        )
 
 
 def load_config() -> dict:

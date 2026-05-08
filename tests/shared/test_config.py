@@ -48,7 +48,7 @@ class TestGetPaths:
 
 
 class TestGetDownloads:
-    """Tests for get_get_downloads function."""
+    """Tests for get_downloads function."""
 
     def test_returns_list(self):
         """Should return a list of downloads."""
@@ -64,6 +64,13 @@ class TestGetDownloads:
             assert "url" in download
             assert "domain" in download
             assert "target_folder" in download
+
+    def test_filters_by_domain_downloads(self):
+        """Should filter downloads when domain_downloads is provided."""
+        result = get_downloads(domain_downloads=["communes"])
+        assert isinstance(result, list)
+        for download in result:
+            assert download["name"] in ["communes"]
 
 
 class TestGetScrapers:

@@ -26,9 +26,10 @@
     - [Pipeline Naming](#pipeline-naming)
     - [Domain Categories](#domain-categories)
   - [Running the Pipeline](#running-the-pipeline)
+    - [Start Prefect Server](#start-prefect-server)
+    - [Start a dev worker](#start-a-dev-worker)
     - [Run All Flows (for testing)](#run-all-flows-for-testing)
     - [Run Individual Flows](#run-individual-flows)
-    - [Start a dev worker](#start-a-dev-worker)
     - [What the Pipeline Does](#what-the-pipeline-does)
     - [Run dbt in isolation](#run-dbt-in-isolation)
   - [Prefect Deployments](#prefect-deployments)
@@ -249,6 +250,20 @@ Examples:
 
 ## Running the Pipeline
 
+### Start Prefect Server
+
+if you run the pipeline locally, start the server with:
+
+```bash
+uv run prefect server start
+```
+
+### Start a dev worker
+
+```bash
+uv run prefect worker start --pool "local-dev-pool"
+```
+
 ### Run All Flows (for testing)
 
 ```bash
@@ -260,12 +275,6 @@ uv run python -m flows.french_towns_pipeline
 ```bash
 uv run python -m flows.staging.staging_current_geography
 uv run python -m flows.transformation.transformation_current_dim_geography
-```
-
-### Start a dev worker
-
-```bash
-uv run prefect worker start --pool "local-dev-pool"
 ```
 
 ### What the Pipeline Does

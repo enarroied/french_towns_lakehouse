@@ -29,7 +29,7 @@ uv run python -m flows.french_towns_pipeline
 ```bash
 # Staging
 uv run python -m flows.staging.staging_current_geography
-uv run python -m flows.staging.staging_current_demographics
+uv run python -m flows.staging.staging_historical_population
 uv run python -m flows.staging.staging_current_labels
 
 # Transformation

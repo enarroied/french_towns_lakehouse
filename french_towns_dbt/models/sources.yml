@@ -6,24 +6,25 @@ sources:
     tables:
       - name: communes_france
         meta:
+        # ST_Read Does not support glob * pattern...
           external_location: "ST_Read('{{ var('input_dir') }}/geography/communes_france.geojson')"
 
       - name: arrondissements
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/arrondissements.csv')"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/arrondissements_*.csv')"
 
       - name: departements
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/departements.csv')"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/departements_*.csv')"
 
       - name: populations_historiques
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/DS_POPULATIONS_HISTORIQUES_data.csv', sample_size=-1)"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/historical_population_*.csv', sample_size=-1)"
 
       - name: salaries
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv', sample_size=-1)"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/historical_salaries_*.csv', sample_size=-1)"
 
       - name: zip_codes
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/019HexaSmal.csv', sample_size=-1, encoding='latin-1', delim=';')"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/zip_codes_*.csv', sample_size=-1, encoding='latin-1', delim=';')"
