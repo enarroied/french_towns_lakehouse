@@ -11,72 +11,84 @@ pull:
 deployments:
 - name: staging-historical-population
   entrypoint: flows_staging/staging/staging_historical_population.py:staging_historical_population
+  tags: ["downloader", "demographics", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-salaries
   entrypoint: flows_staging/staging/staging_salaries.py:staging_salaries
+  tags: ["downloader", "demographics", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-french-communes
   entrypoint: flows_staging/staging/staging_french_communes.py:staging_french_communes
+  tags: ["downloader", "geography", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-arrondissements
   entrypoint: flows_staging/staging/staging_arrondissements.py:staging_arrondissements
+  tags: ["downloader", "geography", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-departements
   entrypoint: flows_staging/staging/staging_departements.py:staging_departements
+  tags: ["downloader", "geography", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-zip-codes
   entrypoint: flows_staging/staging/staging_zip_codes.py:staging_zip_codes
+  tags: ["downloader", "geography", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-labels
   entrypoint: flows_staging/staging/staging_current_labels.py:staging_current_labels
+  tags: ["scraper", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: transformation-dim-geography
   entrypoint: flows_transformation/transformation/transformation_current_dim_geography.py:transformation_current_dim_geography
+  tags: ["dbt", "geography", "transformation"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: transformation-fact-demographics
   entrypoint: flows_transformation/transformation/transformation_current_fact_demographics.py:transformation_current_fact_demographics
+  tags: ["dbt", "demographics", "transformation"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: transformation-labels
   entrypoint: flows_transformation/transformation/transformation_current_labels.py:transformation_current_labels
+  tags: ["dbt", "labels", "transformation"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: french-towns-pipeline
   entrypoint: flows/french_towns_pipeline.py:french_towns_pipeline
+  tags: ["test", "all"]
   schedules: []
   work_pool:
     name: local-dev-pool
 
 - name: staging-pipeline
   entrypoint: flows/staging_pipeline.py:staging_pipeline
+  tags: ["test", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -86,6 +98,7 @@ deployments:
   entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: petites_cites
+  tags: ["scraper", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -94,6 +107,7 @@ deployments:
   entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: villes_fleuries
+  tags: ["scraper", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -102,6 +116,7 @@ deployments:
   entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: plus_beaux_villages
+  tags: ["scraper", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -110,6 +125,7 @@ deployments:
   entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: villes_prudentes
+  tags: ["scraper", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -118,6 +134,7 @@ deployments:
   entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: village_etape
+  tags: ["scraper", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -126,6 +143,7 @@ deployments:
   entrypoint: flows_staging/scrapers/__init__.py:run_scraper
   parameters:
     scraper_name: famille_plus
+  tags: ["scraper", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
@@ -135,6 +153,7 @@ deployments:
   entrypoint: flows_staging/custom_parsers/__init__.py:run_parser
   parameters:
     parser_name: ville_sportive
+  tags: ["parser", "labels", "staging"]
   schedules: []
   work_pool:
     name: local-dev-pool
