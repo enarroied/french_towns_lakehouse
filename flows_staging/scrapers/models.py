@@ -54,18 +54,6 @@ class ScraperConfig:
 
 
 @dataclass
-class ScraperResult:
-    """Outcome of a single scraper run."""
-
-    name: str
-    module: str
-    success: bool
-    output_key: str | None = None
-    error: str | None = None
-    tb: str | None = None
-
-
-@dataclass
 class FileMetadata:
     """Metadata about an uploaded file."""
 

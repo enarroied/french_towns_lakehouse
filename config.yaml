@@ -62,9 +62,9 @@ downloads:
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/arrondissement_2022.csv"
     filename: "arrondissements"
     source_file_patterns:
-      - arrondissements.csv
+      - arrondissements
     file_targets:
-      - arrondissements.csv
+      - arrondissements
     extensions:
       - .csv
     domain: "geography"
@@ -74,23 +74,21 @@ downloads:
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/departement_2022.csv"
     filename: "departements"
     source_file_patterns:
-      - departements.csv
+      - departements
     file_targets:
-      - departements.csv
+      - departements
     extensions:
       - .csv
     domain: "geography"
     target_folder: "geography"
 
-
-
   - name: "zip_codes"
     url: "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/data-files/019HexaSmal.csv"
     filename: "zip_codes"
     source_file_patterns:
-      - 019HexaSmal.csv
+      - zip_codes
     file_targets:
-      - zip_codes.csv
+      - zip_codes
     extensions:
       - .csv
     domain: "geography"

@@ -118,6 +118,8 @@ async def _stage_files(config: StageConfig) -> int:
 
         await _download_file(config.url, temp_path, temp_filename)
 
+        log(f"Files in temp after download: {[f.name for f in temp_path.iterdir()]}")
+
         matched = _rename_files(
             temp_path,
             config.source_file_patterns,

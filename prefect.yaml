@@ -9,12 +9,6 @@ pull:
     directory: "{{ $FRENCH_TOWNS_ROOT }}"
 
 deployments:
-- name: staging-geography
-  entrypoint: flows_staging/staging/staging_current_geography.py:staging_current_geography
-  schedules: []
-  work_pool:
-    name: local-dev-pool
-
 - name: staging-historical-population
   entrypoint: flows_staging/staging/staging_historical_population.py:staging_historical_population
   schedules: []
@@ -77,6 +71,12 @@ deployments:
 
 - name: french-towns-pipeline
   entrypoint: flows/french_towns_pipeline.py:french_towns_pipeline
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: staging-pipeline
+  entrypoint: flows/staging_pipeline.py:staging_pipeline
   schedules: []
   work_pool:
     name: local-dev-pool

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from dataclasses import field
-from typing import TypeAlias
 
 
 @dataclass
@@ -16,9 +15,6 @@ class KnownFileHash:
     md5: str
     filename_timestamp: str
     file_location: str | None = None
-
-
-KnownHashes: TypeAlias = dict[str, KnownFileHash]
 
 
 @dataclass

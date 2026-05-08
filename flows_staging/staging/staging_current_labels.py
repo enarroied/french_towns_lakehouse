@@ -16,8 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 @flow(name="staging_current_labels")
-async def staging_current_labels() -> None:
+def staging_current_labels() -> None:
     """Run all enabled scrapers and log results to audit DB."""
+    asyncio.run(_staging_current_labels_impl())
+
+
+async def _staging_current_labels_impl() -> None:
     preflight()
     run_id = init_run(domain="labels", technical_type="SCRAPER")
 
@@ -51,4 +55,4 @@ async def staging_current_labels() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(staging_current_labels())
+    staging_current_labels()
