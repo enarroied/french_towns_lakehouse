@@ -1,12 +1,8 @@
-from pathlib import Path
-
-import duckdb
 from flows.shared import log
+from flows_staging.shared import audit_db as db
 from flows_staging.shared.minio import get_minio_client
 from prefect import task
 
-
-_DB_PATH = Path(__file__).parent.parent.parent / ".data/metadata.db"
 
 SOURCE_FOLDERS: dict[str, str] = {
     "french_communes": "geography",
@@ -17,7 +13,6 @@ SOURCE_FOLDERS: dict[str, str] = {
     "salaries": "demographics",
 }
 
-# Map flow source names to actual MinIO file prefixes
 SOURCE_PREFIXES: dict[str, str] = {
     "french_communes": "french_towns",
     "arrondissements": "arrondissements",
@@ -26,11 +21,6 @@ SOURCE_PREFIXES: dict[str, str] = {
     "populations_historiques": "historical_population",
     "salaries": "historical_salaries",
 }
-
-
-def _conn():
-    _DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    return duckdb.connect(str(_DB_PATH))
 
 
 @task
@@ -52,15 +42,13 @@ def validate_inputs(source_names: list[str]) -> None:
                 f"Failed to list MinIO objects for {source_name}: {e}"
             ) from e
 
-        with _conn() as conn:
-            rows = conn.execute(
-                """SELECT filename, md5_hash, filename_timestamp
-                   FROM file_metadata
-                   WHERE filename LIKE ? || '%' AND is_latest = 1
-                   ORDER BY upload_timestamp DESC
-                   LIMIT 1""",
-                [minio_prefix],
-            ).fetchall()
+        rows = db.query(
+            "SELECT filename, md5_hash, filename_timestamp "
+            "FROM audit.file_metadata "
+            "WHERE filename LIKE %s || '%%' AND is_latest = 1 "
+            "ORDER BY upload_timestamp DESC LIMIT 1",
+            [minio_prefix],
+        )
 
         num_minio = len(files_in_minio)
         num_audit = len(rows)
