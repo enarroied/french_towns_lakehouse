@@ -188,11 +188,18 @@ PostgreSQL 16 serves as the metadata database for Prefect orchestration and audi
 | Access Point | URL |
 |--------------|-----|
 | Connection | `localhost:5432` |
-| Audit Database | `french_towns` (schema: `audit`) |
+| Audit Database | `metadata` (schema: `audit`) |
 | Prefect Database | `prefect` (auto-managed) |
 | User | `french_towns` |
 
 The `prefect` database is created automatically on first startup by `init-postgres.sh`.
+
+> **PostgreSQL 15+:** The `french_towns` user needs `CREATE` privilege on the `public`
+> schema of the `prefect` database. If you get `permission denied for schema public`,
+> run:
+> ```bash
+> psql -U postgres -d prefect -c "GRANT ALL ON SCHEMA public TO french_towns;"
+> ```
 
 #### Credentials
 
@@ -202,10 +209,37 @@ Set in `.env`:
 PG_PASSWORD=your_secure_password
 ```
 
+#### Manual Setup (without Docker)
+
+If you have a local PostgreSQL instance, create the databases and user manually:
+
+```bash
+# Create databases
+psql -U postgres -c "CREATE DATABASE metadata;"
+psql -U postgres -c "CREATE DATABASE prefect;"
+
+# Create user (if not exists)
+psql -U postgres -c "CREATE USER french_towns WITH PASSWORD 'your_password';"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE metadata TO french_towns;"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE prefect TO french_towns;"
+
+# Grant schema permissions (PostgreSQL 15+)
+psql -U postgres -d prefect -c "GRANT ALL ON SCHEMA public TO french_towns;"
+psql -U postgres -d metadata -c "GRANT ALL ON SCHEMA public TO french_towns;"
+```
+
+Then set the connection URLs in `.env`:
+
+```env
+PG_PASSWORD=your_password
+AUDIT_DATABASE_URL=postgresql://french_towns:your_password@localhost:5432/metadata
+PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_password@localhost:5432/prefect
+```
+
 #### Connecting
 
 ```bash
-psql -U french_towns -d french_towns -h localhost
+psql -U french_towns -d metadata -h localhost
 ```
 
 #### Start
@@ -297,7 +331,19 @@ Examples:
 
 ### Start Prefect Server
 
-if you run the pipeline locally, start the server with:
+If using PostgreSQL as the Prefect backend, set the connection URL first:
+
+```bash
+export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:${PG_PASSWORD}@localhost:5432/prefect
+```
+
+Or source your `.env` file if it already contains the variable:
+
+```bash
+source .env
+```
+
+Then start the server:
 
 ```bash
 uv run prefect server start
@@ -379,6 +425,8 @@ PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_passw
 ```
 
 If using **Prefect Cloud**, omit this variable — Cloud manages its own database.
+
+Prefect auto-creates all required tables in the `prefect` database on first server start.
 
 ---
 

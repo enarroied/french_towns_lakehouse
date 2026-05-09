@@ -1189,6 +1189,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
+    { name = "asyncpg" },
     { name = "beautifulsoup4" },
     { name = "boto3" },
     { name = "clear" },
@@ -1229,6 +1230,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.13.3" },
+    { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "beautifulsoup4", specifier = ">=4.14.3" },
     { name = "boto3", specifier = ">=1.42.51" },
     { name = "clear", specifier = ">=2.0.0" },
