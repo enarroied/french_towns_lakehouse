@@ -24,11 +24,7 @@ if TYPE_CHECKING:
     from flows_staging.scrapers.models import FileMetadata
 
 
-DB_URL = os.environ.get("AUDIT_DATABASE_URL")
-if DB_URL is None:
-    raise RuntimeError(
-        "AUDIT_DATABASE_URL environment variable is not set. Run: source .env"
-    )
+DB_URL: str | None = os.environ.get("AUDIT_DATABASE_URL")
 SCHEMA = "audit"
 
 _pool: pool.ThreadedConnectionPool | None = None
@@ -36,6 +32,10 @@ _pool: pool.ThreadedConnectionPool | None = None
 
 def _get_conn() -> psycopg2.extensions.connection:
     global _pool  # noqa: PLW0603
+    if DB_URL is None:
+        raise RuntimeError(
+            "AUDIT_DATABASE_URL environment variable is not set. Run: source .env"
+        )
     if _pool is None:
         _pool = pool.ThreadedConnectionPool(1, 4, DB_URL)
     return _pool.getconn()
