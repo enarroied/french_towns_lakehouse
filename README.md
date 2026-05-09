@@ -71,6 +71,7 @@ The data model follows a star schema.
 | Object Storage | MinIO (S3-compatible) |
 | Iceberg Catalog | Apache Polaris |
 | Package Manager | uv |
+| Metadata DB | PostgreSQL 16 |
 
 ---
 
@@ -101,6 +102,9 @@ docker compose -f docker/docker-compose-minio.yml up -d
 
 # Start Polaris (Iceberg catalog)
 docker compose -f docker/docker-compose-polaris.yml --env-file .env up -d
+
+# Start PostgreSQL (metadata database)
+docker compose -f docker/docker-compose-postgres.yml --env-file .env up -d
 ```
 
 ---
@@ -173,6 +177,81 @@ POLARIS_CLIENT_SECRET=your_client_secret
 
 ```bash
 docker compose -f docker/docker-compose-minio.yml -f docker/docker-compose-polaris.yml --env-file .env down
+```
+
+---
+
+### PostgreSQL
+
+PostgreSQL 16 serves as the metadata database for Prefect orchestration and audit logging.
+
+| Access Point | URL |
+|--------------|-----|
+| Connection | `localhost:5432` |
+| Audit Database | `metadata` (schema: `audit`) |
+| Prefect Database | `prefect` (auto-managed) |
+| User | `french_towns` |
+
+The `prefect` database is created automatically on first startup by `init-postgres.sh`.
+
+> **PostgreSQL 15+:** The `french_towns` user needs `CREATE` privilege on the `public`
+> schema of the `prefect` database. If you get `permission denied for schema public`,
+> run:
+> ```bash
+> psql -U postgres -d prefect -c "GRANT ALL ON SCHEMA public TO french_towns;"
+> ```
+
+#### Credentials
+
+Set in `.env`:
+
+```env
+PG_PASSWORD=your_secure_password
+```
+
+#### Manual Setup (without Docker)
+
+If you have a local PostgreSQL instance, create the databases and user manually:
+
+```bash
+# Create databases
+psql -U postgres -c "CREATE DATABASE metadata;"
+psql -U postgres -c "CREATE DATABASE prefect;"
+
+# Create user (if not exists)
+psql -U postgres -c "CREATE USER french_towns WITH PASSWORD 'your_password';"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE metadata TO french_towns;"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE prefect TO french_towns;"
+
+# Grant schema permissions (PostgreSQL 15+)
+psql -U postgres -d prefect -c "GRANT ALL ON SCHEMA public TO french_towns;"
+psql -U postgres -d metadata -c "GRANT ALL ON SCHEMA public TO french_towns;"
+```
+
+Then set the connection URLs in `.env`:
+
+```env
+PG_PASSWORD=your_password
+AUDIT_DATABASE_URL=postgresql://french_towns:your_password@localhost:5432/metadata
+PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_password@localhost:5432/prefect
+```
+
+#### Connecting
+
+```bash
+psql -U french_towns -d metadata -h localhost
+```
+
+#### Start
+
+```bash
+docker compose -f docker/docker-compose-postgres.yml --env-file .env up -d
+```
+
+#### Stop
+
+```bash
+docker compose -f docker/docker-compose-postgres.yml --env-file .env down
 ```
 
 ---
@@ -252,7 +331,19 @@ Examples:
 
 ### Start Prefect Server
 
-if you run the pipeline locally, start the server with:
+If using PostgreSQL as the Prefect backend, set the connection URL first:
+
+```bash
+export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:${PG_PASSWORD}@localhost:5432/prefect
+```
+
+Or source your `.env` file if it already contains the variable:
+
+```bash
+source .env
+```
+
+Then start the server:
 
 ```bash
 uv run prefect server start
@@ -319,6 +410,24 @@ View deployments at `http://localhost:4200/deployments`.
 
 Each flow can be deployed independently and scheduled with cron or interval schedules.
 
+#### PostgreSQL Backend
+
+By default Prefect uses a local SQLite database. To switch to PostgreSQL:
+
+```bash
+export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:${PG_PASSWORD}@localhost:5432/prefect
+```
+
+Alternatively, set the variable in `.env`:
+
+```env
+PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_password@localhost:5432/prefect
+```
+
+If using **Prefect Cloud**, omit this variable — Cloud manages its own database.
+
+Prefect auto-creates all required tables in the `prefect` database on first server start.
+
 ---
 
 ## Project Structure
@@ -332,6 +441,7 @@ french_towns_lakehouse/
 │   │   ├── minio.py                 # MinIO helpers
 │   │   ├── download.py              # Download + upload utilities
 │   │   ├── audit.py                 # Audit logging (Prefect tasks)
+│   │   ├── audit_db.py              # PostgreSQL audit DB layer
 │   │   └── __init__.py
 │   ├── scrapers/                    # Web scrapers
 │   │   ├── scrape_villes_fleuries.py
@@ -359,7 +469,9 @@ french_towns_lakehouse/
 ├── config.yaml                     # Pipeline configuration
 ├── docker/                         # Docker configs
 │   ├── docker-compose-minio.yml   # MinIO S3 storage
-│   └── docker-compose-polaris.yml  # Polaris Iceberg catalog
+│   ├── docker-compose-polaris.yml # Polaris Iceberg catalog
+│   ├── docker-compose-postgres.yml# PostgreSQL metadata database
+│   └── init-postgres.sh           # Creates `prefect` DB on first boot
 ├── .env.example                   # Environment variables template
 └── pyproject.toml                 # Project config + linting
 ```

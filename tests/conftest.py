@@ -38,24 +38,6 @@ def mock_ensure_bucket_exists():
 
 
 # -----------------------------------------------------------------------------
-# DuckDB Mock
-# -----------------------------------------------------------------------------
-
-
-@pytest.fixture
-def mock_duckdb_conn():
-    """Mock DuckDB connection for audit tests."""
-    mock_conn = MagicMock()
-    mock_conn.execute.return_value = MagicMock()
-    mock_conn.close.return_value = None
-    mock_conn.__enter__ = MagicMock(return_value=mock_conn)
-    mock_conn.__exit__ = MagicMock(return_value=False)
-
-    with patch("flows_staging.shared.audit._conn", return_value=mock_conn):
-        yield mock_conn
-
-
-# -----------------------------------------------------------------------------
 # Config Mock
 # -----------------------------------------------------------------------------
 
