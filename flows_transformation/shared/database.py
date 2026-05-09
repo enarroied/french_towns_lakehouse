@@ -1,8 +1,11 @@
+import logging
 from pathlib import Path
 
 import duckdb
 from prefect import task
 
+
+logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 
@@ -13,10 +16,10 @@ def ensure_work_database_exists() -> None:
     db_path = PROJECT_ROOT / "french_towns.duckdb"
 
     if db_path.exists():
-        print(f"Database already exists at {db_path}")
+        logger.info("Database already exists at %s", db_path)
         return
 
     conn = duckdb.connect()
     conn.execute(f"ATTACH '{db_path}' AS french_towns (STORAGE_VERSION 'v1.5.0')")
     conn.close()
-    print(f"Database initialized at {db_path}")
+    logger.info("Database initialized at %s", db_path)

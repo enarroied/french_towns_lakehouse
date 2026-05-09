@@ -10,6 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    services:
+      minio:
+        image: minio/minio:latest
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        cmd: server /data --address :19000 --console-address :19001
+        ports:
+          - 19000:19000
 
     steps:
     - uses: actions/checkout@v3
@@ -29,7 +38,24 @@ jobs:
         uv pip install dbt-core dbt-duckdb
         uv run dbt deps
 
+    - name: Install boto3 for MinIO bucket creation
+      run: uv pip install boto3
+
+    - name: Create MinIO bucket
+      run: |
+        uv run python -c "
+        import boto3
+        c = boto3.client('s3', endpoint_url='http://localhost:19000',
+          aws_access_key_id='minioadmin', aws_secret_access_key='minioadmin')
+        c.create_bucket(Bucket='staging-current')
+        "
+
     - name: Generate dbt docs
+      env:
+        AWS_ACCESS_KEY_ID: minioadmin
+        AWS_SECRET_ACCESS_KEY: minioadmin
+        AWS_ENDPOINT: localhost:19000
+        AWS_DEFAULT_REGION: us-east-1
       run: |
         cd french_towns_dbt
         uv run dbt docs generate --profiles-dir . --empty-catalog

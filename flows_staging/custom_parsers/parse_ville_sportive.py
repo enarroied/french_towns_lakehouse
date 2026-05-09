@@ -1,16 +1,18 @@
+import logging
 import re
 import tempfile
 from collections import defaultdict
 from pathlib import Path
 
 import pdfplumber
-import yaml
 from flows_staging.shared.config import get_config
 from flows_staging.shared.download import write_csv_for_staging
 from flows_staging.shared.minio import get_minio_client
 from flows_staging.shared.models import StageConfig
 from flows_staging.shared.staging_base import _process_single_file
 
+
+logger = logging.getLogger(__name__)
 
 FIELDNAMES = ["commune", "dept_code", "nb_lauriers"]
 EXTENSION = ".csv"
@@ -116,18 +118,18 @@ def run(config: dict, run_id: str) -> bool:
     input_dir = Path(parser_config.get("input_dir", "custom_parsers/data_for_parsers"))
     pdf_path = input_dir / parser_config["pdf_file"]
 
-    print(f"Parsing {pdf_path}...")
+    logger.info("Parsing %s...", pdf_path)
     rows = parse_palmares(pdf_path)
 
     counts = {k: sum(1 for r in rows if r["nb_lauriers"] == k) for k in [1, 2, 3, 4]}
-    print(f"  1 laurier : {counts[1]}")
-    print(f"  2 lauriers: {counts[2]}")
-    print(f"  3 lauriers: {counts[3]}")
-    print(f"  4 lauriers: {counts[4]}")
-    print(f"  Total     : {len(rows)}")
+    logger.info("  1 laurier : %d", counts[1])
+    logger.info("  2 lauriers: %d", counts[2])
+    logger.info("  3 lauriers: %d", counts[3])
+    logger.info("  4 lauriers: %d", counts[4])
+    logger.info("  Total     : %d", len(rows))
 
     if not rows:
-        print("No data parsed")
+        logger.warning("No data parsed")
         return False
 
     all_config = get_config()
@@ -150,13 +152,3 @@ def run(config: dict, run_id: str) -> bool:
         return _process_single_file(
             stage_config, minio_client, parser_config["name"], EXTENSION, temp_path
         )
-
-
-def load_config() -> dict:
-    return yaml.safe_load(Path("config.yaml").open())
-
-
-if __name__ == "__main__":
-    config = load_config()
-    result = run(config)
-    print(f"Result: {result}")

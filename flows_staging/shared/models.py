@@ -1,3 +1,5 @@
+"""Data models — dataclasses shared across staging flows, scrapers, and parsers."""
+
 from dataclasses import dataclass
 from dataclasses import field
 

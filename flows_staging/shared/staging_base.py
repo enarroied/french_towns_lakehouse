@@ -12,7 +12,7 @@ from datetime import timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-import boto3
+from botocore.client import BaseClient
 from flows.shared import log
 from flows_staging.shared.audit import RUN_STATUS_FAILED
 from flows_staging.shared.audit import RUN_STATUS_SUCCESS
@@ -142,7 +142,7 @@ async def _stage_files(config: StageConfig) -> int:
 
 
 def _archive_old_version_if_exists(
-    minio_client: boto3.client,
+    minio_client: BaseClient,
     staging_bucket: str,
     evidence_bucket: str,
     target_folder: str,
@@ -168,7 +168,7 @@ def _archive_old_version_if_exists(
 
 def _process_single_file(
     config: StageConfig,
-    minio_client: boto3.client,
+    minio_client: BaseClient,
     base_name: str,
     extension: str,
     temp_path: Path,

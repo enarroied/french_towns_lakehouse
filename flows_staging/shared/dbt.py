@@ -1,3 +1,9 @@
+"""dbt subprocess helpers — run, test, and stage external sources.
+
+All functions shell out to ``dbt`` as a subprocess, using the project
+directory and profiles args from ``config.py``.
+"""
+
 import os
 import subprocess
 
@@ -8,6 +14,7 @@ from flows_staging.shared.config import DBT_PROJECT_DIR
 def run_dbt_command(
     args: list[str], failure_message: str
 ) -> subprocess.CompletedProcess:
+    """Run a dbt command as a subprocess and raise on non-zero exit."""
     env = os.environ.copy()
     try:
         return subprocess.run(

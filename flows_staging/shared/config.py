@@ -1,3 +1,11 @@
+"""Application configuration — loads ``config.yaml`` and ``.env`` at import time.
+
+All config accessors are module-level functions that return pre-loaded data.
+Environment variables (``MINIO_ENDPOINT``, ``AUDIT_DATABASE_URL``, etc.) are
+loaded via ``python-dotenv`` so they are available to ``os.environ.get()``
+even when the parent process does not inherit the shell environment.
+"""
+
 import os
 from pathlib import Path
 from typing import Any

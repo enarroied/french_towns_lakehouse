@@ -1,9 +1,12 @@
+"""MinIO S3 client helpers — connection, upload, archive, and metadata sidecars."""
+
 import json
 from datetime import datetime
 from datetime import timezone
 from pathlib import Path
 
 import boto3
+from botocore.client import BaseClient
 from botocore.config import Config
 from botocore.exceptions import ClientError
 
@@ -170,7 +173,7 @@ def upload_directory_to_staging(
 
 
 def _archive_old_file(
-    minio_client: boto3.client,
+    minio_client: BaseClient,
     staging_bucket: str,
     evidence_bucket: str,
     file_location: str,
@@ -192,7 +195,7 @@ def _archive_old_file(
 
 
 def _upload_file_to_staging(
-    minio_client: boto3.client,
+    minio_client: BaseClient,
     file_path: Path,
     staging_bucket: str,
     key: str,
