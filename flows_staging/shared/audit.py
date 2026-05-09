@@ -1,3 +1,10 @@
+"""Prefect task wrappers around the PostgreSQL audit database layer.
+
+All audit logging operations are exposed as Prefect tasks (``@task``)
+so they participate in Prefect's retry and observability machinery.
+The actual I/O lives in ``audit_db.py`` — this module is a thin delegator.
+"""
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 from typing import Literal
@@ -52,6 +59,7 @@ def _check_internet_connection() -> None:
 
 @task(retries=3, retry_delay_seconds=30)
 def preflight() -> None:
+    """Verify metadata DB, MinIO, and internet are all reachable before a flow run."""
     _check_db()
     _check_minio()
     _check_internet_connection()
@@ -63,6 +71,7 @@ def init_run(
     layer: TechnicalType = "STAGING",
     technical_type: TechnicalSubtype = "DOWNLOAD",
 ) -> str:
+    """Record a new flow run in the audit DB and return its run ID."""
     run_id = audit_db.init_run(domain, layer, technical_type)
     log(f"▶ Run started: {domain}/{layer}/{technical_type} [{run_id[:8]}]")
     return run_id
@@ -70,6 +79,7 @@ def init_run(
 
 @task
 def get_latest_hashes() -> dict[str, KnownFileHash]:
+    """Return all known file hashes from the audit DB (latest versions only)."""
     return audit_db.get_latest_hashes()
 
 
@@ -95,6 +105,7 @@ def log_upload(
     file_metadata: "FileMetadata",
     bucket: str | None = None,
 ) -> None:
+    """Record a file upload in the audit DB and log the result."""
     audit_db.log_upload(run_id, file_metadata, bucket)
     log(
         f"✅ {file_metadata.base_name} → {file_metadata.filename_timestamp} | {file_metadata.size_mb}MB | {file_metadata.md5}"
@@ -107,6 +118,7 @@ def finalize_run(
     status: RunStatus = RUN_STATUS_SUCCESS,
     number_files: int = 0,
 ) -> None:
+    """Mark a flow run as completed in the audit DB with final status and file count."""
     audit_db.finalize_run(run_id, status, number_files)
 
     icon = "✅" if status == RUN_STATUS_SUCCESS else "❌"

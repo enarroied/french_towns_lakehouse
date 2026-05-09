@@ -15,6 +15,7 @@ import pathlib
 import re
 import zipfile
 from datetime import datetime
+from datetime import timezone
 from pathlib import Path
 
 import httpx
@@ -59,7 +60,7 @@ def _add_timestamp_to_filename(base_name: str, extension: str) -> str:
     Returns:
         Timestamped filename (e.g., 'populations_historiques_20250101T120000.csv').
     """
-    timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%S")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
     return f"{base_name}_{timestamp}{extension}"
 
 

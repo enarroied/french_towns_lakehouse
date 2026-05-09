@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 import psycopg2
+import psycopg2.extensions
 from dotenv import find_dotenv
 from dotenv import load_dotenv
 from flows_staging.shared.models import FileMetadataRecord
@@ -78,6 +79,7 @@ MIGRATIONS: list[str] = [
 
 
 def migrate() -> None:
+    """Create the audit schema and tables if they do not exist."""
     conn = _get_conn()
     try:
         with conn.cursor() as cur:
@@ -89,6 +91,7 @@ def migrate() -> None:
 
 
 def check_reachable() -> None:
+    """Verify the PostgreSQL server is reachable with a simple ``SELECT 1``."""
     conn = _get_conn()
     try:
         with conn.cursor() as cur:
@@ -115,6 +118,7 @@ def query(sql: str, params: list | None = None) -> list[tuple]:
 
 
 def init_run(domain: str, layer: str, technical_type: str) -> str:
+    """Insert a new flow run record and return its UUID."""
     run_id = str(uuid.uuid4())
     conn = _get_conn()
     try:
@@ -156,6 +160,7 @@ def _update_run_status(
 
 
 def finalize_run(run_id: str, status: str, number_files: int = 0) -> None:
+    """Mark a flow run as finished — updates status, end time, and latest-run flag."""
     now = datetime.now()
     conn = _get_conn()
     try:
