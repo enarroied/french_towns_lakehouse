@@ -9,11 +9,13 @@ This directory contains all Prefect flows organized by pipeline stage. See the [
 ## Directory Structure
 
 ```
-flows/
-├── shared/              # Shared utilities (config, minio, download, dbt)
-├── staging/             # Staging pipelines (data ingestion → MinIO)
-├── transformation/      # Transformation pipelines (dbt models → validated/)
-└── integration/         # Integration pipelines (validated → LakeHouse)
+flows/                          # Top-level orchestration (french_towns_pipeline)
+flows_staging/                  # Staging pipelines + scrapers
+├── staging/                    # Download-based staging flows
+├── scrapers/                   # Web scraper flows
+└── custom_parsers/             # PDF/document parsers
+flows_transformation/           # Transformation pipelines (dbt models → validated/)
+flows_integration/              # Integration pipelines (validated → LakeHouse)
 ```
 
 ## Running Flows
@@ -28,20 +30,20 @@ uv run python -m flows.french_towns_pipeline
 
 ```bash
 # Staging
-uv run python -m flows.staging.staging_current_geography
-uv run python -m flows.staging.staging_historical_population
-uv run python -m flows.staging.staging_current_labels
+uv run python -m flows_staging.staging.staging_arrondissements
+uv run python -m flows_staging.staging.staging_historical_population
+uv run python -m flows_staging.staging.staging_current_labels
 
 # Transformation
-uv run python -m flows.transformation.transformation_current_dim_geography
-uv run python -m flows.transformation.transformation_current_fact_demographics
-uv run python -m flows.transformation.transformation_current_labels
+uv run python -m flows_transformation.transformation.transformation_current_dim_geography
+uv run python -m flows_transformation.transformation.transformation_current_fact_demographics
+uv run python -m flows_transformation.transformation.transformation_current_labels
 ```
 
 ## Deploying to Prefect
 
 ```bash
-./scripts/deploy_flows.sh
+source .env && prefect deploy --all
 ```
 
 Then view and manage deployments at `http://localhost:4200/deployments`.
@@ -49,13 +51,8 @@ Then view and manage deployments at `http://localhost:4200/deployments`.
 ## Shared Utilities
 
 ```python
-from flows.shared import (
-    get_config,        # Load config.yaml
-    get_paths,         # Get path configuration
-    get_buckets,       # Get MinIO bucket names
-    get_downloads,     # Get download configurations
-    get_scrapers,      # Get scraper configurations
-    get_minio_client,  # Get boto3 MinIO client
-    upload_to_staging,  # Upload file with metadata sidecar
-)
+from flows_staging.shared.config import get_config  # Load config.yaml
+from flows_staging.shared.minio import get_minio_client  # Get boto3 MinIO client
+from flows_staging.shared.download import write_csv_for_staging  # Write CSV
+from flows_staging.shared.staging_base import _process_single_file  # Stage file
 ```

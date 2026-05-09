@@ -19,6 +19,12 @@
       - [Setup](#setup-1)
       - [Polaris Credentials](#polaris-credentials)
       - [Stopping Services](#stopping-services)
+    - [PostgreSQL](#postgresql)
+      - [Credentials](#credentials)
+      - [Manual Setup (without Docker)](#manual-setup-without-docker)
+      - [Connecting](#connecting)
+      - [Start](#start)
+      - [Stop](#stop)
   - [Pipeline Architecture](#pipeline-architecture)
     - [MinIO Bucket Structure](#minio-bucket-structure)
     - [dbt Model Layers](#dbt-model-layers)
@@ -33,6 +39,7 @@
     - [What the Pipeline Does](#what-the-pipeline-does)
     - [Run dbt in isolation](#run-dbt-in-isolation)
   - [Prefect Deployments](#prefect-deployments)
+      - [PostgreSQL Backend](#postgresql-backend)
   - [Project Structure](#project-structure)
   - [Data Sources](#data-sources)
   - [Query the LakeHouse](#query-the-lakehouse)
@@ -232,8 +239,8 @@ Then set the connection URLs in `.env`:
 
 ```env
 PG_PASSWORD=your_password
-AUDIT_DATABASE_URL=postgresql://french_towns:your_password@localhost:5432/metadata
-PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_password@localhost:5432/prefect
+AUDIT_DATABASE_URL=postgresql://french_towns:your_password@127.0.0.1:5432/metadata
+PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_password@127.0.0.1:5432/prefect
 ```
 
 #### Connecting
@@ -334,7 +341,7 @@ Examples:
 If using PostgreSQL as the Prefect backend, set the connection URL first:
 
 ```bash
-export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:${PG_PASSWORD}@localhost:5432/prefect
+export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:${PG_PASSWORD}@127.0.0.1:5432/prefect
 ```
 
 Or source your `.env` file if it already contains the variable:
@@ -364,8 +371,8 @@ uv run python -m flows.french_towns_pipeline
 ### Run Individual Flows
 
 ```bash
-uv run python -m flows.staging.staging_current_geography
-uv run python -m flows.transformation.transformation_current_dim_geography
+uv run python -m flows_staging.staging.staging_arrondissements
+uv run python -m flows_transformation.transformation.transformation_current_dim_geography
 ```
 
 ### What the Pipeline Does
@@ -379,8 +386,8 @@ Example of downloaded files:
 - `communes_france.geojson` (287 MB) — GeoJSON of all French communes
 - `arrondissements.csv` — INSEE arrondissement reference table
 - `departements.csv` — INSEE department reference table
-- `DS_POPULATIONS_HISTORIQUES_data.csv` — historical population per commune (from ZIP)
-- `DS_BTS_SAL_EQTP_SEX_PCS_2023_data.csv` — salary data by sex and employment category (from ZIP)
+- `historical_population.csv` — historical population per commune (from ZIP)
+- `historical_salaries.csv` — salary data by sex and employment category (from ZIP)
 
 **Step 3 — dbt run.** Prefect calls `dbt run` as a subprocess from inside `french_towns_dbt/`. dbt stages external sources (mounting the raw files as DuckDB views), then runs all three models in parallel across four threads. Each model writes a Parquet file to `data/processed/`.
 
@@ -415,13 +422,13 @@ Each flow can be deployed independently and scheduled with cron or interval sche
 By default Prefect uses a local SQLite database. To switch to PostgreSQL:
 
 ```bash
-export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:${PG_PASSWORD}@localhost:5432/prefect
+export PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:${PG_PASSWORD}@127.0.0.1:5432/prefect
 ```
 
 Alternatively, set the variable in `.env`:
 
 ```env
-PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_password@localhost:5432/prefect
+PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://french_towns:your_password@127.0.0.1:5432/prefect
 ```
 
 If using **Prefect Cloud**, omit this variable — Cloud manages its own database.
@@ -573,6 +580,6 @@ vulture flows_staging --min-confidence 80
 ### Adding a New Scraper
 
 1. Create scraper in `flows_staging/scrapers/scrape_<name>.py`
-2. Use `upload_scraper_output()` from `flows_staging.shared.download` for CSV upload
+2. Use `write_csv_for_staging()` (from `flows_staging.shared.download`) + `_process_single_file()` (from `flows_staging.shared.staging_base`) for CSV upload and staging
 3. Add config entry in `config.yaml` under `scrapers`
 4. Add tests in `tests/scrapers/test_scrape_<name>.py`
