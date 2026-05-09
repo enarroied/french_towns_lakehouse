@@ -69,12 +69,15 @@ def parse_listing_urls(soup: BeautifulSoup) -> list[str]:
     return []
 
 
+_MAX_PAGES = 4
+
+
 def has_next_page(soup: BeautifulSoup, current_page: int) -> bool:
     """Return True if a subsequent listing page exists."""
     pagination = soup.find("nav", class_="elementor-pagination")
     if pagination:
         return pagination.find("a", class_="next") is not None
-    return current_page < 4
+    return current_page < _MAX_PAGES
 
 
 # ---------------------------------------------------------------------------

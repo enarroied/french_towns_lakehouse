@@ -21,7 +21,7 @@ EXTENSION = ".csv"
 
 
 def _extract_text(html: str) -> str:
-    """Strip HTML tags and return normalised lowercase text."""
+    """Strip HTML tags and return lowercase text."""
     return BeautifulSoup(html, "html.parser").get_text().strip().lower()
 
 
