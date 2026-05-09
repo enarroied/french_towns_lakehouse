@@ -16,9 +16,8 @@ jobs:
         env:
           MINIO_ROOT_USER: minioadmin
           MINIO_ROOT_PASSWORD: minioadmin
-        command: server /data --address :19000 --console-address :19001
         ports:
-          - 19000:19000
+          - 19000:9000
 
     steps:
     - uses: actions/checkout@v3
@@ -54,7 +53,8 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: minioadmin
         AWS_SECRET_ACCESS_KEY: minioadmin
-        AWS_ENDPOINT: localhost:19000
+        S3_ENDPOINT: http://localhost:19000
+        S3_USE_SSL: false
         AWS_DEFAULT_REGION: us-east-1
       run: |
         cd french_towns_dbt
