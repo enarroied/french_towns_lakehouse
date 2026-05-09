@@ -1,17 +1,11 @@
 import asyncio
 import logging
 import re
-import tempfile
-from pathlib import Path
 
 import aiohttp
 from bs4 import BeautifulSoup
 from flows_staging.scrapers.utils import get_scraper_config
-from flows_staging.shared.config import get_config
-from flows_staging.shared.download import write_csv_for_staging
-from flows_staging.shared.minio import get_minio_client
-from flows_staging.shared.models import StageConfig
-from flows_staging.shared.staging_base import _process_single_file
+from flows_staging.scrapers.utils import stage_scraper_output
 
 
 logger = logging.getLogger(__name__)
@@ -201,23 +195,4 @@ async def run(config: dict, run_id: str) -> bool:
 
         logger.info("%s: scraped %d communes", scraper.name, len(communes))
 
-    all_config = get_config()
-    staging_bucket = all_config["buckets"]["staging_current"]
-    evidence_bucket = all_config["buckets"]["evidence_archive"]
-    minio_client = get_minio_client()
-
-    stage_config = StageConfig(
-        name=scraper.name,
-        url=scraper.url,
-        target_folder=scraper.target_folder,
-        run_id=run_id,
-        staging_bucket=staging_bucket,
-        evidence_bucket=evidence_bucket,
-    )
-
-    with tempfile.TemporaryDirectory() as tmpdir:
-        temp_path = Path(tmpdir)
-        write_csv_for_staging(communes, FIELDNAMES, scraper.name, temp_path)
-        return _process_single_file(
-            stage_config, minio_client, scraper.name, EXTENSION, temp_path
-        )
+    return stage_scraper_output(scraper, run_id, communes, FIELDNAMES, EXTENSION)
