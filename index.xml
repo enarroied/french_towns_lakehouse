@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>French Towns Lakehouse</title>
+<link>https://enarroied.github.io/french_towns_lakehouse/</link>
+<atom:link href="https://enarroied.github.io/french_towns_lakehouse/index.xml" rel="self" type="application/rss+xml"/>
+<description>A data lakehouse for French municipal and administrative data</description>
+<generator>quarto-1.9.37</generator>
+<lastBuildDate>Sun, 10 May 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Hello World, Introducing the French Towns Lakehouse</title>
+  <link>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Welcome to the French Towns Lakehouse blog.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dhq7dpu-ea6b6660-0357-49db-a9f5-4845f2d29036.jpg/v1/fill/w_1031,h_775,q_70,strp/monsac_4_by_ericnarro_dhq7dpu-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kaHE3ZHB1LWVhNmI2NjYwLTAzNTctNDlkYi1hOWY1LTQ4NDVmMmQyOTAzNi5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.KAHXCTy8F8cDqxIJG4vkGPY92pXz9L0J2IavyFwl_iw" class="img-fluid figure-img"></p>
+<figcaption>Monsac, a French commune</figcaption>
+</figure>
+</div>
+<p>This project builds a self-hosted data lakehouse for all 35,000+ French communes. It downloads open government datasets (INSEE, Laposte, data.gouv.fr) and scrapes municipal label sites (flower cities, sports towns, heritage villages), then transforms everything into clean, queryable Parquet files using DuckDB and dbt.</p>
+<p>The blog has two main sections:</p>
+<ul>
+<li><strong><a href="../../engineering.html">Engineering</a></strong> , deep dives into the tech stack, data modelling decisions, pipeline architecture, and infrastructure.</li>
+<li><strong><a href="../../insights.html">Insights</a></strong> , analysis and findings from the data itself.</li>
+</ul>
+<p>The <a href="https://enarroied.github.io/french_towns_lakehouse/docs/">dbt documentation</a> shows the full data lineage and model definitions.</p>
+<p>All source code is on GitHub: <a href="https://github.com/enarroied/french_towns_lakehouse">github.com/enarroied/french_towns_lakehouse</a>.</p>
+<p>Stay tuned for more posts.</p>
+
+
+
+ ]]></description>
+  <category>meta</category>
+  <guid>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/</guid>
+  <pubDate>Sun, 10 May 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dhq7dpu-ea6b6660-0357-49db-a9f5-4845f2d29036.jpg/v1/fill/w_1031,h_775,q_70,strp/monsac_4_by_ericnarro_dhq7dpu-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kaHE3ZHB1LWVhNmI2NjYwLTAzNTctNDlkYi1hOWY1LTQ4NDVmMmQyOTAzNi5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.KAHXCTy8F8cDqxIJG4vkGPY92pXz9L0J2IavyFwl_iw" medium="image"/>
+</item>
+</channel>
+</rss>
