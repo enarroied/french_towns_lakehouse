@@ -1,9 +1,10 @@
 ---
-title: "Hello World , Introducing the French Towns Lakehouse"
+title: "Hello World, Introducing the French Towns Lakehouse"
 date: today
-description: "First post , what this project is, what it builds, and what's coming."
+description: "First post: what this project is, what it builds, and what's coming."
 categories: [meta]
 lang: en
+image: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dhq7dpu-ea6b6660-0357-49db-a9f5-4845f2d29036.jpg/v1/fill/w_1031,h_775,q_70,strp/monsac_4_by_ericnarro_dhq7dpu-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kaHE3ZHB1LWVhNmI2NjYwLTAzNTctNDlkYi1hOWY1LTQ4NDVmMmQyOTAzNi5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.KAHXCTy8F8cDqxIJG4vkGPY92pXz9L0J2IavyFwl_iw"
 ---
 
 Welcome to the French Towns Lakehouse blog.

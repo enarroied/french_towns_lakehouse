@@ -5,7 +5,7 @@ listing:
   sort: "date desc"
   type: default
   categories: true
-  fields: [date, title, description, categories, reading-time]
+  fields: [image, date, title, description, categories, reading-time]
 page-layout: full
 ---
 
