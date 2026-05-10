@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         working-directory: french_towns_dbt
         run: |
-          uv pip install dbt-core dbt-duckdb
+          uv pip install --system dbt-core dbt-duckdb
           uv run dbt deps
 
       - name: Generate dbt docs
