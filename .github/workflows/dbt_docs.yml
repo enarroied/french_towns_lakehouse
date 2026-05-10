@@ -17,21 +17,16 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
 
-      - name: Set up Python
-        run: uv python install 3.11
+      - name: Install dbt
+        run: uv tool install dbt-core --with dbt-duckdb
 
-      - name: Install dependencies
+      - name: Install dbt dependencies
         working-directory: french_towns_dbt
-        run: |
-          uv pip install --system dbt-core dbt-duckdb
-          uv run dbt deps
+        run: dbt deps
 
       - name: Generate dbt docs
-        # No MinIO needed: dbt docs generate only compiles SQL and generates
-        # the manifest, it never executes models or reads from S3.
-        # The create_minio_secret() macro runs but no connection is made.
         working-directory: french_towns_dbt
-        run: uv run dbt docs generate --profiles-dir .
+        run: dbt docs generate --profiles-dir .
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
