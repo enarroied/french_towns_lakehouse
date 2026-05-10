@@ -26,8 +26,13 @@ website:
 
 format:
   html:
-    theme: lux
+    theme:
+      light: lux
+      dark: darkly
     toc: true
+    include-in-header:
+      - text: |
+          <meta name="robots" content="noai, noimageai">
 
 execute:
   freeze: auto
