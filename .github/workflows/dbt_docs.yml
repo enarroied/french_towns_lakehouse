@@ -10,65 +10,33 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    services:
-      minio:
-        image: minio/minio:latest
-        env:
-          MINIO_ROOT_USER: minioadmin
-          MINIO_ROOT_PASSWORD: minioadmin
-        ports:
-          - 19000:9000
-        options: >-
-          --health-cmd "curl -sf http://localhost:9000/minio/health/live || exit 1"
-          --health-interval 3s
-          --health-retries 15
-          --health-start-period 10s
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v3
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
 
-    - name: Set up Python
-      run: uv python install 3.11
+      - name: Set up Python
+        run: uv python install 3.11
 
-    - name: Create virtual environment
-      run: uv venv
+      - name: Install dependencies
+        working-directory: french_towns_dbt
+        run: |
+          uv pip install dbt-core dbt-duckdb
+          uv run dbt deps
 
-    - name: Install dependencies
-      run: |
-        cd french_towns_dbt
-        uv pip install dbt-core dbt-duckdb
-        uv run dbt deps
+      - name: Generate dbt docs
+        # No MinIO needed: dbt docs generate only compiles SQL and generates
+        # the manifest, it never executes models or reads from S3.
+        # The create_minio_secret() macro runs but no connection is made.
+        working-directory: french_towns_dbt
+        run: uv run dbt docs generate --profiles-dir .
 
-    - name: Install boto3 for MinIO bucket creation
-      run: uv pip install boto3
-
-    - name: Create MinIO bucket
-      run: |
-        uv run python -c "
-        import boto3
-        c = boto3.client('s3', endpoint_url='http://localhost:19000',
-          aws_access_key_id='minioadmin', aws_secret_access_key='minioadmin')
-        c.create_bucket(Bucket='staging-current')
-        "
-
-    - name: Generate dbt docs
-      env:
-        AWS_ACCESS_KEY_ID: minioadmin
-        AWS_SECRET_ACCESS_KEY: minioadmin
-        S3_ENDPOINT: http://localhost:19000
-        S3_USE_SSL: false
-        AWS_DEFAULT_REGION: us-east-1
-      run: |
-        cd french_towns_dbt
-        uv run dbt docs generate --profiles-dir . --empty-catalog
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./french_towns_dbt/target
-        destination_dir: docs
-        keep_files: false
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./french_towns_dbt/target
+          destination_dir: docs
+          keep_files: false
