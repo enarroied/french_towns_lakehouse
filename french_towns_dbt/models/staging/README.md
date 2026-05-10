@@ -17,4 +17,4 @@ Staging models read raw data from MinIO staging buckets and provide a thin trans
 
 ## Models
 
-See [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/) for full lineage.
+See [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/docs/) for full lineage.

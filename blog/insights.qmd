@@ -1,0 +1,7 @@
+---
+title: "Insights"
+---
+
+This section shares analysis and findings from the French municipal data ,
+demographic trends, salary distributions, geographic patterns, and more. Posts
+coming soon.
