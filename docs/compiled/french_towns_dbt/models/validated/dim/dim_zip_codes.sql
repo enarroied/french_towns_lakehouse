@@ -6,5 +6,5 @@ SELECT
     SUBSTR(Code_postal, 1, 2) AS zip_code_main_department,
     COUNT(DISTINCT "#Code_commune_INSEE") AS number_of_communes,
     COUNT(DISTINCT SUBSTR("#Code_commune_INSEE", 1, 2)) AS number_of_departments
-FROM read_csv_auto('s3://staging-current/geography/019HexaSmal.csv', sample_size=-1, encoding='latin-1', delim=';')
+FROM read_csv_auto('s3://staging-current/geography/zip_codes_*.csv', sample_size=-1, encoding='latin-1', delim=';')
 GROUP BY Code_postal

@@ -13,7 +13,7 @@ SELECT DISTINCT
     END AS commune_id,
         Code_postal::INTEGER AS zip_code_id,
         Code_postal::CHAR(5) AS zip_code_char
-FROM read_csv_auto('s3://staging-current/geography/019HexaSmal.csv', sample_size=-1, encoding='latin-1', delim=';')
+FROM read_csv_auto('s3://staging-current/geography/zip_codes_*.csv', sample_size=-1, encoding='latin-1', delim=';')
 WHERE commune_id IN ( /* Remove communes not present in master dimension*/
     SELECT id FROM "french_towns"."main"."dim_communes_france"
 )

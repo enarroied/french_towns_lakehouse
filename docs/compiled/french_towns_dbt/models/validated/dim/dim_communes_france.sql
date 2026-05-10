@@ -59,8 +59,15 @@ SELECT
     ST_YMax(geom)                                                   AS bbox_ymax,
     ST_Perimeter(geom)                                              AS perimeter,
     ST_NumInteriorRings(geom)                                       AS number_enclaves
-FROM ST_Read('s3://staging-current/geography/communes_france.geojson')
-LEFT JOIN read_csv_auto('s3://staging-current/geography/departements.csv') AS dpt
+FROM ST_Read(
+    
+    
+    
+        's3://staging-current/geography/french_towns_*.geojson'
+    
+
+)
+LEFT JOIN read_csv_auto('s3://staging-current/geography/departements_*.csv') AS dpt
     ON dpt.CHEFLIEU = com_code[1]
-LEFT JOIN read_csv_auto('s3://staging-current/geography/arrondissements.csv') AS arr
+LEFT JOIN read_csv_auto('s3://staging-current/geography/arrondissements_*.csv') AS arr
     ON arr.CHEFLIEU = com_code[1]
