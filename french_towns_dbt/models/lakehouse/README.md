@@ -30,4 +30,4 @@ Examples:
 - [ ] `lh_fact_salaries` — append-only salary facts
 - [ ] `lh_bridge_commune_lineage` — commune merge/split tracking
 
-See [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/) for full lineage.
+See [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/docs/) for full lineage.

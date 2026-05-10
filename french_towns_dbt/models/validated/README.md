@@ -29,4 +29,4 @@ validated/
 | Fact | `fact_salaries` | Mean annual salary by sex (2023) |
 | Bridge | `bridge_communes_zip_codes` | Many-to-many commune/ZIP relationships |
 
-See [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/) for full lineage.
+See [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/docs/) for full lineage.

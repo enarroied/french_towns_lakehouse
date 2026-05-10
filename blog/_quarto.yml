@@ -1,0 +1,33 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "French Towns Lakehouse"
+  site-url: "https://enarroied.github.io/french_towns_lakehouse"
+  description: "A data lakehouse for French municipal and administrative data"
+  navbar:
+    left:
+      - text: "Blog"
+        href: index.qmd
+      - text: "Engineering"
+        href: engineering.qmd
+      - text: "Insights"
+        href: insights.qmd
+      - text: "About"
+        href: about.qmd
+    right:
+      - text: "dbt Docs"
+        href: "https://enarroied.github.io/french_towns_lakehouse/docs/"
+        target: _blank
+  page-footer:
+    left: "French Towns Lakehouse"
+    right: "Built with [Quarto](https://quarto.org)"
+
+format:
+  html:
+    theme: lux
+    toc: true
+
+execute:
+  freeze: auto

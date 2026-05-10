@@ -51,7 +51,8 @@
 
 A self-hosted data lakehouse of French municipal data. The pipeline downloads open government datasets, transforms them into clean Parquet files using DuckDB and dbt, and uploads the results to MinIO object storage.
 
-**dbt model documentation:** [https://enarroied.github.io/french_towns_lakehouse/](https://enarroied.github.io/french_towns_lakehouse/)
+**Blog & documentation:** [https://enarroied.github.io/french_towns_lakehouse/](https://enarroied.github.io/french_towns_lakehouse/)
+**dbt model documentation:** [https://enarroied.github.io/french_towns_lakehouse/docs/](https://enarroied.github.io/french_towns_lakehouse/docs/)
 
 ---
 
@@ -461,6 +462,10 @@ french_towns_lakehouse/
 │       └── parse_ville_sportive.py
 ├── flows_transformation/           # Transformation pipelines
 ├── flows_integration/               # Integration pipelines
+├── blog/                           # Quarto blog (deployed to GitHub Pages root)
+│   ├── posts/                      # Blog posts
+│   ├── _freeze/                    # Pre-rendered outputs (committed to git)
+│   └── _quarto.yml                 # Quarto config
 ├── french_towns_dbt/               # dbt project
 │   └── models/
 │       ├── staging/                # Raw staging models
@@ -542,7 +547,8 @@ ORDER BY gap_pct DESC;
 
 ## Documentation
 
-- **dbt Docs:** Auto-generated on push to `master` → [GitHub Pages](https://enarroied.github.io/french_towns_lakehouse/)
+- **Blog:** [https://enarroied.github.io/french_towns_lakehouse/](https://enarroied.github.io/french_towns_lakehouse/)
+- **dbt Docs:** [https://enarroied.github.io/french_towns_lakehouse/docs/](https://enarroied.github.io/french_towns_lakehouse/docs/)
 - **Full Specifications:** [private/Specifications/specifications.md](private/Specifications/specifications.md)
 - **Custom Parsers:** [flows_staging/custom_parsers/README.md](flows_staging/custom_parsers/README.md)
 - **Integration Pipelines:** [flows_integration/integration/README.md](flows_integration/integration/README.md)

@@ -34,4 +34,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./french_towns_dbt/target
           destination_dir: docs
-          keep_files: false
+          keep_files: true

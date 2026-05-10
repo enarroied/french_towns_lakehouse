@@ -1,0 +1,18 @@
+---
+title: "About"
+---
+
+This project builds a data lakehouse for French municipal and administrative
+data , covering communes, departments, regions, population statistics, salary
+data, ZIP codes, and municipal labels (flower cities, sports towns, etc.).
+
+The pipeline follows a medallion architecture (bronze → silver → gold) using
+DuckDB and dbt for transformations, MinIO for object storage, and Prefect for
+orchestration. All metadata is tracked in PostgreSQL via a custom audit layer.
+
+The source code and full README are on GitHub:
+[github.com/enarroied/french_towns_lakehouse](https://github.com/enarroied/french_towns_lakehouse).
+
+**Note:** Data insights on this blog are rendered locally and committed to the
+repository. The local MinIO setup required to run the pipeline is not available
+in the CI environment, so charts and figures are pre-computed.
