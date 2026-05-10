@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate dbt docs
         working-directory: french_towns_dbt
-        run: dbt docs generate --profiles-dir .
+        run: dbt docs generate --profiles-dir . --empty-catalog
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
