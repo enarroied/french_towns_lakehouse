@@ -78,6 +78,7 @@ The data model follows a star schema.
 | Compute | DuckDB |
 | Object Storage | MinIO (S3-compatible) |
 | Iceberg Catalog | Apache Polaris |
+| Iceberg Integration | DuckDB + Polaris (flows_integration) |
 | Package Manager | uv |
 | Metadata DB | PostgreSQL 16 |
 
@@ -462,6 +463,8 @@ french_towns_lakehouse/
 │       └── parse_ville_sportive.py
 ├── flows_transformation/           # Transformation pipelines
 ├── flows_integration/               # Integration pipelines
+│   ├── shared/                      # Shared utils (connection, validation, SCD2, fact_loader)
+│   └── integration/                 # Integration flow definitions
 ├── blog/                           # Quarto blog (deployed to GitHub Pages root)
 │   ├── posts/                      # Blog posts
 │   ├── _freeze/                    # Pre-rendered outputs (committed to git)
@@ -504,6 +507,8 @@ french_towns_lakehouse/
 
 ## Query the LakeHouse
 
+### Parquet (validated layer)
+
 ```sql
 -- Connect to MinIO via DuckDB
 INSTALL httpfs;
@@ -541,6 +546,31 @@ JOIN read_parquet('s3://validated/fact_salaries.parquet') AS s
 WHERE c.flag_metropole = 1
 GROUP BY c.region_name
 ORDER BY gap_pct DESC;
+```
+
+### Iceberg (lakehouse layer)
+
+Run `setup_polaris.py` once, then query with time-travel support:
+
+```sql
+INSTALL iceberg;
+LOAD iceberg;
+
+CREATE SECRET polaris_secret (
+    TYPE iceberg,
+    CLIENT_ID 'your_client_id',
+    CLIENT_SECRET 'your_client_secret'
+);
+
+ATTACH 'french_towns' AS polaris (
+    TYPE iceberg,
+    ENDPOINT 'http://localhost:8181/api/catalog',
+    SECRET 'polaris_secret'
+);
+
+-- Query with time travel
+SELECT * FROM polaris.lakehouse.dim_communes_france
+    FOR SYSTEM_TIME AS OF TIMESTAMP '2025-01-01 00:00:00';
 ```
 
 ---

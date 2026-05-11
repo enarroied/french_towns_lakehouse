@@ -157,3 +157,31 @@ deployments:
   schedules: []
   work_pool:
     name: local-dev-pool
+
+- name: integration-dim-geography
+  entrypoint: flows_integration/integration/integration_current_dim_geography.py:integration_current_dim_geography
+  tags: ["iceberg", "geography", "integration"]
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: integration-fact-demographics
+  entrypoint: flows_integration/integration/integration_current_fact_demographics.py:integration_current_fact_demographics
+  tags: ["iceberg", "demographics", "integration"]
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: transformation-pipeline
+  entrypoint: flows/transformation_pipeline.py:transformation_pipeline
+  tags: ["test", "transformation"]
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: integration-pipeline
+  entrypoint: flows/integration_pipeline.py:integration_pipeline
+  tags: ["test", "integration"]
+  schedules: []
+  work_pool:
+    name: local-dev-pool
