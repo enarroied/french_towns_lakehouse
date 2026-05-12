@@ -10,8 +10,8 @@ from prefect import flow
 
 
 DIM_TABLES = [
-    ("dim_communes_france", ["id"], None),
-    ("dim_zip_codes", ["id"], None),
+    ("dim_communes_france", ["id"]),
+    ("dim_zip_codes", ["id"]),
 ]
 
 BRIDGE_TABLES = [
@@ -27,10 +27,10 @@ def integration_current_dim_geography() -> None:
     try:
         conn = get_duckdb_connection()
 
-        for table_name, nk, business_cols in DIM_TABLES:
+        for table_name, nk in DIM_TABLES:
             assert_validated_exists(conn, table_name)
             assert_validated_fresh(conn, table_name)
-            run_scd2(conn, table_name, nk, business_cols)
+            run_scd2(conn, table_name, nk)
 
         for table_name, nk in BRIDGE_TABLES:
             assert_validated_exists(conn, table_name)

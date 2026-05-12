@@ -10,25 +10,63 @@ SCD_METADATA_COLS = {
     "is_current",
     "inserted_at",
 }
+GEOMETRY_TYPES = {"GEOMETRY"}
 
 
-def _column_list(conn: duckdb.DuckDBPyConnection, table_name: str) -> list[str]:
+def _parquet_columns(
+    conn: duckdb.DuckDBPyConnection, table_name: str
+) -> list[tuple[str, str]]:
+    source_path = f"s3://{VALIDATED_BUCKET}/{table_name}.parquet"
     result = conn.execute(
-        f"SELECT column_name, column_type FROM information_schema.columns "
-        f"WHERE table_schema = '{SCHEMA}' AND table_name = '{table_name}'"
+        f"DESCRIBE SELECT * FROM read_parquet('{source_path}')"
     ).fetchall()
-    return [row[0] for row in result]
+    return [(row[0], row[1].split("(")[0].strip()) for row in result]
 
 
-def _business_columns(all_cols: list[str]) -> list[str]:
-    return [c for c in all_cols if c not in SCD_METADATA_COLS]
+def _map_columns(
+    raw: list[tuple[str, str]],
+) -> tuple[
+    list[tuple[str, str]], list[str], list[str], list[str], list[str], list[str]
+]:
+    plain: list[tuple[str, str]] = []
+    select_no_pref: list[str] = []
+    select_pref: list[str] = []
+    all_business: list[str] = []
+    inc_hash_exprs: list[str] = []
+    existing_hash_exprs: list[str] = []
+    for name, typ in raw:
+        if typ in GEOMETRY_TYPES:
+            plain.append((f"{name}_wkb", "BINARY"))
+            plain.append((f"{name}_srid", "INTEGER"))
+            select_no_pref.append(f"ST_AsWKB({name}) AS {name}_wkb")
+            select_no_pref.append(f"4326 AS {name}_srid")
+            select_pref.append(f"ST_AsWKB(inc.{name}) AS {name}_wkb")
+            select_pref.append(f"4326 AS {name}_srid")
+            all_business.append(f"{name}_wkb")
+            all_business.append(f"{name}_srid")
+            inc_hash_exprs.append(f"ST_AsWKB(inc.{name})::VARCHAR")
+            existing_hash_exprs.append(f"CAST(existing.{name}_wkb AS VARCHAR)")
+        else:
+            plain.append((name, typ))
+            select_no_pref.append(name)
+            select_pref.append(f"inc.{name}")
+            all_business.append(name)
+            inc_hash_exprs.append(f"inc.{name}::VARCHAR")
+            existing_hash_exprs.append(f"CAST(existing.{name} AS VARCHAR)")
+    return (
+        plain,
+        select_no_pref,
+        select_pref,
+        all_business,
+        inc_hash_exprs,
+        existing_hash_exprs,
+    )
 
 
 def run_scd2(
     conn: duckdb.DuckDBPyConnection,
     table_name: str,
     natural_key: list[str],
-    business_columns: list[str] | None = None,
 ) -> int:
     source_path = f"s3://{VALIDATED_BUCKET}/{table_name}.parquet"
     full_name = f"polaris.{SCHEMA}.{table_name}"
@@ -37,9 +75,15 @@ def run_scd2(
         f"CREATE TEMP VIEW incoming AS SELECT * FROM read_parquet('{source_path}')"
     )
 
-    if business_columns is None:
-        existing_cols = _column_list(conn, table_name)
-        business_columns = _business_columns(existing_cols) if existing_cols else []
+    raw_cols = _parquet_columns(conn, table_name)
+    (
+        _,
+        select_no_pref,
+        select_pref,
+        all_business,
+        inc_hash_exprs,
+        existing_hash_exprs,
+    ) = _map_columns(raw_cols)
 
     nk_join = " AND ".join(f"inc.{k} = cur.{k}" for k in natural_key)
 
@@ -51,7 +95,7 @@ def run_scd2(
             DATE '9999-12-31'          AS expiry_date,
             true                       AS is_current,
             now()                      AS inserted_at,
-            incoming.*
+            {", ".join(select_no_pref)}
         FROM incoming
         WHERE false
     """)
@@ -74,8 +118,8 @@ def run_scd2(
           AND EXISTS (
               SELECT 1 FROM incoming inc
               WHERE {" AND ".join(f"existing.{k} = inc.{k}" for k in natural_key)}
-                AND md5(CONCAT_WS('|', {",".join(f"inc.{c}::VARCHAR" for c in business_columns)}))
-                    != md5(CONCAT_WS('|', {",".join(f"CAST(existing.{c} AS VARCHAR)" for c in business_columns)}))
+                AND md5(CONCAT_WS('|', {",".join(inc_hash_exprs)}))
+                    != md5(CONCAT_WS('|', {",".join(existing_hash_exprs)}))
           )
     """)
 
@@ -87,7 +131,7 @@ def run_scd2(
             DATE '9999-12-31'          AS expiry_date,
             true                       AS is_current,
             now()                      AS inserted_at,
-            inc.*
+            {", ".join(select_pref)}
         FROM incoming inc
         WHERE NOT EXISTS (
             SELECT 1 FROM {full_name} cur

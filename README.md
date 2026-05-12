@@ -109,11 +109,15 @@ Start infrastructure services:
 # Start MinIO first (creates the shared network)
 docker compose -f docker/docker-compose-minio.yml up -d
 
-# Start Polaris (Iceberg catalog)
+# Start Polaris (Iceberg catalog) — pass env vars for S3 credentials
 docker compose -f docker/docker-compose-polaris.yml --env-file .env up -d
 
 # Start PostgreSQL (metadata database)
 docker compose -f docker/docker-compose-postgres.yml --env-file .env up -d
+
+# One-time Polaris bootstrap (re-run after container restart)
+source .env
+uv run python setup_polaris.py
 ```
 
 ---
@@ -158,18 +162,44 @@ Iceberg REST catalog for managing Iceberg tables. Enables ACID transactions, tim
    ```
    Expected response: `{"failures":[],"healthy":true}`
 
-4. Configure DuckDB to use Polaris:
+4. One-time bootstrap — create the `french_towns` catalog, `lakehouse` namespace, and RBAC:
+   ```bash
+   source .env
+   uv run python setup_polaris.py
+   ```
+   This script is idempotent and safe to re-run.
+
+   > **Note:** Polaris uses in-memory storage by default. Re-creating the container
+   > (e.g. `docker compose down` + `up`) resets all metadata. Re-run `setup_polaris.py`
+   > after any container restart.
+
+5. Configure DuckDB to use Polaris (done automatically by the integration flows via
+   `flows_integration/shared/connection.py`):
    ```sql
    INSTALL iceberg;
    LOAD iceberg;
 
-   CREATE SECRET (
-       TYPEiceberg,
-       HOST 'localhost',
-       PORT 8181,
-       URI 'http://localhost:8181',
+   CREATE SECRET minio_secret (
+       TYPE s3,
+       KEY_ID 'your_access_key',
+       SECRET 'your_secret_key',
+       ENDPOINT 'localhost:19000',
+       REGION 'us-east-1',
+       USE_SSL false,
+       URL_STYLE 'path'
+   );
+
+   CREATE SECRET polaris_secret (
+       TYPE iceberg,
        CLIENT_ID 'your_client_id',
-       CLIENT_SECRET 'your_client_secret'
+       CLIENT_SECRET 'your_client_secret',
+       ENDPOINT 'http://localhost:8181/api/catalog'
+   );
+
+   ATTACH 'french_towns' AS polaris (
+       TYPE iceberg,
+       ENDPOINT 'http://localhost:8181/api/catalog',
+       SECRET 'polaris_secret'
    );
    ```
 
@@ -177,15 +207,29 @@ Iceberg REST catalog for managing Iceberg tables. Enables ACID transactions, tim
 
 Credentials are configured via `.env`:
 
-```bash
+```env
 POLARIS_CLIENT_ID=your_client_id
 POLARIS_CLIENT_SECRET=your_client_secret
+POLARIS_REALM=POLARIS
 ```
+
+The `root` principal gets the `lakehouse_admin` principal role assigned by `setup_polaris.py`,
+which is wired to the `content_manager` catalog role with `CATALOG_MANAGE_CONTENT` privilege.
+The bootstrap script also configures the S3 storage endpoint (`http://127.0.0.1:19000` for clients,
+`http://minio:9000` for Polaris server-internal use) and sets `pathStyleAccess: true` for MinIO
+compatibility.
 
 #### Stopping Services
 
 ```bash
 docker compose -f docker/docker-compose-minio.yml -f docker/docker-compose-polaris.yml --env-file .env down
+```
+
+Polaris uses in-memory storage — all catalog metadata is lost on restart. After restarting,
+re-run the one-time bootstrap:
+
+```bash
+uv run python setup_polaris.py
 ```
 
 ---
