@@ -2,22 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://enarroied.github.io/french_towns_lakehouse/index.html</loc>
-    <lastmod>2026-05-10T13:49:01.630Z</lastmod>
+    <lastmod>2026-05-14T18:54:22.996Z</lastmod>
   </url>
   <url>
-    <loc>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/index.html</loc>
-    <lastmod>2026-05-10T13:49:01.630Z</lastmod>
-  </url>
-  <url>
-    <loc>https://enarroied.github.io/french_towns_lakehouse/engineering.html</loc>
-    <lastmod>2026-05-10T13:49:01.630Z</lastmod>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/posts/commune_names/index.html</loc>
+    <lastmod>2026-05-14T18:54:22.996Z</lastmod>
   </url>
   <url>
     <loc>https://enarroied.github.io/french_towns_lakehouse/insights.html</loc>
-    <lastmod>2026-05-10T13:49:01.630Z</lastmod>
+    <lastmod>2026-05-14T18:54:22.996Z</lastmod>
+  </url>
+  <url>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/engineering.html</loc>
+    <lastmod>2026-05-14T18:54:22.996Z</lastmod>
+  </url>
+  <url>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/index.html</loc>
+    <lastmod>2026-05-14T18:54:22.997Z</lastmod>
   </url>
   <url>
     <loc>https://enarroied.github.io/french_towns_lakehouse/about.html</loc>
-    <lastmod>2026-05-10T13:49:01.630Z</lastmod>
+    <lastmod>2026-05-14T18:54:22.996Z</lastmod>
   </url>
 </urlset>
