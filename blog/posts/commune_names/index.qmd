@@ -1,0 +1,698 @@
+---
+title: "What's in a French Commune Name?"
+date: today
+description: "Querying the gold layer with Polars: commune name lengths, letters, duplicates, and composed names."
+categories: [insights, data-exploration]
+lang: en
+image: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dfzsob0-71778f86-3697-4f59-a753-09d0d39ffb98.jpg/v1/fill/w_1031,h_775,q_70,strp/monbazillac_landscape_1_by_ericnarro_dfzsob0-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kZnpzb2IwLTcxNzc4Zjg2LTM2OTctNGY1OS1hNzUzLTA5ZDBkMzlmZmI5OC5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.EIkJ1NB_7ePo7FVGiBF7a77cRbkHRi-p3bR71QBBQsc"
+format:
+  html:
+    code-fold: true
+---
+
+This post runs live queries against the lakehouse's **gold layer**, which are Iceberg tables served via Apache Polaris and DuckDB.
+
+The article queries a single table and carries factoid analysis of French commune names. The goal of this post is making sure we can connect to the lakehouse using quarto and our connection function `sql_to_df`.
+
+![](https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dfzsob0-71778f86-3697-4f59-a753-09d0d39ffb98.jpg/v1/fill/w_1031,h_775,q_70,strp/monbazillac_landscape_1_by_ericnarro_dfzsob0-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kZnpzb2IwLTcxNzc4Zjg2LTM2OTctNGY1OS1hNzUzLTA5ZDBkMzlmZmI5OC5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.EIkJ1NB_7ePo7FVGiBF7a77cRbkHRi-p3bR71QBBQsc)
+
+## 0. Lakehouse connection
+
+We import `sql_to_df` and the libraries for data display:
+```{python}
+from great_tables import GT, loc, style
+from itables import show
+import matplotlib.pyplot as plt
+import pandas as pd
+import polars as pl
+
+from blog_utils import sql_to_df
+```
+
+---
+
+## 1. Name length distribution
+
+Let's start looking at how long French commune names tend to be
+
+```{python}
+query_length_distribution = """
+    SELECT LENGTH(name) AS "Name lenght", COUNT(*) AS "Number of Communes"
+    FROM gold.dim_communes_france
+    GROUP BY "Name lenght"
+    ORDER BY "Name lenght"
+"""
+df_length_distribution = sql_to_df(query_length_distribution, dataframe_type="pandas")
+show(df_length_distribution, caption="Name Length in french Communes")
+```
+
+The shortest name is **1 character** (`Y`), the longest is **45 characters**
+(*Saint-Remy-en-Bouzemont-Saint-Genest-et-Isson*).
+
+But characters include spaces and dashes. what if we only look for letters?
+
+```{python}
+query_letter_distribution = """
+    SELECT LENGTH(REGEXP_REPLACE(name, '\P{L}', '', 'g')) AS "Letter count",
+    COUNT(*) AS "Number of Communes"
+    FROM gold.dim_communes_france
+    GROUP BY "Letter count"
+    ORDER BY "Letter count"
+"""
+df_letter_distribution = sql_to_df(query_letter_distribution, dataframe_type="pandas")
+show(df_letter_distribution, caption="Number of letters in French Communes")
+```
+
+Two towns have 38 letters, they are *Saint-Remy-en-Bouzemont-Saint-Genest-et-Isson* and *Beaujeu-Saint-Vallier-Pierrejux-et-Quitteur*. How long these names are!
+
+We can also perform some summary statistics on the communes lengths:
+
+```{python}
+query_length_stats = """
+    SELECT
+        MIN(LENGTH(name))          AS min_len,
+        CAST(AVG(LENGTH(name)) AS DECIMAL(5,1)) AS avg_len,
+        CAST(MEDIAN(LENGTH(name)) AS INTEGER)    AS med_len,
+        MAX(LENGTH(name))          AS max_len
+    FROM gold.dim_communes_france
+"""
+df_length_stats = sql_to_df(query_length_stats, dataframe_type="pandas")
+df_length_stats
+```
+
+On average, we have a length (including spaces and dashes) of 11.8 characters, and a median value of 10 characters. Let's take a look at shortest and longest commune names.
+
+```{python}
+query_shortest_names = """
+    SELECT name, LENGTH(name) AS len
+    FROM gold.dim_communes_france
+    ORDER BY len
+    LIMIT 5
+"""
+df_shortest_names = sql_to_df(query_shortest_names, dataframe_type="pandas")
+
+(
+    GT(df_shortest_names)
+    .tab_header(
+        title="Shortest Commune Names in France",
+        subtitle="Top 5 communes by name length (raw characters)"
+    )
+    .cols_label(
+        name="Commune Name",
+        len="Length (chars)"
+    )
+    .fmt_number(
+        columns="len",
+        decimals=0,
+        use_seps=False
+    )
+    .data_color(
+        columns="len",
+        palette=["#e8f5e9", "#4caf50", "#2e7d32"]
+    )
+    .tab_source_note("Source: gold.dim_communes_france")
+)
+
+```
+
+```{python}
+query_longest_names = """
+    SELECT name, LENGTH(name) AS len
+    FROM gold.dim_communes_france
+    ORDER BY len DESC
+    LIMIT 5
+"""
+df_longest_names = sql_to_df(query_longest_names, dataframe_type="pandas")
+
+(
+    GT(df_longest_names)
+    .tab_header(
+        title="Longest Commune Names in France",
+        subtitle="Top 5 communes by name length (raw characters)"
+    )
+    .cols_label(
+        name="Commune Name",
+        len="Length (chars)"
+    )
+    .fmt_number(
+        columns="len",
+        decimals=0,
+        use_seps=False
+    )
+    .data_color(
+        columns="len",
+        palette=["#FFD700", "#FF8C00", "#FF0000"]
+    )
+    .tab_source_note("Source: gold.dim_communes_france")
+)
+```
+
+Looking at the full distribution, the 6-10 character length range is by far the most common bin in the histogram:
+```{python}
+# Histogram: group into buckets for readability
+buckets = [0, 5, 10, 15, 20, 25, 30, 35, 40, 999]
+labels = ["1-5", "6-10", "11-15", "16-20", "21-25", "26-30", "31-35", "36-40", "41+"]
+df_length_distribution["bucket"] = pd.cut(
+    df_length_distribution["Name lenght"], bins=buckets, labels=labels, right=True
+)
+hist = df_length_distribution.groupby("bucket", observed=True)["Number of Communes"].sum()
+
+fig, ax = plt.subplots(figsize=(10, 5))
+bars = ax.bar(hist.index, hist.values, color="#2c7fb8", edgecolor="white")
+ax.set_xlabel("Name length (characters)")
+ax.set_ylabel("Number of communes")
+ax.set_title("Distribution of French Commune Name Lengths", fontweight="bold")
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+for bar, val in zip(bars, hist.values):
+    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 200,
+            str(val), ha="center", fontsize=9)
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## 2. Most common commune names
+
+Let's explore which commune names appear most frequently across France. Many towns share the same name, often reflecting religious heritage (Saint names), geographic features, or historical figures.
+
+### 2.1 Repeated commune names
+
+```{python}
+query_most_common_names = """
+    SELECT name, COUNT(*) AS occurrences
+    FROM gold.dim_communes_france
+    GROUP BY name
+    HAVING occurrences > 8
+    ORDER BY occurrences DESC
+"""
+df_most_common_names = sql_to_df(query_most_common_names, dataframe_type="pandas")
+
+(
+    GT(df_most_common_names)
+    .tab_header(
+        title="Most Frequent Commune Names in France",
+        subtitle="Names appearing more than 8 times across the country"
+    )
+    .cols_label(
+        name="Commune Name",
+        occurrences="Number of Communes"
+    )
+    .fmt_number(
+        columns="occurrences",
+        decimals=0,
+        use_seps=True
+    )
+    .data_color(
+        columns="occurrences",
+        palette=["#FFD700", "#FF8C00", "#FF0000"]
+    )
+    .tab_style(
+        style=style.text(weight="bold"),
+        locations=loc.body(rows=[0], columns="occurrences")
+    )
+    .tab_source_note("Source: gold.dim_communes_france")
+)
+```
+
+### 2.2 Most common words
+
+Beyond exact name duplicates, many communes share common prefixes or suffixes. Let's split each commune name into individual words (ignoring hyphens) and see which components appear most frequently. We'll ignore French stopwords.
+
+```{python}
+# French stopwords (common words to exclude)
+french_stopwords = {
+    "le", "la", "les", "un", "une", "des", "du", "de", "d'", "l'",
+    "et", "ou", "mais", "donc", "or", "ni", "car",
+    "sur", "sous", "dans", "avec", "sans", "par", "pour", "en", "vers", "entre",
+    "au", "aux", "chez", "après", "avant", "pendant", "depuis", "jusque",
+    "ce", "ces", "cet", "cette", "mon", "ton", "son", "notre", "votre", "leur",
+    "a", "à", "est", "sont", "était", "étaient", "être", "avoir", "ont",
+    "faire", "fait", "parce", "que", "qui", "qu'", "dont", "où", "quoi",
+    "je", "tu", "il", "elle", "nous", "vous", "ils", "elles",
+    "me", "te", "se", "y", "en", "lui", "leur"
+}
+
+query_all_names = """
+    SELECT name
+    FROM gold.dim_communes_france
+"""
+df_names = sql_to_df(query_all_names, dataframe_type="polars")
+
+# Split names into words, handling spaces and hyphens
+word_counts = (
+    df_names
+    .select(
+        pl.col("name")
+        .str.replace_all("-", " ")  # Replace hyphens with spaces
+        .str.replace_all("'", " ")  # Handle apostrophes (e.g., l'Église)
+        .str.split(" ")
+        .alias("words")
+    )
+    .explode("words")
+    .filter(
+        pl.col("words").str.len_chars() > 1,  # Filter out single characters
+        ~pl.col("words").str.to_lowercase().is_in(french_stopwords),  # Exclude stopwords
+        pl.col("words").is_not_null(),
+        pl.col("words") != ""  # Remove empty strings
+    )
+    .with_columns(
+        # Capitalize first letter for cleaner display
+        pl.col("words").str.to_titlecase().alias("words")
+    )
+    .group_by("words")
+    .len()
+    .sort("len", descending=True)
+    .limit(15)
+)
+
+(
+    GT(word_counts)
+    .tab_header(
+        title="Most Common Name Components",
+        subtitle="Top 15 meaningful words in French commune names (stopwords excluded)"
+    )
+    .cols_label(
+        words="Name Component",
+        len="Frequency"
+    )
+    .fmt_number(
+        columns="len",
+        decimals=0,
+        use_seps=True
+    )
+    .data_color(
+        columns="len",
+        palette=["#FFD700", "#FF8C00", "#FF0000"]
+    )
+    .tab_source_note("Analysis based on splitting names by spaces, hyphens, and apostrophes. Excludes common French stopwords and words shorter than 2 characters.")
+)
+```
+
+### 2.3 Saint names analysis
+
+Given how many French communes begin with "Saint-", let's analyze the most popular patron saints:
+
+```{python}
+query_saint_names = """
+    SELECT
+        name,
+        REGEXP_EXTRACT(name, '^Saint[- ]([A-Z][a-zÀ-ÖØ-öø-ÿ]+(?:[- ][A-Z][a-zÀ-ÖØ-öø-ÿ]+)?)', 1) AS saint_name
+    FROM gold.dim_communes_france
+    WHERE name LIKE 'Saint-%' OR name LIKE 'Saint %'
+"""
+df_saints = sql_to_df(query_saint_names, dataframe_type="polars")
+
+saint_counts = (
+    df_saints
+    .filter(
+        pl.col("saint_name").is_not_null(),
+        ~pl.col("saint_name").str.to_lowercase().is_in(french_stopwords)
+    )
+    .with_columns(
+        # Handle compound saint names (e.g., "Jean Baptiste" -> keep as is)
+        pl.col("saint_name").str.strip_chars()
+    )
+    .group_by("saint_name")
+    .len()
+    .sort("len", descending=True)
+    .limit(10)
+)
+
+(
+    GT(saint_counts)
+    .tab_header(
+        title="Most Popular Patron Saints",
+        subtitle="Top 10 saints honored in French commune names"
+    )
+    .cols_label(
+        saint_name="Saint Name",
+        len="Number of Communes"
+    )
+    .fmt_number(
+        columns="len",
+        decimals=0,
+        use_seps=True
+    )
+    .data_color(
+        columns="len",
+        palette=["#FFD700", "#FF8C00", "#FF0000"]
+    )
+    .tab_source_note("Based on communes starting with 'Saint-' or 'Saint '")
+)
+```
+
+### 2.4 Geographic indicators
+
+Finally, let's look at common geographic qualifiers that appear in commune names:
+
+```{python}
+query_geo_terms = """
+    SELECT name
+    FROM gold.dim_communes_france
+"""
+df_geo = sql_to_df(query_geo_terms, dataframe_type="polars")
+
+# More comprehensive geographic patterns
+geo_patterns = {
+    "sur": "situated on (river/hill)",
+    "sous": "under/below",
+    "en": "in",
+    "les": "the (plural)",
+    "le": "the (masculine)",
+    "la": "the (feminine)",
+    "près": "near",
+    "devant": "in front of",
+    "derrière": "behind",
+    "entre": "between"
+}
+
+geo_counts = []
+for pattern, description in geo_patterns.items():
+    count = df_geo.filter(pl.col("name").str.contains(f"-{pattern}-| {pattern} ")).height
+    geo_counts.append({"qualifier": pattern, "meaning": description, "count": count})
+
+df_geo_terms = pl.DataFrame(geo_counts).sort("count", descending=True)
+
+(
+    GT(df_geo_terms)
+    .tab_header(
+        title="Common Geographic Qualifiers",
+        subtitle="Prepositional indicators found in French commune names"
+    )
+    .cols_label(
+        qualifier="Qualifier",
+        meaning="Meaning",
+        count="Number of Communes"
+    )
+    .fmt_number(
+        columns="count",
+        decimals=0,
+        use_seps=True
+    )
+    .data_color(
+        columns="count",
+        palette=["#FFD700", "#FF8C00", "#FF0000"]
+    )
+    .tab_source_note("Examples: 'Villefranche-sur-Saône', 'Saint-Germain-en-Laye', 'Bourg-la-Reine'")
+)
+
+```
+
+---
+
+## 3. Most common first letters
+
+The first letter of a commune name can reveal interesting patterns about French toponymy. Let's analyze which letters are most popular at the beginning of commune names.
+
+
+```{python}
+query_first_letters = """
+    SELECT
+        UPPER(LEFT(name, 1)) AS letter,
+        COUNT(*) AS communes,
+        ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 1) AS percentage
+    FROM gold.dim_communes_france
+    GROUP BY letter
+    ORDER BY communes DESC
+"""
+df_first_letters = sql_to_df(query_first_letters, dataframe_type="pandas")
+
+# Display with Great Tables
+(
+    GT(df_first_letters.head(15))
+    .tab_header(
+        title="Most Common First Letters",
+        subtitle="Top 15 initial letters across all French commune names"
+    )
+    .cols_label(
+        letter="First Letter",
+        communes="Number of Communes",
+        percentage="Percentage (%)"
+    )
+    .fmt_number(
+        columns="communes",
+        decimals=0,
+        use_seps=True
+    )
+    .fmt_number(
+        columns="percentage",
+        decimals=1,
+        pattern="{x}%"  # Add % suffix using pattern instead of suffix parameter
+    )
+    .data_color(
+        columns="communes",
+        palette=["#e8f5e9", "#4caf50", "#2e7d32"]
+    )
+    .tab_style(
+        style=style.text(weight="bold"),
+        locations=loc.body(rows=[0, 1, 2], columns="letter")
+    )
+    .tab_source_note("Source: gold.dim_communes_france")
+)
+```
+
+### Visualizing the distribution
+
+```{python}
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.bar(df_first_letters["letter"], df_first_letters["communes"], color="#2ca02c", edgecolor="white")
+ax.set_xlabel("First letter")
+ax.set_ylabel("Number of communes")
+ax.set_title("Most Common First Letters", fontweight="bold")
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+### Letters that never appear
+
+What about letters that never (or rarely) start a commune name?
+
+```{python}
+query_missing_letters = """
+    WITH all_letters AS (
+        SELECT UNNEST(REGEXP_SPLIT_TO_ARRAY('ABCDEFGHIJKLMNOPQRSTUVWXYZ', '')) AS letter
+    ),
+    used_letters AS (
+        SELECT DISTINCT UPPER(LEFT(name, 1)) AS letter
+        FROM gold.dim_communes_france
+    )
+    SELECT letter
+    FROM all_letters
+    WHERE letter NOT IN (SELECT letter FROM used_letters WHERE letter IS NOT NULL)
+    ORDER BY letter
+"""
+df_missing_letters = sql_to_df(query_missing_letters, dataframe_type="pandas")
+
+if len(df_missing_letters) > 0:
+    print(f"📝 Letters that NEVER start a French commune name: {', '.join(df_missing_letters['letter'])}")
+else:
+    print("✅ All letters of the alphabet appear at least once as a first letter!")
+```
+
+---
+
+## 4. Department-level analysis
+
+Different departments have distinct naming patterns. Let's explore which departments have the longest commune names on average, and visualize the distribution of name lengths within the top departments.
+
+
+### 4.1 Departments with longest average commune names
+
+```{python}
+query_dept_avg_length = """
+    SELECT
+        department_name,
+        ROUND(AVG(LENGTH(name)), 1) AS avg_length,
+        COUNT(*) AS communes,
+        MIN(LENGTH(name)) AS min_length,
+        MAX(LENGTH(name)) AS max_length
+    FROM gold.dim_communes_france
+    GROUP BY department_name
+    ORDER BY avg_length DESC
+    LIMIT 15
+"""
+df_dept_avg_length = sql_to_df(query_dept_avg_length, dataframe_type="pandas")
+
+(
+    GT(df_dept_avg_length)
+    .tab_header(
+        title="Departments with Longest Commune Names",
+        subtitle="Top 15 departments by average name length (raw characters)"
+    )
+    .cols_label(
+        department_name="Department",
+        avg_length="Avg. Length",
+        communes="Number of Communes",
+        min_length="Min Length",
+        max_length="Max Length"
+    )
+    .fmt_number(
+        columns="avg_length",
+        decimals=1
+    )
+    .fmt_number(
+        columns=["communes", "min_length", "max_length"],
+        decimals=0,
+        use_seps=True
+    )
+    .data_color(
+        columns="avg_length",
+        palette=["#FFD700", "#FF8C00", "#FF0000"]
+    )
+    .tab_source_note("Source: gold.dim_communes_france")
+)
+```
+
+### 4.2 Distribution of name lengths for top departments
+
+
+```{python}
+# Box plot: name lengths for top 12 departments
+top12 = df_dept_avg_length["department_name"].head(12).tolist()
+
+dept_data = []
+for d in top12:
+    rows_df = sql_to_df(
+        "SELECT LENGTH(name) AS len FROM gold.dim_communes_france "
+        "WHERE department_name = ? ORDER BY len",
+        [d],
+        dataframe_type="pandas",
+    )
+    dept_data.append(rows_df["len"].tolist())
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bp = ax.boxplot(dept_data, tick_labels=[d[:20] for d in top12], patch_artist=True)
+for patch in bp["boxes"]:
+    patch.set_facecolor("#2c7fb8")
+    patch.set_alpha(0.7)
+for median in bp["medians"]:
+    median.set_color("black")
+    median.set_linewidth(2)
+ax.set_xlabel("Department")
+ax.set_ylabel("Commune name length (characters)")
+ax.set_title("Commune Name Lengths by Department", fontweight="bold")
+ax.tick_params(axis="x", rotation=45)
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+### 4.3 Which department has the shortest average names?
+
+```{python}
+query_dept_shortest = """
+    SELECT
+        department_name,
+        ROUND(AVG(LENGTH(name)), 1) AS avg_length,
+        COUNT(*) AS communes
+    FROM gold.dim_communes_france
+    GROUP BY department_name
+    ORDER BY avg_length ASC
+    LIMIT 10
+"""
+df_dept_shortest = sql_to_df(query_dept_shortest, dataframe_type="pandas")
+
+(
+    GT(df_dept_shortest)
+    .tab_header(
+        title="Departments with Shortest Commune Names",
+        subtitle="Top 10 departments by shortest average name length"
+    )
+    .cols_label(
+        department_name="Department",
+        avg_length="Avg. Length",
+        communes="Number of Communes"
+    )
+    .fmt_number(
+        columns="avg_length",
+        decimals=1
+    )
+    .fmt_number(
+        columns="communes",
+        decimals=0,
+        use_seps=True
+    )
+    .data_color(
+        columns="avg_length",
+        palette=["#e8f5e9", "#4caf50", "#2e7d32"]
+    )
+    .tab_source_note("Source: gold.dim_communes_france")
+)
+```
+
+---
+
+## 5. Most communes per department
+
+Not all departments are created equal when it comes to the number of communes. Let's see which departments have the highest number of communes.
+
+
+```{python}
+query_most_communes_dept = """
+    SELECT
+        department_name,
+        COUNT(*) AS communes,
+        ROUND(AVG(LENGTH(name)), 1) AS avg_name_length,
+        ROUND(STDDEV(LENGTH(name)), 1) AS stddev_length
+    FROM gold.dim_communes_france
+    GROUP BY department_name
+    ORDER BY communes DESC
+    LIMIT 10
+"""
+df_most_communes_dept = sql_to_df(query_most_communes_dept, dataframe_type="pandas")
+
+(
+    GT(df_most_communes_dept)
+    .tab_header(
+        title="Departments with Most Communes",
+        subtitle="Top 10 departments by total number of communes"
+    )
+    .cols_label(
+        department_name="Department",
+        communes="Number of Communes",
+        avg_name_length="Avg. Name Length",
+        stddev_length="Std. Deviation"
+    )
+    .fmt_number(
+        columns=["communes", "stddev_length"],
+        decimals=0,
+        use_seps=True
+    )
+    .fmt_number(
+        columns="avg_name_length",
+        decimals=1
+    )
+    .data_color(
+        columns="communes",
+        palette=["#f3e5f5", "#9c27b0", "#4a148c"]
+    )
+    .tab_style(
+        style=style.text(weight="bold"),
+        locations=loc.body(rows=[0], columns="communes")
+    )
+    .tab_source_note("Source: gold.dim_communes_france")
+)
+```
+
+---
+
+## Conclusion
+This article is completely useless.
+
+But it's also great fun! Sometimes the best part of working with data is following your curiosity down rabbit holes, asking silly questions, and seeing what interesting (if impractical) patterns emerge.
+
+French commune names tell a story of saints, rivers, history and geography, of hyphenated mouthfuls and mysterious single-letter towns like "Y". We've learned that:
+
+- S dominates as a first letter (blame Saint- everywhere!)
+- 6-10 characters is the sweet spot for name length
+- Saint-Martin is everywhere (sorry, other saints)
+- And Vendée ❤️ apparently likes long, winding names
+
+I hope you had as much fun reading this as I did running the queries. 🥖🇫🇷
+
+Data source: French commune registry via Iceberg tables, served through Apache Polaris and DuckDB. Queries run live when generating the article (and it's uploaded in fixed state).

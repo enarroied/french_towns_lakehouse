@@ -12,6 +12,10 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: us-east-1
+      POLARIS_PERSISTENCE_TYPE: relational-jdbc
+      QUARKUS_DATASOURCE_USERNAME: french_towns
+      QUARKUS_DATASOURCE_PASSWORD: ${POLARIS_DB_PASSWORD}
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://postgres-lakehouse:5432/polaris_meta
     networks:
       - lakehouse-net
     restart: unless-stopped

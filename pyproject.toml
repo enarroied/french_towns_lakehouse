@@ -30,6 +30,13 @@ dependencies = [
     "requests>=2.32.5",
     "asyncpg>=0.30.0",
     "psycopg2-binary>=2.9.9",
+    "jupyter>=1.1.1",
+    "nbformat>=5.10.4",
+    "ipykernel>=7.2.0",
+    "polars>=1.40.1",
+    "matplotlib>=3.10.9",
+    "great-tables>=0.21.0",
+    "itables>=2.7.3",
 ]
 
 [dependency-groups]

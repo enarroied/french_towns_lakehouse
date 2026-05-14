@@ -3,7 +3,7 @@ services:
     image: postgres:16-alpine
     container_name: postgres-lakehouse
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: french_towns
       POSTGRES_PASSWORD: ${PG_PASSWORD}

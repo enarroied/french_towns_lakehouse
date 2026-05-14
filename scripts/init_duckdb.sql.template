@@ -1,0 +1,80 @@
+-- ==============================================================
+--  Lakehouse view definitions
+--  Run this SQL once per DuckDB session (or set as DBeaver init
+--  SQL in connection settings).
+--  Schemas, views and the S3 secret persist in the .duckdb file.
+--
+--  TEMPLATE: {{VAR}} placeholders are substituted by
+--  refresh_lakehouse_views.sh from .env at runtime.
+-- ==============================================================
+
+-- ---------- Gold layer (Iceberg via Polaris) ----------
+
+LOAD iceberg;
+
+CREATE SECRET IF NOT EXISTS polaris_secret (
+    TYPE iceberg,
+    CLIENT_ID '{{POLARIS_CLIENT_ID}}',
+    CLIENT_SECRET '{{POLARIS_CLIENT_SECRET}}',
+    ENDPOINT 'http://localhost:8181/api/catalog'
+);
+
+ATTACH IF NOT EXISTS 'french_towns' AS polaris (
+    TYPE iceberg,
+    ENDPOINT 'http://localhost:8181/api/catalog',
+    SECRET 'polaris_secret'
+);
+
+CREATE SCHEMA IF NOT EXISTS gold;
+
+CREATE OR REPLACE VIEW gold.dim_communes_france AS
+    SELECT * FROM polaris.lakehouse.dim_communes_france;
+
+CREATE OR REPLACE VIEW gold.dim_zip_codes AS
+    SELECT * FROM polaris.lakehouse.dim_zip_codes;
+
+CREATE OR REPLACE VIEW gold.bridge_communes_zip_codes AS
+    SELECT * FROM polaris.lakehouse.bridge_communes_zip_codes;
+
+CREATE OR REPLACE VIEW gold.fact_population AS
+    SELECT * FROM polaris.lakehouse.fact_population;
+
+CREATE OR REPLACE VIEW gold.fact_salaries AS
+    SELECT * FROM polaris.lakehouse.fact_salaries;
+
+
+-- ---------- Silver layer (validated parquet via MinIO) ----------
+
+-- httpfs is auto-loaded when DuckDB reads S3 parquet files.
+-- The S3 secret `minio_creds` persists in the .duckdb file.
+-- The CREATE SECRET below is a no-op if it already exists.
+
+CREATE SECRET IF NOT EXISTS minio_creds (
+    TYPE s3,
+    KEY_ID '{{MINIO_ROOT_USER}}',
+    SECRET '{{MINIO_ROOT_PASSWORD}}',
+    ENDPOINT 'localhost:19000',
+    REGION 'us-east-1',
+    USE_SSL false,
+    URL_STYLE 'path'
+);
+
+CREATE SCHEMA IF NOT EXISTS silver;
+
+CREATE OR REPLACE VIEW silver.dim_communes_france AS
+    SELECT * FROM read_parquet('s3://validated/dim_communes_france.parquet');
+
+CREATE OR REPLACE VIEW silver.dim_zip_codes AS
+    SELECT * FROM read_parquet('s3://validated/dim_zip_codes.parquet');
+
+CREATE OR REPLACE VIEW silver.dim_labels AS
+    SELECT * FROM read_parquet('s3://validated/dim_labels.parquet');
+
+CREATE OR REPLACE VIEW silver.fact_population AS
+    SELECT * FROM read_parquet('s3://validated/fact_population.parquet');
+
+CREATE OR REPLACE VIEW silver.fact_salaries AS
+    SELECT * FROM read_parquet('s3://validated/fact_salaries.parquet');
+
+CREATE OR REPLACE VIEW silver.bridge_communes_zip_codes AS
+    SELECT * FROM read_parquet('s3://validated/bridge_communes_zip_codes.parquet');
