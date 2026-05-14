@@ -298,7 +298,7 @@ Given how many French communes begin with "Saint-", let's analyze the most popul
 query_saint_names = """
     SELECT
         name,
-        REGEXP_EXTRACT(name, '^Saint[- ]([A-Z][a-zÀ-ÖØ-öø-ÿ]+(?:[- ][A-Z][a-zÀ-ÖØ-öø-ÿ]+)?)', 1) AS saint_name
+        REGEXP_EXTRACT(name, '^Saint[- ](.+?)(?:$|[- ])', 1) AS saint_name
     FROM gold.dim_communes_france
     WHERE name LIKE 'Saint-%' OR name LIKE 'Saint %'
 """

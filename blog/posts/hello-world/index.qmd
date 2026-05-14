@@ -1,6 +1,6 @@
 ---
 title: "Hello World, Introducing the French Towns Lakehouse"
-date: today
+date: 2026-05-10
 description: "First post: what this project is, what it builds, and what's coming."
 categories: [meta]
 lang: en
