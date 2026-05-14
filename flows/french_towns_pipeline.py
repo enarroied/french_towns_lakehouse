@@ -1,4 +1,13 @@
 from flows.shared import log
+from flows_integration.integration.integration_current_dim_geography import (
+    integration_current_dim_geography,
+)
+from flows_integration.integration.integration_current_fact_demographics import (
+    integration_current_fact_demographics,
+)
+from flows_integration.integration.integration_current_labels import (
+    integration_current_labels,
+)
 from flows_staging.staging.staging_arrondissements import staging_arrondissements
 from flows_staging.staging.staging_current_labels import staging_current_labels
 from flows_staging.staging.staging_departements import staging_departements
@@ -41,6 +50,11 @@ def french_towns_pipeline() -> None:
     transformation_current_dim_geography()
     transformation_current_fact_demographics()
     transformation_current_labels()
+
+    log("=== INTEGRATION PHASE ===")
+    integration_current_dim_geography()
+    integration_current_fact_demographics()
+    integration_current_labels()
 
     log("Pipeline complete")
 

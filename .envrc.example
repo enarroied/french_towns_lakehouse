@@ -1,0 +1,3 @@
+# Install direnv, then:
+#   cp .envrc.example .envrc && direnv allow
+export QUARTO_PYTHON=$PWD/.venv/bin/python

@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/commune_names/index.html",
       "/posts/hello-world/index.html"
     ]
   }

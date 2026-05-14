@@ -78,6 +78,7 @@ The data model follows a star schema.
 | Compute | DuckDB |
 | Object Storage | MinIO (S3-compatible) |
 | Iceberg Catalog | Apache Polaris |
+| Iceberg Integration | DuckDB + Polaris (flows_integration) |
 | Package Manager | uv |
 | Metadata DB | PostgreSQL 16 |
 
@@ -103,16 +104,26 @@ cp .env.example .env
 # Edit .env with your credentials
 ```
 
+Optional — auto-load environment with [direnv](https://direnv.net/):
+```bash
+cp .envrc.example .envrc && direnv allow
+```
+This sets `QUARTO_PYTHON` automatically when entering the project directory.
+
 Start infrastructure services:
 ```bash
 # Start MinIO first (creates the shared network)
 docker compose -f docker/docker-compose-minio.yml up -d
 
-# Start Polaris (Iceberg catalog)
+# Start Polaris (Iceberg catalog) — pass env vars for S3 credentials
 docker compose -f docker/docker-compose-polaris.yml --env-file .env up -d
 
 # Start PostgreSQL (metadata database)
 docker compose -f docker/docker-compose-postgres.yml --env-file .env up -d
+
+# One-time Polaris bootstrap (re-run after container restart)
+source .env
+uv run python setup_polaris.py
 ```
 
 ---
@@ -157,18 +168,44 @@ Iceberg REST catalog for managing Iceberg tables. Enables ACID transactions, tim
    ```
    Expected response: `{"failures":[],"healthy":true}`
 
-4. Configure DuckDB to use Polaris:
+4. One-time bootstrap — create the `french_towns` catalog, `lakehouse` namespace, and RBAC:
+   ```bash
+   source .env
+   uv run python setup_polaris.py
+   ```
+   This script is idempotent and safe to re-run.
+
+   > **Note:** Polaris uses in-memory storage by default. Re-creating the container
+   > (e.g. `docker compose down` + `up`) resets all metadata. Re-run `setup_polaris.py`
+   > after any container restart.
+
+5. Configure DuckDB to use Polaris (done automatically by the integration flows via
+   `flows_integration/shared/connection.py`):
    ```sql
    INSTALL iceberg;
    LOAD iceberg;
 
-   CREATE SECRET (
-       TYPEiceberg,
-       HOST 'localhost',
-       PORT 8181,
-       URI 'http://localhost:8181',
+   CREATE SECRET minio_secret (
+       TYPE s3,
+       KEY_ID 'your_access_key',
+       SECRET 'your_secret_key',
+       ENDPOINT 'localhost:19000',
+       REGION 'us-east-1',
+       USE_SSL false,
+       URL_STYLE 'path'
+   );
+
+   CREATE SECRET polaris_secret (
+       TYPE iceberg,
        CLIENT_ID 'your_client_id',
-       CLIENT_SECRET 'your_client_secret'
+       CLIENT_SECRET 'your_client_secret',
+       ENDPOINT 'http://localhost:8181/api/catalog'
+   );
+
+   ATTACH 'french_towns' AS polaris (
+       TYPE iceberg,
+       ENDPOINT 'http://localhost:8181/api/catalog',
+       SECRET 'polaris_secret'
    );
    ```
 
@@ -176,15 +213,29 @@ Iceberg REST catalog for managing Iceberg tables. Enables ACID transactions, tim
 
 Credentials are configured via `.env`:
 
-```bash
+```env
 POLARIS_CLIENT_ID=your_client_id
 POLARIS_CLIENT_SECRET=your_client_secret
+POLARIS_REALM=POLARIS
 ```
+
+The `root` principal gets the `lakehouse_admin` principal role assigned by `setup_polaris.py`,
+which is wired to the `content_manager` catalog role with `CATALOG_MANAGE_CONTENT` privilege.
+The bootstrap script also configures the S3 storage endpoint (`http://127.0.0.1:19000` for clients,
+`http://minio:9000` for Polaris server-internal use) and sets `pathStyleAccess: true` for MinIO
+compatibility.
 
 #### Stopping Services
 
 ```bash
 docker compose -f docker/docker-compose-minio.yml -f docker/docker-compose-polaris.yml --env-file .env down
+```
+
+Polaris uses in-memory storage — all catalog metadata is lost on restart. After restarting,
+re-run the one-time bootstrap:
+
+```bash
+uv run python setup_polaris.py
 ```
 
 ---
@@ -462,10 +513,18 @@ french_towns_lakehouse/
 │       └── parse_ville_sportive.py
 ├── flows_transformation/           # Transformation pipelines
 ├── flows_integration/               # Integration pipelines
+│   ├── shared/                      # Shared utils (connection, validation, SCD2, fact_loader)
+│   └── integration/                 # Integration flow definitions
 ├── blog/                           # Quarto blog (deployed to GitHub Pages root)
+│   ├── blog_utils.py               # SQL query helper (gold layer via Polaris)
+│   ├── favicon.svg                 # Site favicon
 │   ├── posts/                      # Blog posts
 │   ├── _freeze/                    # Pre-rendered outputs (committed to git)
 │   └── _quarto.yml                 # Quarto config
+├── scripts/                        # Utility scripts
+│   ├── init_duckdb.sql.template    # SQL template (secrets from .env)
+│   ├── refresh_lakehouse_views.sh  # Refresh .duckdb gold/silver views
+│   └── render_blog.sh              # Render Quarto blog
 ├── french_towns_dbt/               # dbt project
 │   └── models/
 │       ├── staging/                # Raw staging models
@@ -473,11 +532,15 @@ french_towns_lakehouse/
 │       │   ├── dim/
 │       │   └── fact/
 │       └── lakehouse/              # SCD Type 2 models
-├── tests/                          # Test suite (145 tests)
+├── tests/                          # Test suite (196 tests)
 │   ├── conftest.py
 │   ├── shared/                     # Tests for shared modules
 │   ├── scrapers/                   # Tests for web scrapers
-│   └── custom_parsers/             # Tests for PDF parsers
+│   ├── custom_parsers/             # Tests for PDF parsers
+│   ├── blog/                       # Tests for blog utilities
+│   └── integration/                # Tests for gold-layer integration pipes
+├── .env.example                    # Environment variables template
+├── .envrc.example                  # direnv template
 ├── config.yaml                     # Pipeline configuration
 ├── docker/                         # Docker configs
 │   ├── docker-compose-minio.yml   # MinIO S3 storage
@@ -502,46 +565,146 @@ french_towns_lakehouse/
 
 ---
 
+## Blog
+
+The project blog is built with [Quarto](https://quarto.org/) at `blog/`:
+- **`blog/_quarto.yml`** — site config with `execute-dir: project` so Python imports
+  (e.g. `from blog_utils import sql_to_df`) resolve from the `blog/` directory.
+- **`blog/favicon.svg`** — map-pin favicon tied to the site theme.
+- **`blog/blog_utils.py`** — `sql_to_df()` helper that queries gold-layer Iceberg
+  tables via an in-memory DuckDB connection to Polaris.
+- Blog posts are written as `.qmd` files under `blog/posts/` and frozen on render
+  (`freeze: auto`). Frozen output in `_freeze/` is committed to git so CI
+  deploys pre-computed results without lakehouse access.
+
+Render locally:
+```bash
+scripts/render_blog.sh
+```
+
 ## Query the LakeHouse
 
+### Quick start (DBeaver / DuckDB)
+
+A pre-configured `.duckdb` file at `~/Documents/lakehouse.duckdb` provides
+two schemas with lazy-view mappings to the lakehouse. No data is copied —
+every query hits the live Iceberg tables (gold) or MinIO parquet (silver).
+
+| Schema | Layer | Backend | Requires |
+|--------|-------|---------|----------|
+| `gold` | Business dimensions + facts | Polaris Iceberg catalog | Running Polaris + MinIO |
+| `silver` | Cleaned parquet | MinIO S3 | Running MinIO |
+
+**Open in DBeaver:**
+
+1. **Database → New Database Connection → DuckDB**
+2. Browse to `~/Documents/lakehouse.duckdb` — no password needed
+3. In connection settings → **Driver properties → Initialization SQL**, paste
+   (replace `your_polaris_client_id` / `your_polaris_client_secret` with values from `.env`):
+
 ```sql
--- Connect to MinIO via DuckDB
-INSTALL httpfs;
-LOAD httpfs;
+LOAD iceberg;
+CREATE SECRET IF NOT EXISTS polaris_secret (
+    TYPE iceberg, CLIENT_ID 'your_polaris_client_id', CLIENT_SECRET 'your_polaris_client_secret',
+    ENDPOINT 'http://localhost:8181/api/catalog'
+);
+ATTACH IF NOT EXISTS 'french_towns' AS polaris (
+    TYPE iceberg, ENDPOINT 'http://localhost:8181/api/catalog',
+    SECRET 'polaris_secret'
+);
+```
 
-SET s3_endpoint = 'localhost:19000';
-SET s3_access_key_id = 'minioadmin';
-SET s3_secret_access_key = 'minioadmin';
-SET s3_use_ssl = false;
-SET s3_url_style = 'path';
+4. Click **Finish** and query:
 
--- Top 10 communes by population in 2021
-SELECT
-    c.name,
-    c.department_name,
-    p.population
-FROM read_parquet('s3://validated/dim_communes_france.parquet') AS c
-JOIN read_parquet('s3://validated/fact_population.parquet') AS p
-    ON c.id = p.id
+```sql
+-- Gold: business-ready dimensions and facts
+SELECT * FROM gold.dim_communes_france LIMIT 10;
+SELECT code_commune, population FROM gold.fact_population WHERE year = 2021;
+
+-- Silver: validated parquet (identical data, no Polaris dependency)
+SELECT * FROM silver.dim_communes_france LIMIT 10;
+```
+
+**Important:** The init SQL runs automatically every time DBeaver connects —
+there is nothing else to configure or update when tables are added.
+
+### Via DuckDB CLI
+
+```bash
+cd french_towns_lakehouse
+source .env
+bash scripts/refresh_lakehouse_views.sh    # one-time: create/update views
+
+# Then query interactively
+duckdb ~/Documents/lakehouse.duckdb
+```
+
+Inside DuckDB shell:
+
+```sql
+LOAD iceberg;
+CREATE SECRET IF NOT EXISTS polaris_secret (
+    TYPE iceberg,
+    CLIENT_ID 'your_polaris_client_id',
+    CLIENT_SECRET 'your_polaris_client_secret',
+    ENDPOINT 'http://localhost:8181/api/catalog'
+);
+ATTACH IF NOT EXISTS 'french_towns' AS polaris (
+    TYPE iceberg, ENDPOINT 'http://localhost:8181/api/catalog',
+    SECRET 'polaris_secret'
+);
+
+SELECT name, department_name FROM gold.dim_communes_france LIMIT 5;
+```
+
+### Example queries
+
+```sql
+-- Top 10 most populous communes in 2021
+SELECT c.name, c.department_name, p.population
+FROM gold.dim_communes_france c
+JOIN gold.fact_population p ON c.id = p.id
 WHERE p.year = 2021
 ORDER BY p.population DESC
 LIMIT 10;
-```
 
-```sql
 -- Gender pay gap by region (2023)
-SELECT
-    c.region_name,
-    ROUND(AVG(s.mean_salary_men)) AS avg_salary_men,
-    ROUND(AVG(s.mean_salary_women)) AS avg_salary_women,
-    ROUND(100.0 * (AVG(s.mean_salary_men) - AVG(s.mean_salary_women)) / AVG(s.mean_salary_men), 1) AS gap_pct
-FROM read_parquet('s3://validated/dim_communes_france.parquet') AS c
-JOIN read_parquet('s3://validated/fact_salaries.parquet') AS s
-    ON c.id = s.id
+SELECT c.region_name,
+       ROUND(AVG(s.mean_salary_men)) AS avg_salary_men,
+       ROUND(AVG(s.mean_salary_women)) AS avg_salary_women,
+       ROUND(100.0 * (AVG(s.mean_salary_men) - AVG(s.mean_salary_women))
+             / AVG(s.mean_salary_men), 1) AS gap_pct
+FROM gold.dim_communes_france c
+JOIN gold.fact_salaries s ON c.id = s.id
 WHERE c.flag_metropole = 1
 GROUP BY c.region_name
 ORDER BY gap_pct DESC;
+
+-- Time travel: commune names as they existed on 2025-01-01
+SELECT * FROM polaris.lakehouse.dim_communes_france
+    FOR SYSTEM_TIME AS OF TIMESTAMP '2025-01-01 00:00:00';
 ```
+
+### Adding new tables
+
+When a new table is added to the lakehouse (via the integration pipeline):
+
+1. Add a `CREATE OR REPLACE VIEW gold.<table> AS SELECT * FROM polaris.lakehouse.<table>;`
+    line to [`scripts/init_duckdb.sql.template`](scripts/init_duckdb.sql.template)
+2. Run `bash scripts/refresh_lakehouse_views.sh` to sync the `.duckdb` file
+3. In DBeaver: right-click connection → **Refresh**
+
+The init SQL in DBeaver settings does not need to change — the views are
+stored in the `.duckdb` file itself.
+
+### Architecture note
+
+This setup uses lazy views — no data is copied from Iceberg into the
+DuckDB file. The `.duckdb` file is a 268 KB container holding only
+schema definitions (`CREATE VIEW`, `CREATE SCHEMA`, a persisted S3
+secret). Every query resolves against the live data, keeping a single
+source of truth. The only per-connection overhead is `LOAD iceberg;`
+(≈1 second) and two `IF NOT EXISTS` DDL statements.
 
 ---
 
@@ -549,7 +712,6 @@ ORDER BY gap_pct DESC;
 
 - **Blog:** [https://enarroied.github.io/french_towns_lakehouse/](https://enarroied.github.io/french_towns_lakehouse/)
 - **dbt Docs:** [https://enarroied.github.io/french_towns_lakehouse/docs/](https://enarroied.github.io/french_towns_lakehouse/docs/)
-- **Full Specifications:** [private/Specifications/specifications.md](private/Specifications/specifications.md)
 - **Custom Parsers:** [flows_staging/custom_parsers/README.md](flows_staging/custom_parsers/README.md)
 - **Integration Pipelines:** [flows_integration/integration/README.md](flows_integration/integration/README.md)
 

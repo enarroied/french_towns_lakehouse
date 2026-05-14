@@ -1,11 +1,13 @@
 project:
   type: website
   output-dir: _site
+  execute-dir: project
 
 website:
   title: "French Towns Lakehouse"
   site-url: "https://enarroied.github.io/french_towns_lakehouse"
   description: "A data lakehouse for French municipal and administrative data"
+  favicon: favicon.svg
   navbar:
     left:
       - text: "Blog"
