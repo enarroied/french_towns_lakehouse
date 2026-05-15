@@ -1,10 +1,17 @@
 [
   {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This project builds a data lakehouse for French municipal and administrative data , covering communes, departments, regions, population statistics, salary data, ZIP codes, and municipal labels (flower cities, sports towns, etc.).\nThe pipeline follows a medallion architecture (bronze → silver → gold) using DuckDB and dbt for transformations, MinIO for object storage, and Prefect for orchestration. All metadata is tracked in PostgreSQL via a custom audit layer.\nThe source code and full README are on GitHub: github.com/enarroied/french_towns_lakehouse.\nNote: Data insights on this blog are rendered locally and committed to the repository. The local MinIO setup required to run the pipeline is not available in the CI environment, so charts and figures are pre-computed."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "French Towns Lakehouse",
     "section": "",
-    "text": "French Towns Lakehouse is a personal data engineering project that builds a self-hosted medallion-architecture lakehouse for all 35,000+ French communes. Data flows from open government APIs and web scrapers through DuckDB + dbt transformations into queryable Parquet files on MinIO , orchestrated with Prefect.\nThis blog covers the engineering decisions, data modeling choices, and analytical insights discovered along the way.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhat’s in a French Commune Name?\n\n\n\ninsights\n\ndata-exploration\n\n\n\nQuerying the gold layer with Polars: commune name lengths, letters, duplicates, and composed names.\n\n\n\n\n\nMay 14, 2026\n\n18 min\n\n\n\n\n\n\n\n\n\n\n\nHello World, Introducing the French Towns Lakehouse\n\n\n\nmeta\n\n\n\nFirst post: what this project is, what it builds, and what’s coming.\n\n\n\n\n\nMay 10, 2026\n\n1 min\n\n\n\n\nNo matching items"
+    "text": "French Towns Lakehouse is a personal data engineering project that builds a self-hosted medallion-architecture lakehouse for all 35,000+ French communes. Data flows from open government APIs and web scrapers through DuckDB + dbt transformations into queryable Parquet files on MinIO , orchestrated with Prefect.\nThis blog covers the engineering decisions, data modeling choices, and analytical insights discovered along the way.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhat’s in a French Commune Name?\n\n\n\ninsights\n\ndata-exploration\n\n\n\nQuerying the gold layer with Polars: commune name lengths, letters, duplicates, and composed names.\n\n\n\n\n\nMay 15, 2026\n\n18 min\n\n\n\n\n\n\n\n\n\n\n\nHello World, Introducing the French Towns Lakehouse\n\n\n\nmeta\n\n\n\nFirst post: what this project is, what it builds, and what’s coming.\n\n\n\n\n\nMay 10, 2026\n\n1 min\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/commune_names/index.html",
@@ -63,6 +70,13 @@
     "text": "Conclusion\nThis article is completely useless.\nBut it’s also great fun! Sometimes the best part of working with data is following your curiosity down rabbit holes, asking silly questions, and seeing what interesting (if impractical) patterns emerge.\nFrench commune names tell a story of saints, rivers, history and geography, of hyphenated mouthfuls and mysterious single-letter towns like “Y”. We’ve learned that:\n\nS dominates as a first letter (blame Saint- everywhere!)\n6-10 characters is the sweet spot for name length\nSaint-Martin is everywhere (sorry, other saints)\nAnd Vendée ❤️ apparently likes long, winding names\n\nI hope you had as much fun reading this as I did running the queries. 🥖🇫🇷\nData source: French commune registry via Iceberg tables, served through Apache Polaris and DuckDB. Queries run live when generating the article (and it’s uploaded in fixed state)."
   },
   {
+    "objectID": "posts/hello-world/index.html",
+    "href": "posts/hello-world/index.html",
+    "title": "Hello World, Introducing the French Towns Lakehouse",
+    "section": "",
+    "text": "Welcome to the French Towns Lakehouse blog.\n\n\n\nMonsac, a French commune\n\n\nThis project builds a self-hosted data lakehouse for all 35,000+ French communes. It downloads open government datasets (INSEE, Laposte, data.gouv.fr) and scrapes municipal label sites (flower cities, sports towns, heritage villages), then transforms everything into clean, queryable Parquet files using DuckDB and dbt.\nThe blog has two main sections:\n\nEngineering , deep dives into the tech stack, data modelling decisions, pipeline architecture, and infrastructure.\nInsights , analysis and findings from the data itself.\n\nThe dbt documentation shows the full data lineage and model definitions.\nAll source code is on GitHub: github.com/enarroied/french_towns_lakehouse.\nStay tuned for more posts."
+  },
+  {
     "objectID": "insights.html",
     "href": "insights.html",
     "title": "Insights",
@@ -75,19 +89,5 @@
     "title": "Engineering",
     "section": "",
     "text": "This section covers the tech stack decisions, data modelling choices, pipeline architecture, and infrastructure behind the French Towns Lakehouse. Posts coming soon."
-  },
-  {
-    "objectID": "posts/hello-world/index.html",
-    "href": "posts/hello-world/index.html",
-    "title": "Hello World, Introducing the French Towns Lakehouse",
-    "section": "",
-    "text": "Welcome to the French Towns Lakehouse blog.\n\n\n\nMonsac, a French commune\n\n\nThis project builds a self-hosted data lakehouse for all 35,000+ French communes. It downloads open government datasets (INSEE, Laposte, data.gouv.fr) and scrapes municipal label sites (flower cities, sports towns, heritage villages), then transforms everything into clean, queryable Parquet files using DuckDB and dbt.\nThe blog has two main sections:\n\nEngineering , deep dives into the tech stack, data modelling decisions, pipeline architecture, and infrastructure.\nInsights , analysis and findings from the data itself.\n\nThe dbt documentation shows the full data lineage and model definitions.\nAll source code is on GitHub: github.com/enarroied/french_towns_lakehouse.\nStay tuned for more posts."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "This project builds a data lakehouse for French municipal and administrative data , covering communes, departments, regions, population statistics, salary data, ZIP codes, and municipal labels (flower cities, sports towns, etc.).\nThe pipeline follows a medallion architecture (bronze → silver → gold) using DuckDB and dbt for transformations, MinIO for object storage, and Prefect for orchestration. All metadata is tracked in PostgreSQL via a custom audit layer.\nThe source code and full README are on GitHub: github.com/enarroied/french_towns_lakehouse.\nNote: Data insights on this blog are rendered locally and committed to the repository. The local MinIO setup required to run the pipeline is not available in the CI environment, so charts and figures are pre-computed."
   }
 ]
