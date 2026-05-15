@@ -18,6 +18,7 @@ GOLD_TABLES = [
     "bridge_communes_zip_codes",
     "fact_population",
     "fact_salaries",
+    "dim_neighbour_communes",
 ]
 
 

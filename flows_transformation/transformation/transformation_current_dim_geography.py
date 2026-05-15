@@ -11,7 +11,7 @@ from prefect import flow
 from prefect import task
 
 
-MODEL_SELECTOR = "dim_communes_france"
+MODEL_SELECTOR = "dim_communes_france dim_neighbour_communes"
 
 
 INPUT_SOURCES = ["french_communes", "arrondissements", "departements", "zip_codes"]
@@ -48,8 +48,10 @@ def transformation_current_dim_geography() -> None:
         validate_inputs(source_names=INPUT_SOURCES)
         run_stage_external_sources()
         run_dim_communes()
-        handle_outputs(model_names=["dim_communes_france"], run_id=run_id)
-        finalize_run(run_id=run_id, status="SUCCESS", number_files=1)
+        handle_outputs(
+            model_names=["dim_communes_france", "dim_neighbour_communes"], run_id=run_id
+        )
+        finalize_run(run_id=run_id, status="SUCCESS", number_files=2)
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")
         raise

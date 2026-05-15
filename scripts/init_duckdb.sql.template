@@ -30,6 +30,9 @@ CREATE SCHEMA IF NOT EXISTS gold;
 CREATE OR REPLACE VIEW gold.dim_communes_france AS
     SELECT * FROM polaris.lakehouse.dim_communes_france;
 
+CREATE OR REPLACE VIEW gold.dim_neighbour_communes AS
+    SELECT * FROM polaris.lakehouse.dim_neighbour_communes;
+
 CREATE OR REPLACE VIEW gold.dim_zip_codes AS
     SELECT * FROM polaris.lakehouse.dim_zip_codes;
 
@@ -63,6 +66,9 @@ CREATE SCHEMA IF NOT EXISTS silver;
 
 CREATE OR REPLACE VIEW silver.dim_communes_france AS
     SELECT * FROM read_parquet('s3://validated/dim_communes_france.parquet');
+
+CREATE OR REPLACE VIEW silver.dim_neighbour_communes AS
+    SELECT * FROM read_parquet('s3://validated/dim_neighbour_communes.parquet');
 
 CREATE OR REPLACE VIEW silver.dim_zip_codes AS
     SELECT * FROM read_parquet('s3://validated/dim_zip_codes.parquet');
