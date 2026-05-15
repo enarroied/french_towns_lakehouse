@@ -11,6 +11,7 @@ from prefect import flow
 DIM_TABLES = [
     ("dim_communes_france", ["id"]),
     ("dim_zip_codes", ["id"]),
+    ("dim_neighbour_communes", ["parcel_id", "neighbor_id"]),
 ]
 
 BRIDGE_TABLES = [
@@ -34,7 +35,7 @@ def integration_current_dim_geography() -> None:
             assert_validated_exists(conn, table_name)
             append_new_rows(conn, table_name, nk)
 
-        finalize_run(run_id=run_id, status="SUCCESS", number_files=3)
+        finalize_run(run_id=run_id, status="SUCCESS", number_files=4)
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")
         raise

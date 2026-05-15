@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: dim_neighbour_communes
+    description: "Bridge table of neighbouring commune pairs determined by geographic boundary intersection."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['parcel_id', 'neighbor_id']
+            severity: error
+
+    columns:
+      - name: parcel_id
+        description: "INSEE commune code of the source commune"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('dim_communes_france')
+                field: id
+                severity: error
+
+      - name: neighbor_id
+        description: "INSEE commune code of the neighbouring commune"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('dim_communes_france')
+                field: id
+                severity: error
