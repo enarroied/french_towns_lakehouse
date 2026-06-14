@@ -16,6 +16,8 @@ website:
         href: engineering.qmd
       - text: "Insights"
         href: insights.qmd
+      - text: "Dashboards"
+        href: dashboards/index.qmd
       - text: "About"
         href: about.qmd
     right:

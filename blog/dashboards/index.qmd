@@ -1,0 +1,45 @@
+---
+title: "Dashboards"
+---
+
+Small interactive dashboards built on lakehouse data.
+
+```{=html}
+<div class="card-grid">
+  <a href="departments/index.html" class="card">
+    <h3>🏛️ Population by Department</h3>
+    <p>Explore population trends for all 107 French departments from 1968 to 2023.</p>
+  </a>
+</div>
+
+<style>
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.card {
+  display: block;
+  padding: 1.5rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+.card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+.card p {
+  margin: 0;
+  color: var(--bs-secondary-color, #6c757d);
+  font-size: 0.95rem;
+}
+</style>
+```
