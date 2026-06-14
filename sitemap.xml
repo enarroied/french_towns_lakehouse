@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://enarroied.github.io/french_towns_lakehouse/about.html</loc>
-    <lastmod>2026-05-15T19:30:49.814Z</lastmod>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/index.html</loc>
+    <lastmod>2026-06-14T19:48:11.027Z</lastmod>
   </url>
   <url>
-    <loc>https://enarroied.github.io/french_towns_lakehouse/index.html</loc>
-    <lastmod>2026-05-15T19:30:49.814Z</lastmod>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/dashboards/departments/index.html</loc>
+    <lastmod>2026-06-14T19:48:11.027Z</lastmod>
   </url>
   <url>
     <loc>https://enarroied.github.io/french_towns_lakehouse/posts/commune_names/index.html</loc>
-    <lastmod>2026-05-15T19:30:49.814Z</lastmod>
-  </url>
-  <url>
-    <loc>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/index.html</loc>
-    <lastmod>2026-05-15T19:30:49.814Z</lastmod>
+    <lastmod>2026-06-14T19:48:11.028Z</lastmod>
   </url>
   <url>
     <loc>https://enarroied.github.io/french_towns_lakehouse/insights.html</loc>
-    <lastmod>2026-05-15T19:30:49.814Z</lastmod>
+    <lastmod>2026-06-14T19:48:11.027Z</lastmod>
   </url>
   <url>
     <loc>https://enarroied.github.io/french_towns_lakehouse/engineering.html</loc>
-    <lastmod>2026-05-15T19:30:49.814Z</lastmod>
+    <lastmod>2026-06-14T19:48:11.027Z</lastmod>
+  </url>
+  <url>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/index.html</loc>
+    <lastmod>2026-06-14T19:48:11.028Z</lastmod>
+  </url>
+  <url>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/about.html</loc>
+    <lastmod>2026-06-14T19:48:11.027Z</lastmod>
+  </url>
+  <url>
+    <loc>https://enarroied.github.io/french_towns_lakehouse/dashboards/index.html</loc>
+    <lastmod>2026-06-14T19:48:11.027Z</lastmod>
   </url>
 </urlset>
