@@ -37,6 +37,7 @@ dependencies = [
     "matplotlib>=3.10.9",
     "great-tables>=0.21.0",
     "itables>=2.7.3",
+    "plotly>=6.8.0",
 ]
 
 [dependency-groups]
