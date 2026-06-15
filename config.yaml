@@ -46,6 +46,50 @@ downloads:
     domain: "demographics"
     target_folder: "demographics"
 
+  - name: "births"
+    url: "https://www.insee.fr/fr/statistiques/fichier/1893255/base_naissances_2008-2024_geo2025_csv.zip"
+    source_file_patterns:
+      - "DS_ETAT_CIVIL_NAIS_COMMUNES_data.csv"
+    file_targets:
+      - births
+    extensions:
+      - .csv
+    domain: "demographics"
+    target_folder: "demographics"
+
+  - name: "deaths"
+    url: "https://api.insee.fr/melodi/file/DS_ETAT_CIVIL_DECES_COMMUNES/DS_ETAT_CIVIL_DECES_COMMUNES_CSV_FR"
+    source_file_patterns:
+      - "DS_ETAT_CIVIL_DECES_COMMUNES_data.csv"
+    file_targets:
+      - deaths
+    extensions:
+      - .csv
+    domain: "demographics"
+    target_folder: "demographics"
+
+  - name: "family"
+    url: "https://api.insee.fr/melodi/file/DS_RP_FAMILLE_COMP/DS_RP_FAMILLE_COMP_2022_CSV_FR"
+    source_file_patterns:
+      - "DS_RP_FAMILLE_COMP_2022_data.csv"
+    file_targets:
+      - family
+    extensions:
+      - .csv
+    domain: "demographics"
+    target_folder: "demographics"
+
+  - name: "migration"
+    url: "https://www.insee.fr/fr/statistiques/fichier/8582054/TD_IMG1A_2022_csv.zip"
+    source_file_patterns:
+      - "TD_IMG1A_2022.csv"
+    file_targets:
+      - migration
+    extensions:
+      - .csv
+    domain: "demographics"
+    target_folder: "demographics"
+
   - name: "french_communes"
     url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
     filename: "communes_france"

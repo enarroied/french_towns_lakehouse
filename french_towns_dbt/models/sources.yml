@@ -25,6 +25,22 @@ sources:
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/historical_salaries_*.csv', sample_size=-1)"
 
+      - name: births
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/births_*.csv', sample_size=-1)"
+
+      - name: deaths
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/deaths_*.csv', sample_size=-1)"
+
+      - name: family
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/family_*.csv', sample_size=-1)"
+
+      - name: migration
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/migration_*.csv', sample_size=-1)"
+
       - name: zip_codes
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/geography/zip_codes_*.csv', sample_size=-1, encoding='latin-1', delim=';')"

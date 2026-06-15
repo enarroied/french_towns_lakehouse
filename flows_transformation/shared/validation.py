@@ -11,6 +11,10 @@ SOURCE_FOLDERS: dict[str, str] = {
     "zip_codes": "geography",
     "populations_historiques": "demographics",
     "salaries": "demographics",
+    "births": "demographics",
+    "deaths": "demographics",
+    "family": "demographics",
+    "migration": "demographics",
 }
 
 SOURCE_PREFIXES: dict[str, str] = {
@@ -20,6 +24,10 @@ SOURCE_PREFIXES: dict[str, str] = {
     "zip_codes": "zip_codes",
     "populations_historiques": "historical_population",
     "salaries": "historical_salaries",
+    "births": "births",
+    "deaths": "deaths",
+    "family": "family",
+    "migration": "migration",
 }
 
 
