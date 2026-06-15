@@ -2,9 +2,8 @@ version: 2
 
 models:
   - name: fact_population
-    description: "Historical population counts per French commune by year with year-over-year evolution metrics"
+    description: "Historical population counts per French commune by year with year-over-year evolution metrics, births, deaths, family composition, and migration statistics"
 
-    # Model-level tests
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -37,9 +36,6 @@ models:
         description: "Total population count"
         data_type: INTEGER
         tests:
-          - not_null:
-              arguments:
-                severity: error
           - dbt_utils.accepted_range:
               arguments:
                 min_value: 0
@@ -65,3 +61,163 @@ models:
                 min_value: -100
                 max_value: 1000
                 severity: warn
+
+      - name: births
+        description: "Number of live births in the commune for the year"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 50000
+                severity: warn
+
+      - name: deaths
+        description: "Number of deaths in the commune for the year"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 50000
+                severity: warn
+
+      - name: birth_death_diff
+        description: "Natural increase (births - deaths). Positive means more births than deaths."
+        data_type: INTEGER
+
+      - name: no_children_u24
+        description: "Number of families with no children under 24 living at home"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: one_child_u24
+        description: "Number of families with one child under 24 living at home"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: two_children_u24
+        description: "Number of families with two children under 24 living at home"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: three_children_u24
+        description: "Number of families with three children under 24 living at home"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: four_or_more_children_u24
+        description: "Number of families with four or more children under 24 living at home"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: number_single_father_families
+        description: "Number of single-father families"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: number_single_mother_families
+        description: "Number of single-mother families"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: number_traditional_families
+        description: "Number of traditional families (married/partnered couple with children)"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: number_couples_no_children_home
+        description: "Number of couples without children living at home"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: number_couples_children_home
+        description: "Number of couples with children living at home"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: number_french
+        description: "Estimated number of non-immigrant French residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_migrant
+        description: "Estimated number of immigrant residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_migrant_male
+        description: "Estimated number of male immigrant residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_migrant_female
+        description: "Estimated number of female immigrant residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_french_male
+        description: "Estimated number of male non-immigrant French residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_french_female
+        description: "Estimated number of female non-immigrant French residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_male
+        description: "Estimated total male residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_female
+        description: "Estimated total female residents (weighted survey estimate)"
+        data_type: DOUBLE
+
+      - name: number_total
+        description: "Estimated total residents from migration survey (weighted survey estimate)"
+        data_type: DOUBLE

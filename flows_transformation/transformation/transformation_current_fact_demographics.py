@@ -14,7 +14,14 @@ from prefect import task
 MODEL_SELECTOR = "fact_population fact_salaries"
 
 
-INPUT_SOURCES = ["populations_historiques", "salaries"]
+INPUT_SOURCES = [
+    "populations_historiques",
+    "salaries",
+    "births",
+    "deaths",
+    "family",
+    "migration",
+]
 
 
 @task
@@ -29,7 +36,7 @@ def run_fact_models() -> None:
 
 @task
 def check_skip(input_sources: list[str], known_hashes: dict) -> bool:
-    return any(source in known_hashes for source in input_sources)
+    return all(source in known_hashes for source in input_sources)
 
 
 @flow(name="transformation_current_fact_demographics")
