@@ -45,6 +45,15 @@ CREATE OR REPLACE VIEW gold.fact_population AS
 CREATE OR REPLACE VIEW gold.fact_salaries AS
     SELECT * FROM polaris.lakehouse.fact_salaries;
 
+CREATE OR REPLACE VIEW gold.fact_equipment AS
+    SELECT * FROM polaris.lakehouse.fact_equipment;
+
+CREATE OR REPLACE VIEW gold.dim_equipment AS
+    SELECT * FROM polaris.lakehouse.dim_equipment;
+
+CREATE OR REPLACE VIEW gold.dim_source AS
+    SELECT * FROM polaris.lakehouse.dim_source;
+
 
 -- ---------- Silver layer (validated parquet via MinIO) ----------
 
@@ -81,6 +90,15 @@ CREATE OR REPLACE VIEW silver.fact_population AS
 
 CREATE OR REPLACE VIEW silver.fact_salaries AS
     SELECT * FROM read_parquet('s3://validated/fact_salaries.parquet');
+
+CREATE OR REPLACE VIEW silver.fact_equipment AS
+    SELECT * FROM read_parquet('s3://validated/fact_equipment.parquet');
+
+CREATE OR REPLACE VIEW silver.dim_equipment AS
+    SELECT * FROM read_parquet('s3://validated/dim_equipment.parquet');
+
+CREATE OR REPLACE VIEW silver.dim_source AS
+    SELECT * FROM read_parquet('s3://validated/dim_source.parquet');
 
 CREATE OR REPLACE VIEW silver.bridge_communes_zip_codes AS
     SELECT * FROM read_parquet('s3://validated/bridge_communes_zip_codes.parquet');

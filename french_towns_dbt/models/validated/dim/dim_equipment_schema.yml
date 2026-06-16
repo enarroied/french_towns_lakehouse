@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: dim_equipment
+    description: "Equipment type hierarchy — 3-level INSEE BPE classification (domain → subdomain → type)"
+
+    columns:
+      - name: equipment_type_id
+        description: "Surrogate primary key"
+        data_type: INTEGER
+        tests:
+          - unique
+          - not_null
+
+      - name: equipment_code
+        description: "3rd-level INSEE facility type code (e.g. A101, F101)"
+        data_type: VARCHAR(10)
+
+      - name: equipment_name
+        description: "Human-readable facility type name (e.g. Police, Bassin de natation)"
+        data_type: VARCHAR(255)
+
+      - name: subdomain_code
+        description: "2nd-level subdomain code (e.g. A1, F1)"
+        data_type: VARCHAR(5)
+
+      - name: subdomain_name
+        description: "2nd-level subdomain name (e.g. Services publics, Equipements sportifs)"
+        data_type: VARCHAR(100)
+
+      - name: domain_code
+        description: "1st-level domain code (A=Services, B=Commerce, C=Education, D=Health, E=Transport, F=Sports, G=Tourism)"
+        data_type: VARCHAR(2)
+
+      - name: domain_name
+        description: "1st-level domain name"
+        data_type: VARCHAR(50)

@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: dim_source
+    description: "Data sources for equipment counts (BPE, OSM, surveys, etc.)"
+
+    columns:
+      - name: source_id
+        description: "Surrogate primary key"
+        data_type: INTEGER
+        tests:
+          - unique
+          - not_null
+
+      - name: source_name
+        description: "Short source code (e.g. BPE, OSM)"
+        data_type: VARCHAR(10)
+
+      - name: organization
+        description: "Organization that publishes the data"
+        data_type: VARCHAR(50)
+
+      - name: license
+        description: "Data license"
+        data_type: VARCHAR(100)
+
+      - name: website
+        description: "URL to the source"
+        data_type: VARCHAR(255)

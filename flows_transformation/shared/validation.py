@@ -15,6 +15,7 @@ SOURCE_FOLDERS: dict[str, str] = {
     "deaths": "demographics",
     "family": "demographics",
     "migration": "demographics",
+    "bpe": "equipment",
 }
 
 SOURCE_PREFIXES: dict[str, str] = {
@@ -28,6 +29,7 @@ SOURCE_PREFIXES: dict[str, str] = {
     "deaths": "deaths",
     "family": "family",
     "migration": "migration",
+    "bpe": "bpe",
 }
 
 

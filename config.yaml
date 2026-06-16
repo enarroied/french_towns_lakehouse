@@ -138,6 +138,17 @@ downloads:
     domain: "geography"
     target_folder: "geography"
 
+  - name: "bpe"
+    url: "https://www.insee.fr/fr/statistiques/fichier/8217527/DS_BPE_CSV_FR.zip"
+    source_file_patterns:
+      - "DS_BPE_2024_data.csv"
+    file_targets:
+      - bpe
+    extensions:
+      - .csv
+    domain: "equipment"
+    target_folder: "equipment"
+
 scrapers:
   # url = the sitemap; city detail URLs are derived from it
   - name: "petites_cites"
