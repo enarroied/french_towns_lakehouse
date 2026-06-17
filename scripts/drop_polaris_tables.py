@@ -23,6 +23,9 @@ TABLES = [
     "fact_population",
     "fact_salaries",
     "dim_neighbour_communes",
+    "fact_equipment",
+    "dim_equipment",
+    "dim_source",
 ]
 
 API_BASE = "http://localhost:8181/api/catalog/v1"

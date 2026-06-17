@@ -44,3 +44,11 @@ sources:
       - name: zip_codes
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/geography/zip_codes_*.csv', sample_size=-1, encoding='latin-1', delim=';')"
+
+      - name: bpe
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/equipment/bpe_*.csv', sample_size=-1, delim=';')"
+
+      - name: dim_equipment
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_equipment/dim_equipment_*.csv')"

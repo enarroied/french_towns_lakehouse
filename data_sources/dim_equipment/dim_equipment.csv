@@ -1,0 +1,230 @@
+equipment_code,equipment_name,subdomain_code,subdomain_name,domain_code,domain_name
+A101,POLICE,A1,Services publics,A,Services pour les particuliers
+A104,GENDARMERIE,A1,Services publics,A,Services pour les particuliers
+A105,COUR D'APPEL,A1,Services publics,A,Services pour les particuliers
+A108,CONSEIL DE PRUD'HOMMES,A1,Services publics,A,Services pour les particuliers
+A109,TRIBUNAL DE COMMERCE,A1,Services publics,A,Services pour les particuliers
+A120,DIRECTION RÉGIONALE DES FINANCES PUBLIQUES,A1,Services publics,A,Services pour les particuliers
+A121,DIRECTION DÉPARTEMENTALE DES FINANCES PUBLIQUES,A1,Services publics,A,Services pour les particuliers
+A122,RÉSEAU DE PROXIMITÉ FRANCE TRAVAIL,A1,Services publics,A,Services pour les particuliers
+A124,MAISON DE JUSTICE ET DU DROIT,A1,Services publics,A,Services pour les particuliers
+A125,ANTENNE DE JUSTICE,A1,Services publics,A,Services pour les particuliers
+A126,CONSEIL DÉPARTEMENTAL D'ACCÈS AU DROIT,A1,Services publics,A,Services pour les particuliers
+A128,FRANCE SERVICES,A1,Services publics,A,Services pour les particuliers
+A129,MAIRIE,A1,Services publics,A,Services pour les particuliers
+A130,BUREAU D'AIDE JURIDICTIONNELLE,A1,Services publics,A,Services pour les particuliers
+A131,TRIBUNAL JUDICIAIRE,A1,Services publics,A,Services pour les particuliers
+A132,TRIBUNAL DE PROXIMITÉ,A1,Services publics,A,Services pour les particuliers
+A133,DÉCHÈTERIE,A1,Services publics,A,Services pour les particuliers
+A134,COUR CRIMINELLE DEPARTEMENTALE,A1,Services publics,A,Services pour les particuliers
+A135,COUR D'ASSISES,A1,Services publics,A,Services pour les particuliers
+A136,JURIDICTION ADMINISTRATIVE,A1,Services publics,A,Services pour les particuliers
+A137,TRIBUNAL CORRECTIONNEL,A1,Services publics,A,Services pour les particuliers
+A138,TRIBUNAL DE POLICE,A1,Services publics,A,Services pour les particuliers
+A139,TRIBUNAL POUR ENFANTS,A1,Services publics,A,Services pour les particuliers
+A203,"BANQUE, CAISSE D'ÉPARGNE",A2,Services généraux,A,Services pour les particuliers
+A205,SERVICES FUNÉRAIRES,A2,Services généraux,A,Services pour les particuliers
+A206,BUREAU DE POSTE,A2,Services généraux,A,Services pour les particuliers
+A207,RELAIS POSTE,A2,Services généraux,A,Services pour les particuliers
+A208,AGENCE POSTALE,A2,Services généraux,A,Services pour les particuliers
+A301,RÉPARATION AUTOMOBILE ET DE MATÉRIEL AGRICOLE,A3,Services automobiles,A,Services pour les particuliers
+A302,CONTRÔLE TECHNIQUE AUTOMOBILE,A3,Services automobiles,A,Services pour les particuliers
+A303,LOCATION AUTO-UTILITAIRES LÉGERS,A3,Services automobiles,A,Services pour les particuliers
+A304,ÉCOLE DE CONDUITE,A3,Services automobiles,A,Services pour les particuliers
+A401,MAÇON,A4,Artisanat du bâtiment,A,Services pour les particuliers
+A402,PLÂTRIER PEINTRE,A4,Artisanat du bâtiment,A,Services pour les particuliers
+A403,MENUISIER CHARPENTIER SERRURIER,A4,Artisanat du bâtiment,A,Services pour les particuliers
+A404,PLOMBIER COUVREUR CHAUFFAGISTE,A4,Artisanat du bâtiment,A,Services pour les particuliers
+A405,ÉLECTRICIEN,A4,Artisanat du bâtiment,A,Services pour les particuliers
+A406,ENTREPRISE GÉNÉRALE DU BÂTIMENT,A4,Artisanat du bâtiment,A,Services pour les particuliers
+A501,COIFFURE,A5,Autres services,A,Services pour les particuliers
+A502,VÉTÉRINAIRE,A5,Autres services,A,Services pour les particuliers
+A503,AGENCE DE TRAVAIL TEMPORAIRE,A5,Autres services,A,Services pour les particuliers
+A504,RESTAURANT- RESTAURATION RAPIDE,A5,Autres services,A,Services pour les particuliers
+A505,AGENCE IMMOBILIÈRE,A5,Autres services,A,Services pour les particuliers
+A506,PRESSING-LAVERIE AUTOMATIQUE,A5,Autres services,A,Services pour les particuliers
+A507,INSTITUT DE BEAUTÉ-ONGLERIE,A5,Autres services,A,Services pour les particuliers
+B103,GRANDE SURFACE DE BRICOLAGE,B1,Grandes surfaces,B,Commerces
+B104,HYPERMARCHÉ ET GRAND MAGASIN,B1,Grandes surfaces,B,Commerces
+B105,SUPERMARCHÉ ET MAGASIN MULTI-COMMERCE,B1,Grandes surfaces,B,Commerces
+B201,SUPÉRETTE,B2,Commerces alimentaires,B,Commerces
+B202,ÉPICERIE,B2,Commerces alimentaires,B,Commerces
+B204,BOUCHERIE CHARCUTERIE,B2,Commerces alimentaires,B,Commerces
+B205,PRODUITS SURGELÉS,B2,Commerces alimentaires,B,Commerces
+B206,POISSONNERIE,B2,Commerces alimentaires,B,Commerces
+B207,BOULANGERIE-PÂTISSERIE,B2,Commerces alimentaires,B,Commerces
+B208,COMMERCE SPÉCIALISÉ EN FRUITS ET LÉGUMES,B2,Commerces alimentaires,B,Commerces
+B209,COMMERCE DE BOISSONS,B2,Commerces alimentaires,B,Commerces
+B210,AUTRES COMMERCES ALIMENTAIRES,B2,Commerces alimentaires,B,Commerces
+B302,MAGASIN DE VÊTEMENTS,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B303,MAGASIN D'ÉQUIPEMENTS DU FOYER,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B304,MAGASIN DE CHAUSSURES,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B306,MAGASIN DE MEUBLES,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B307,MAGASIN D'ARTICLES DE SPORTS ET DE LOISIRS,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B308,MAGASIN DE REVÊTEMENTS MURS ET SOLS,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B309,DROGUERIE QUINCAILLERIE BRICOLAGE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B310,PARFUMERIE-COSMÉTIQUE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B311,HORLOGERIE-BIJOUTERIE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B312,FLEURISTE-JARDINERIE-ANIMALERIE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B313,MAGASIN D'OPTIQUE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B315,MAGASIN DE MATÉRIEL MÉDICAL ET ORTHOPÉDIQUE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B316,STATION-SERVICE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B317,COMMERCE DE TISSUS ET MERCERIE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B318,COMMERCE DE JEUX ET JOUETS,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B319,MAROQUINERIE ET ARTICLES DE VOYAGE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B320,COMMERCE DE COMBUSTIBLES DOMESTIQUES,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B321,"MAGASIN ÉLECTROMÉNAGER, MATÉRIEL AUDIO VIDÉO INFORMATIQUE",B3,Commerces spécialisés non-alimentaires,B,Commerces
+B322,MAGASIN DE MATÉRIELS DE TÉLÉCOMMUNICATION,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B323,COMMERCE DE BIENS D'OCCASION,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B324,LIBRAIRIE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B325,PAPETERIE ET PRESSE,B3,Commerces spécialisés non-alimentaires,B,Commerces
+B326,STATION DE RECHARGE DE VÉHICULES ÉLECTRIQUES,B3,Commerces spécialisés non-alimentaires,B,Commerces
+C107,ÉCOLE MATERNELLE,C1,Enseignement du premier degré,C,Enseignement
+C108,ÉCOLE PRIMAIRE,C1,Enseignement du premier degré,C,Enseignement
+C109,ÉCOLE ÉLÉMENTAIRE,C1,Enseignement du premier degré,C,Enseignement
+C201,COLLÈGE,C2,Enseignement du second degré - premier cycle,C,Enseignement
+C301,LYCÉE D'ENSEIGNEMENT GÉNÉRAL ET/OU TECHNOLOGIQUE,C3,Enseignement du second degré - second cycle,C,Enseignement
+C302,LYCÉE D'ENSEIGNEMENT PROFESSIONNEL,C3,Enseignement du second degré - second cycle,C,Enseignement
+C303,LYCÉE D'ENSEIGNEMENT TECHNIQUE ET/OU PROFESSIONNEL AGRICOLE,C3,Enseignement du second degré - second cycle,C,Enseignement
+C304,SGT SECTION D'ENSEIGNEMENT GÉNÉRAL ET TECHNOLOGIQUE,C3,Enseignement du second degré - second cycle,C,Enseignement
+C305,SEP SECTION D'ENSEIGNEMENT PROFESSIONNEL,C3,Enseignement du second degré - second cycle,C,Enseignement
+C401,"STS SECTION TECHNICIEN SUPÉRIEUR, CPGE CLASSE PRÉPARATOIRE AUX GRANDES ÉCOLES",C4,Enseignement supérieur non-universitaire,C,Enseignement
+C403,FORMATION COMMERCE,C4,Enseignement supérieur non-universitaire,C,Enseignement
+C409,AUTRE FORMATION POST BAC NON UNIVERSITAIRE,C4,Enseignement supérieur non-universitaire,C,Enseignement
+C410,ÉCOLE DE FORMATION AUX PROFESSIONS SANITAIRES ET SOCIALES,C4,Enseignement supérieur non-universitaire,C,Enseignement
+C501,UFR,C5,Enseignement supérieur universitaire,C,Enseignement
+C502,INSTITUT UNIVERSITAIRE,C5,Enseignement supérieur universitaire,C,Enseignement
+C503,ÉCOLE D'INGÉNIEURS,C5,Enseignement supérieur universitaire,C,Enseignement
+C504,ENSEIGNEMENT GÉNÉRAL SUPÉRIEUR PRIVÉ,C5,Enseignement supérieur universitaire,C,Enseignement
+C505,ÉCOLE D'ENSEIGNEMENT SUPÉRIEUR AGRICOLE,C5,Enseignement supérieur universitaire,C,Enseignement
+C509,AUTRE ENSEIGNEMENT SUPÉRIEUR,C5,Enseignement supérieur universitaire,C,Enseignement
+C602,GRETA,C6,Formation continue,C,Enseignement
+C603,CENTRE DISPENSANT DE LA FORMATION CONTINUE AGRICOLE,C6,Formation continue,C,Enseignement
+C604,FORMATION AUX MÉTIERS DU SPORT,C6,Formation continue,C,Enseignement
+C610,ORGANISME DE FORMATION EN APPRENTISSAGE,C6,Formation continue,C,Enseignement
+C701,RÉSIDENCE UNIVERSITAIRE,C7,Autres services de l'éducation,C,Enseignement
+C702,RESTAURANT UNIVERSITAIRE,C7,Autres services de l'éducation,C,Enseignement
+D101,ÉTABLISSEMENT DE SOINS DE COURTE DURÉE,D1,Etablissements et services de santé,D,Santé et action sociale
+D102,ÉTABLISSEMENT DE SOINS DE SUITE ET DE RÉADAPTATION,D1,Etablissements et services de santé,D,Santé et action sociale
+D103,ÉTABLISSEMENT DE SOINS DE LONGUE DURÉE,D1,Etablissements et services de santé,D,Santé et action sociale
+D104,ÉTABLISSEMENT PSYCHIATRIQUE,D1,Etablissements et services de santé,D,Santé et action sociale
+D105,CENTRE DE LUTTE CONTRE LE CANCER,D1,Etablissements et services de santé,D,Santé et action sociale
+D106,URGENCES,D1,Etablissements et services de santé,D,Santé et action sociale
+D107,MATERNITÉ,D1,Etablissements et services de santé,D,Santé et action sociale
+D108,CENTRE DE SANTÉ,D1,Etablissements et services de santé,D,Santé et action sociale
+D109,STRUCTURE PSYCHIATRIQUE EN AMBULATOIRE,D1,Etablissements et services de santé,D,Santé et action sociale
+D110,CENTRE DE MÉDECINE PRÉVENTIVE,D1,Etablissements et services de santé,D,Santé et action sociale
+D111,DIALYSE,D1,Etablissements et services de santé,D,Santé et action sociale
+D112,HOSPITALISATION À DOMICILE,D1,Etablissements et services de santé,D,Santé et action sociale
+D113,MAISON DE SANTÉ PLURIDISCIPLINAIRE,D1,Etablissements et services de santé,D,Santé et action sociale
+D114,SERVICE DE PRISE EN CHARGE DES ADDICTIONS,D1,Etablissements et services de santé,D,Santé et action sociale
+D115,SERVICES DE SANTÉ MATERNELLE ET INFANTILE,D1,Etablissements et services de santé,D,Santé et action sociale
+D245,PROFESSIONNELS DE L'APPAREILLAGE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D247,ERGOTHÉRAPEUTE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D248,PSYCHOMOTRICIEN,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D249,DIÉTÉTICIEN,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D250,PSYCHOLOGUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D251,ALLERGOLOGUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D252,ANESTHÉSISTE-RÉANIMATEUR,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D253,SPÉCIALISTE EN CHIRURGIE GÉNÉRALE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D254,"SPÉCIALISTE EN CHIRURGIE ORTHOPÉDIQUE, PLASTIQUE ET TRAUMATOLOGIQUE",D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D255,ENDOCRINOLOGUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D256,GÉRIATRE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D257,HÉMATOLOGUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D258,SPÉCIALISTE EN MÉDECINE PHYSIQUE ET DE RÉADAPTATION,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D259,NEUROLOGUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D260,"SPÉCIALISTE EN ONCOLOGIE, ANATOMIE ET CYTOLOGIE PATHOLOGIQUES",D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D261,RHUMATOLOGUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D262,"UROLOGUE, NÉPHROLOGUE",D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D265,MÉDECIN GÉNÉRALISTE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D266,SPÉCIALISTE EN CARDIOLOGIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D267,SPÉCIALISTE EN DERMATOLOGIE VÉNÉRÉOLOGIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D268,SPÉCIALISTE EN GASTRO-ENTÉROLOGIE HÉPATOLOGIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D269,SPÉCIALISTE EN PSYCHIATRIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D270,SPÉCIALISTE EN OPHTALMOLOGIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D271,SPÉCIALISTE EN OTO-RHINO-LARYNGOLOGIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D272,SPÉCIALISTE EN PÉDIATRIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D273,SPÉCIALISTE EN PNEUMOLOGIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D274,SPÉCIALISTE EN RADIODIAGNOSTIC ET IMAGERIE MÉDICALE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D275,SPÉCIALISTE EN STOMATOLOGIE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D276,SPÉCIALISTE EN GYNÉCOLOGIE MÉDICALE ET/OU OBSTÉTRIQUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D277,CHIRURGIEN DENTISTE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D278,SAGE-FEMME,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D279,MASSEUR KINÉSITHÉRAPEUTE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D280,PÉDICURE-PODOLOGUE,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D281,INFIRMIER,D2,Fonctions médicales et paramédicales (à titre libéral),D,Santé et action sociale
+D302,LABORATOIRE D ANALYSES ET DE BIOLOGIE MÉDICALE,D3,Autres établissements et services à caractère sanitaire,D,Santé et action sociale
+D303,AMBULANCE,D3,Autres établissements et services à caractère sanitaire,D,Santé et action sociale
+D304,TRANSFUSION SANGUINE,D3,Autres établissements et services à caractère sanitaire,D,Santé et action sociale
+D305,ÉTABLISSEMENT THERMAL,D3,Autres établissements et services à caractère sanitaire,D,Santé et action sociale
+D307,PHARMACIE,D3,Autres établissements et services à caractère sanitaire,D,Santé et action sociale
+D401,PERSONNES ÂGÉES : HÉBERGEMENT,D4,Action sociale pour personnes âgées,D,Santé et action sociale
+D402,PERSONNES ÂGÉES : SOINS À DOMICILE,D4,Action sociale pour personnes âgées,D,Santé et action sociale
+D403,PERSONNES ÂGÉES : SERVICES D'AIDE,D4,Action sociale pour personnes âgées,D,Santé et action sociale
+D502,ÉTABLISSEMENT D'ACCUEIL DU JEUNE ENFANT,D5,Action sociale pour enfants en bas-âge,D,Santé et action sociale
+D503,LIEUX D'ACCUEIL ENFANT-PARENT,D5,Action sociale pour enfants en bas-âge,D,Santé et action sociale
+D504,RELAIS PETITE ENFANCE,D5,Action sociale pour enfants en bas-âge,D,Santé et action sociale
+D505,ACCUEIL DE LOISIR SANS HÉBERGEMENT,D5,Action sociale pour enfants en bas-âge,D,Santé et action sociale
+D506,CENTRES SOCIAUX,D5,Action sociale pour enfants en bas-âge,D,Santé et action sociale
+D507,MÉDIATION FAMILIALE,D5,Action sociale pour enfants en bas-âge,D,Santé et action sociale
+D601,ENFANTS HANDICAPÉS : HÉBERGEMENT,D6,Action sociale pour handicapés,D,Santé et action sociale
+D602,ENFANTS HANDICAPÉS : SERVICES À DOMICILE OU AMBULATOIRES,D6,Action sociale pour handicapés,D,Santé et action sociale
+D603,ADULTES HANDICAPÉS : ACCUEIL/HÉBERGEMENT,D6,Action sociale pour handicapés,D,Santé et action sociale
+D604,ADULTES HANDICAPÉS : SERVICES D'AIDE,D6,Action sociale pour handicapés,D,Santé et action sociale
+D605,TRAVAIL PROTÉGÉ,D6,Action sociale pour handicapés,D,Santé et action sociale
+D606,ADULTES HANDICAPÉS : SERVICES DE SOINS À DOMICILE,D6,Action sociale pour handicapés,D,Santé et action sociale
+D607,SERVICE D'AIDE AUX DÉFICIENTS VISUELS OU AUDITIFS,D6,Action sociale pour handicapés,D,Santé et action sociale
+D701,PROTECTION DE L'ENFANCE : HÉBERGEMENT,D7,Autres services d'action sociale,D,Santé et action sociale
+D702,PROTECTION DE L'ENFANCE : ACTION ÉDUCATIVE,D7,Autres services d'action sociale,D,Santé et action sociale
+D703,CENTRE D'HÉBERGEMENT ET DE RÉINSERTION SOCIALE,D7,Autres services d'action sociale,D,Santé et action sociale
+D704,CENTRE PROVISOIRE D'HÉBERGEMENT,D7,Autres services d'action sociale,D,Santé et action sociale
+D705,CENTRE D'ACCUEIL DE DEMANDEURS D'ASILE,D7,Autres services d'action sociale,D,Santé et action sociale
+D710,AUTRES HÉBERGEMENTS POUR ADULTES ET FAMILLES EN DIFFICULTÉ,D7,Autres services d'action sociale,D,Santé et action sociale
+D711,SERVICE D'AIDE AUX FEMMES EN SITUATION DE VULNÉRABILITÉ,D7,Autres services d'action sociale,D,Santé et action sociale
+E101,TAXI-VTC,E1,Infrastructures de transports,E,Transports et déplacements
+E102,AÉROPORT,E1,Infrastructures de transports,E,Transports et déplacements
+E107,GARE DE VOYAGEURS D'INTÉRÊT NATIONAL,E1,Infrastructures de transports,E,Transports et déplacements
+E108,GARE DE VOYAGEURS D'INTÉRÊT RÉGIONAL,E1,Infrastructures de transports,E,Transports et déplacements
+E109,GARE DE VOYAGEURS D'INTÉRÊT LOCAL,E1,Infrastructures de transports,E,Transports et déplacements
+F101,BASSIN DE NATATION,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F102,BOULODROME,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F103,TENNIS,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F105,DOMAINE SKIABLE,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F106,CENTRE ÉQUESTRE,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F107,ATHLÉTISME,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F108,TERRAIN DE GOLF,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F109,PARCOURS SPORTIF/SANTÉ,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F110,SPORTS DE GLACE,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F111,PLATEAUX ET TERRAINS DE JEUX EXTÉRIEURS,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F113,TERRAINS DE GRANDS JEUX,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F114,SALLES DE COMBAT,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F116,SALLES NON SPÉCIALISÉES,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F118,SPORTS NAUTIQUES,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F119,BOWLING,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F120,SALLES DE REMISE EN FORME,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F121,"SALLES MULTISPORTS, GYMNASES",F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F122,CIRCUIT / PISTE DE SPORTS MÉCANIQUES,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F123,MUR ET FRONTON,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F124,PAS DE TIR,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F125,SITE D'ACTIVITÉS AÉRIENNES,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F126,SITE DE MODÉLISME,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F127,STRUCTURE ARTIFICIELLE D'ESCALADE,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F128,ÉQUIPEMENTS DE CYCLISME,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F129,SALLES SPÉCIALISÉES,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F130,SKATEPARK & VÉLO-FREESTYLE,F1,Equipements sportifs,F,"Sports, loisirs et culture"
+F201,BAIGNADE AMÉNAGÉE,F2,Equipements de loisirs,F,"Sports, loisirs et culture"
+F202,PORT DE PLAISANCE – MOUILLAGE,F2,Equipements de loisirs,F,"Sports, loisirs et culture"
+F203,BOUCLE DE RANDONNÉE ET PARCOURS DE COURSE D'ORIENTATION,F2,Equipements de loisirs,F,"Sports, loisirs et culture"
+F204,ÉQUIPEMENTS DE SPORTS DE NATURE,F2,Equipements de loisirs,F,"Sports, loisirs et culture"
+F303,CINÉMA,F3,Pratiques culturelles et patrimoine,F,"Sports, loisirs et culture"
+F305,CONSERVATOIRE,F3,Pratiques culturelles et patrimoine,F,"Sports, loisirs et culture"
+F307,BIBLIOTHÈQUE,F3,Pratiques culturelles et patrimoine,F,"Sports, loisirs et culture"
+F312,EXPOSITION ET MÉDIATION CULTURELLE,F3,Pratiques culturelles et patrimoine,F,"Sports, loisirs et culture"
+F313,ESPACE REMARQUABLE ET PATRIMOINE,F3,Pratiques culturelles et patrimoine,F,"Sports, loisirs et culture"
+F314,ARCHIVES,F3,Pratiques culturelles et patrimoine,F,"Sports, loisirs et culture"
+F315,ARTS DU SPECTACLE,F3,Pratiques culturelles et patrimoine,F,"Sports, loisirs et culture"
+G101,AGENCE DE VOYAGE,G1,Tourisme,G,Tourisme
+G102,HÔTEL,G1,Tourisme,G,Tourisme
+G103,CAMPING,G1,Tourisme,G,Tourisme
+G104,INFORMATION TOURISTIQUE,G1,Tourisme,G,Tourisme
+G105,AUTRES HÉBERGEMENTS COLLECTIFS TOURISTIQUES,G1,Tourisme,G,Tourisme
