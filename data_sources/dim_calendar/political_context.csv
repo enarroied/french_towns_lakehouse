@@ -1,0 +1,63 @@
+start_date,end_date,president,prime_minister,legislature
+1958-10-04,1958-12-08,Charles de Gaulle,Charles de Gaulle,
+1958-12-09,1959-01-07,Charles de Gaulle,Charles de Gaulle,1
+1959-01-08,1962-04-13,Charles de Gaulle,Michel Debré,1
+1962-04-14,1962-10-07,Charles de Gaulle,Georges Pompidou,1
+1962-10-08,1962-12-05,Charles de Gaulle,Georges Pompidou,1
+1962-12-06,1967-03-31,Charles de Gaulle,Georges Pompidou,2
+1967-04-01,1967-04-02,Charles de Gaulle,Georges Pompidou,2
+1967-04-03,1968-07-05,Charles de Gaulle,Georges Pompidou,3
+1968-07-06,1968-07-09,Charles de Gaulle,Georges Pompidou,3
+1968-07-10,1968-07-10,Charles de Gaulle,Maurice Couve de Murville,3
+1968-07-11,1969-06-19,Charles de Gaulle,Maurice Couve de Murville,4
+1969-06-20,1972-07-04,Georges Pompidou,Jacques Chaban-Delmas,4
+1972-07-05,1973-03-31,Georges Pompidou,Pierre Messmer,4
+1973-04-01,1973-04-01,Georges Pompidou,Pierre Messmer,4
+1973-04-02,1974-05-26,Georges Pompidou,Pierre Messmer,5
+1974-05-27,1976-08-24,Valéry Giscard d'Estaing,Jacques Chirac,5
+1976-08-25,1978-03-31,Valéry Giscard d'Estaing,Raymond Barre,5
+1978-04-01,1978-04-02,Valéry Giscard d'Estaing,Raymond Barre,5
+1978-04-03,1981-05-20,Valéry Giscard d'Estaing,Raymond Barre,6
+1981-05-21,1981-07-01,François Mitterrand,Pierre Mauroy,6
+1981-07-02,1984-07-16,François Mitterrand,Pierre Mauroy,7
+1984-07-17,1986-03-19,François Mitterrand,Laurent Fabius,7
+1986-03-20,1986-03-31,François Mitterrand,Jacques Chirac,7
+1986-04-01,1986-04-01,François Mitterrand,Jacques Chirac,7
+1986-04-02,1988-05-09,François Mitterrand,Jacques Chirac,8
+1988-05-10,1988-05-12,François Mitterrand,Michel Rocard,8
+1988-05-13,1988-06-22,François Mitterrand,Michel Rocard,8
+1988-06-23,1991-05-14,François Mitterrand,Michel Rocard,9
+1991-05-15,1992-04-01,François Mitterrand,Édith Cresson,9
+1992-04-02,1993-03-28,François Mitterrand,Pierre Bérégovoy,9
+1993-03-29,1993-03-31,François Mitterrand,Édouard Balladur,9
+1993-04-01,1993-04-01,François Mitterrand,Édouard Balladur,9
+1993-04-02,1995-05-16,François Mitterrand,Édouard Balladur,10
+1995-05-17,1997-04-19,Jacques Chirac,Alain Juppé,10
+1997-04-20,1997-06-02,Jacques Chirac,Alain Juppé,10
+1997-06-03,1997-06-11,Jacques Chirac,Lionel Jospin,10
+1997-06-12,2002-05-05,Jacques Chirac,Lionel Jospin,11
+2002-05-06,2002-06-16,Jacques Chirac,Jean-Pierre Raffarin,11
+2002-06-17,2002-06-24,Jacques Chirac,Jean-Pierre Raffarin,11
+2002-06-25,2005-05-30,Jacques Chirac,Jean-Pierre Raffarin,12
+2005-05-31,2007-05-14,Jacques Chirac,Dominique de Villepin,12
+2007-05-15,2007-05-15,Jacques Chirac,François Fillon,12
+2007-05-16,2007-06-17,Nicolas Sarkozy,François Fillon,12
+2007-06-18,2007-06-25,Nicolas Sarkozy,François Fillon,12
+2007-06-26,2012-05-14,Nicolas Sarkozy,François Fillon,13
+2012-05-15,2012-06-17,François Hollande,Jean-Marc Ayrault,13
+2012-06-18,2012-06-25,François Hollande,Jean-Marc Ayrault,13
+2012-06-26,2014-03-30,François Hollande,Jean-Marc Ayrault,14
+2014-03-31,2016-12-05,François Hollande,Manuel Valls,14
+2016-12-06,2017-05-13,François Hollande,Bernard Cazeneuve,14
+2017-05-14,2017-05-14,Emmanuel Macron,Bernard Cazeneuve,14
+2017-05-15,2017-06-18,Emmanuel Macron,Édouard Philippe,14
+2017-06-19,2017-06-26,Emmanuel Macron,Édouard Philippe,14
+2017-06-27,2020-07-02,Emmanuel Macron,Édouard Philippe,15
+2020-07-03,2022-05-15,Emmanuel Macron,Jean Castex,15
+2022-05-16,2022-06-19,Emmanuel Macron,Élisabeth Borne,15
+2022-06-20,2022-06-27,Emmanuel Macron,Élisabeth Borne,15
+2022-06-28,2024-06-07,Emmanuel Macron,Élisabeth Borne,16
+2024-06-08,2024-07-17,Emmanuel Macron,Élisabeth Borne,16
+2024-07-18,2024-09-04,Emmanuel Macron,Élisabeth Borne,17
+2024-09-05,2024-12-12,Emmanuel Macron,Michel Barnier,17
+2024-12-13,2100-12-30,Emmanuel Macron,François Bayrou,17

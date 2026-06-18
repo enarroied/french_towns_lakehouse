@@ -26,6 +26,7 @@ TABLES = [
     "fact_equipment",
     "dim_equipment",
     "dim_source",
+    "dim_calendar",
 ]
 
 API_BASE = "http://localhost:8181/api/catalog/v1"

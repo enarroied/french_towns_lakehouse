@@ -22,6 +22,7 @@ GOLD_TABLES = [
     "fact_equipment",
     "dim_equipment",
     "dim_source",
+    "dim_calendar",
 ]
 
 

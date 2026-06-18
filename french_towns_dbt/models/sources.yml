@@ -52,3 +52,15 @@ sources:
       - name: dim_equipment
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/dim_equipment/dim_equipment_*.csv')"
+
+      - name: french_holidays
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_holidays_*.csv')"
+
+      - name: market_holidays
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/market_holidays_*.csv')"
+
+      - name: political_context
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/political_context_*.csv')"

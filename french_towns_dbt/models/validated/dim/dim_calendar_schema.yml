@@ -1,0 +1,92 @@
+version: 2
+
+models:
+  - name: dim_calendar
+    description: "Master calendar dimension — one row per day from 1900-01-01 to 2100-12-31 with French holidays, market holidays, and 5th-Republic political context"
+
+    columns:
+      - name: date_id
+        description: "Surrogate key in YYYYMMDD format"
+        data_type: INTEGER
+        tests:
+          - unique
+          - not_null
+
+      - name: date
+        description: "Calendar date"
+        data_type: DATE
+        tests:
+          - unique
+          - not_null
+
+      - name: year
+        description: "Year (ISO 8601)"
+        data_type: INTEGER
+
+      - name: month
+        description: "Month number (1-12)"
+        data_type: INTEGER
+
+      - name: day
+        description: "Day of month (1-31)"
+        data_type: INTEGER
+
+      - name: day_of_year
+        description: "Day of year (1-366)"
+        data_type: INTEGER
+
+      - name: quarter
+        description: "Quarter (1-4)"
+        data_type: INTEGER
+
+      - name: year_month
+        description: "Year-month label (e.g. 2024-01)"
+        data_type: VARCHAR(7)
+
+      - name: iso_week
+        description: "ISO week number (1-53)"
+        data_type: INTEGER
+
+      - name: iso_day_of_week
+        description: "ISO day of week (1=Monday, 7=Sunday)"
+        data_type: INTEGER
+
+      - name: day_name_fr
+        description: "Day name in French (e.g. Lundi, Mardi)"
+        data_type: VARCHAR(10)
+
+      - name: month_name_fr
+        description: "Month name in French (e.g. Janvier, Février)"
+        data_type: VARCHAR(10)
+
+      - name: is_weekend
+        description: "TRUE if Saturday or Sunday"
+        data_type: BOOLEAN
+
+      - name: is_public_holiday
+        description: "TRUE if date is a French public holiday (`ferie` = 1)"
+        data_type: BOOLEAN
+
+      - name: fete
+        description: "Holiday name(s); multiple holidays on the same date are joined with ' / '"
+        data_type: VARCHAR(255)
+
+      - name: is_market_holiday
+        description: "TRUE if financial markets are closed on this date"
+        data_type: BOOLEAN
+
+      - name: market_holiday_name
+        description: "Market holiday name"
+        data_type: VARCHAR(255)
+
+      - name: president
+        description: "French President in office on this date (5th Republic)"
+        data_type: VARCHAR(50)
+
+      - name: prime_minister
+        description: "French Prime Minister in office on this date (5th Republic)"
+        data_type: VARCHAR(50)
+
+      - name: legislature
+        description: "National Assembly legislature number (5th Republic)"
+        data_type: VARCHAR(10)
