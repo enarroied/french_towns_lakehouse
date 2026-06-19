@@ -17,6 +17,7 @@ WITH equipment_base AS (
 SELECT
     c.id                                    AS commune_id,
     e.year,
+    e.year * 10000 + 101                    AS date_id,
     eq.equipment_type_id,
     1                                       AS source_id,
     e.count

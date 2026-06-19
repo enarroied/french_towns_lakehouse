@@ -6,6 +6,7 @@
 SELECT
     GEO::CHAR(5)                                          AS id,
     TIME_PERIOD::INTEGER                                  AS year,
+    TIME_PERIOD::INTEGER * 10000 + 101                     AS date_id,
     MAX(CASE WHEN SEX = 'M' AND PCS_ESE = '_T' THEN OBS_VALUE::INTEGER END) AS mean_salary_men,
     MAX(CASE WHEN SEX = 'F' AND PCS_ESE = '_T' THEN OBS_VALUE::INTEGER END) AS mean_salary_women,
     MAX(CASE WHEN SEX = '_T' AND PCS_ESE = '1T3' THEN OBS_VALUE::INTEGER END) AS mean_salary_management_position,
