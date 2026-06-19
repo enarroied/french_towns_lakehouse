@@ -8,6 +8,7 @@ archive old version, upload, audit trail).
 import csv
 import tempfile
 from pathlib import Path
+from typing import cast
 
 from flows_staging.shared.audit import finalize_run
 from flows_staging.shared.audit import init_run
@@ -62,9 +63,9 @@ def stage_calendar_enrichments(run_id: str) -> int:
         temp_path = Path(tmpdir)
 
         for f in FILES:
-            base_name = f["base_name"]
-            csv_path = f["csv_path"]
-            fieldnames = f["fieldnames"]
+            base_name = cast(str, f["base_name"])
+            csv_path = cast(Path, f["csv_path"])
+            fieldnames = cast(list[str], f["fieldnames"])
 
             data = list(_read_csv(csv_path))
             write_csv_for_staging(

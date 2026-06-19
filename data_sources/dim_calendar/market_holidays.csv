@@ -1,383 +1,271 @@
 date,is_market_holiday,market_holiday_name
-1900-01-01,1,Hanoucca / Jour de l'an
-1900-02-01,1,Aïd el-Fitr
-1900-04-10,1,Aïd el-Adha
+1900-01-01,1,Jour de l'an
 1900-04-16,1,Lundi de Pâques
-1900-05-01,1,Fête du Travail / Nouvel An islamique
-1900-05-08,1,Fête de la Victoire
 1900-05-24,1,Ascension
 1900-06-04,1,Lundi de Pentecôte
 1900-08-15,1,Assomption
 1900-11-01,1,Toussaint
-1900-12-25,1,Noël / Ramadan
-1901-01-01,1,Jour de l'an / Ramadan
-1901-01-21,1,Aïd el-Fitr
-1901-04-08,1,Lundi de Pâques / Pessa'h (fête)
-1901-05-01,1,Fête du Travail
-1901-05-08,1,Fête de la Victoire
+1900-12-25,1,Noël
+1901-01-01,1,Jour de l'an
+1901-04-08,1,Lundi de Pâques
 1901-05-16,1,Ascension
 1901-05-27,1,Lundi de Pentecôte
 1901-08-15,1,Assomption
 1901-11-01,1,Toussaint
-1901-11-11,1,Armistice 1918
-1901-12-25,1,Noël / Ramadan
-1902-01-01,1,Jour de l'an / Ramadan
-1902-01-10,1,Aïd el-Fitr / Rosh Hashana
-1902-03-19,1,Aïd el-Adha
+1901-12-25,1,Noël
+1902-01-01,1,Jour de l'an
 1902-03-31,1,Lundi de Pâques
-1902-05-01,1,Fête du Travail
-1902-05-08,1,Ascension / Fête de la Victoire / Rosh Hashana
+1902-05-08,1,Ascension
 1902-05-19,1,Lundi de Pentecôte
 1902-07-14,1,Fête nationale
 1902-08-15,1,Assomption
-1902-11-11,1,Armistice 1918
-1902-12-25,1,Hanoucca (1er jour) / Noël / Ramadan
-1902-12-31,1,Aïd el-Fitr / Hanoucca
+1902-12-25,1,Noël
 1903-01-01,1,Jour de l'an
-1903-03-09,1,Aïd el-Adha
-1903-04-13,1,Lundi de Pâques / Pessa'h (fête)
-1903-05-01,1,Fête du Travail
-1903-05-08,1,Fête de la Victoire
+1903-04-13,1,Lundi de Pâques
 1903-05-21,1,Ascension
 1903-06-01,1,Lundi de Pentecôte
 1903-07-14,1,Fête nationale
-1903-11-11,1,Armistice 1918 / Chemini Atseret
 1903-12-25,1,Noël
 1904-01-01,1,Jour de l'an
-1904-02-26,1,Aïd el-Adha
 1904-04-04,1,Lundi de Pâques
 1904-05-12,1,Ascension
 1904-05-23,1,Lundi de Pentecôte
 1904-07-14,1,Fête nationale
 1904-08-15,1,Assomption
 1904-11-01,1,Toussaint
-1904-11-11,1,Armistice 1918 / Ramadan / Rosh Hashana
-1904-12-08,1,Aïd el-Fitr
-1905-02-14,1,Aïd el-Adha
 1905-04-24,1,Lundi de Pâques
-1905-05-01,1,Fête du Travail
-1905-05-08,1,Fête de la Victoire
-1905-06-01,1,Ascension / Yom HaShoah
+1905-06-01,1,Ascension
 1905-06-12,1,Lundi de Pentecôte
 1905-07-14,1,Fête nationale
 1905-08-15,1,Assomption
-1905-11-01,1,Ramadan / Toussaint
-1905-11-28,1,Aïd el-Fitr
-1905-12-25,1,Hanoucca / Noël
+1905-11-01,1,Toussaint
+1905-12-25,1,Noël
 1906-01-01,1,Jour de l'an
 1906-04-16,1,Lundi de Pâques
-1906-05-01,1,Fête du Travail
-1906-05-08,1,Fête de la Victoire
 1906-05-24,1,Ascension
 1906-06-04,1,Lundi de Pentecôte
 1906-08-15,1,Assomption
-1906-11-01,1,Ramadan / Toussaint
+1906-11-01,1,Toussaint
 1906-12-25,1,Noël
 1907-01-01,1,Jour de l'an
-1907-01-24,1,Aïd el-Adha
 1907-04-01,1,Lundi de Pâques
-1907-05-01,1,Fête du Travail / Pessa'h (fête)
-1907-05-08,1,Fête de la Victoire
 1907-05-09,1,Ascension
 1907-05-20,1,Lundi de Pentecôte
 1907-08-15,1,Assomption
-1907-11-01,1,Ramadan / Toussaint
-1907-11-06,1,Aïd el-Fitr
-1907-11-11,1,Armistice 1918
+1907-11-01,1,Toussaint
 1907-12-25,1,Noël
-1908-01-01,1,Hanoucca / Jour de l'an
-1908-01-13,1,Aïd el-Adha
+1908-01-01,1,Jour de l'an
 1908-04-20,1,Lundi de Pâques
-1908-05-01,1,Fête du Travail
-1908-05-08,1,Fête de la Victoire
-1908-05-28,1,Ascension / Yom HaShoah
+1908-05-28,1,Ascension
 1908-06-08,1,Lundi de Pentecôte
 1908-07-14,1,Fête nationale
-1908-10-26,1,Aïd el-Fitr
-1908-11-11,1,Armistice 1918
-1908-12-25,1,Hanoucca / Noël
+1908-12-25,1,Noël
 1909-01-01,1,Jour de l'an
 1909-04-12,1,Lundi de Pâques
-1909-05-20,1,Ascension / Rosh Hashana
+1909-05-20,1,Ascension
 1909-05-31,1,Lundi de Pentecôte
 1909-07-14,1,Fête nationale
-1909-10-15,1,Aïd el-Fitr / Rosh Hashana
 1909-11-01,1,Toussaint
-1909-11-11,1,Armistice 1918
-1909-12-22,1,Aïd el-Adha
 1910-03-28,1,Lundi de Pâques
 1910-05-05,1,Ascension
 1910-05-16,1,Lundi de Pentecôte
 1910-07-14,1,Fête nationale
 1910-08-15,1,Assomption
-1910-10-05,1,Aïd el-Fitr / Rosh Hashana (2e jour)
 1910-11-01,1,Toussaint
-1910-11-11,1,Armistice 1918
-1910-12-12,1,Aïd el-Adha
-1911-04-17,1,Lundi de Pâques / Pessa'h (fête)
-1911-05-01,1,Fête du Travail
-1911-05-08,1,Fête de la Victoire
+1911-04-17,1,Lundi de Pâques
 1911-05-25,1,Ascension
 1911-06-05,1,Lundi de Pentecôte
 1911-07-14,1,Fête nationale
 1911-08-15,1,Assomption
 1911-11-01,1,Toussaint
-1911-12-01,1,Aïd el-Adha
 1911-12-25,1,Noël
 1912-01-01,1,Jour de l'an
 1912-04-08,1,Lundi de Pâques
-1912-05-01,1,Fête du Travail / Pessa'h
-1912-05-08,1,Fête de la Victoire
-1912-05-16,1,Ascension / Rosh Hashana
+1912-05-16,1,Ascension
 1912-05-27,1,Lundi de Pentecôte
-1912-08-15,1,Assomption / Ramadan
-1912-09-12,1,Aïd el-Fitr
-1912-11-01,1,Chemini Atseret / Toussaint
-1912-11-11,1,Armistice 1918
-1912-11-19,1,Aïd el-Adha
+1912-08-15,1,Assomption
+1912-11-01,1,Toussaint
 1912-12-25,1,Noël
 1913-01-01,1,Jour de l'an
 1913-03-24,1,Lundi de Pâques
-1913-05-01,1,Ascension / Fête du Travail
-1913-05-08,1,Fête de la Victoire
+1913-05-01,1,Ascension
 1913-05-12,1,Lundi de Pentecôte
 1913-07-14,1,Fête nationale
-1913-08-15,1,Assomption / Ramadan
-1913-09-02,1,Aïd el-Fitr
-1913-11-11,1,Armistice 1918
-1913-12-25,1,Hanoucca / Noël
+1913-08-15,1,Assomption
+1913-12-25,1,Noël
 1914-01-01,1,Jour de l'an
-1914-04-13,1,Lundi de Pâques / Pessa'h (fête)
-1914-05-01,1,Fête du Travail
-1914-05-08,1,Fête de la Victoire
+1914-04-13,1,Lundi de Pâques
 1914-05-21,1,Ascension
 1914-06-01,1,Lundi de Pentecôte
 1914-07-14,1,Fête nationale
-1914-10-29,1,Aïd el-Adha / Yom Kippour
-1914-11-11,1,Armistice 1918
 1914-12-25,1,Noël
 1915-01-01,1,Jour de l'an
 1915-04-05,1,Lundi de Pâques
 1915-05-13,1,Ascension
 1915-05-24,1,Lundi de Pentecôte
-1915-07-14,1,Fête nationale / Ramadan
-1915-08-11,1,Aïd el-Fitr / Rosh Hashana
-1915-10-18,1,Aïd el-Adha
+1915-07-14,1,Fête nationale
 1915-11-01,1,Toussaint
-1915-11-11,1,Armistice 1918
 1916-04-24,1,Lundi de Pâques
-1916-05-01,1,Fête du Travail
-1916-05-08,1,Fête de la Victoire
-1916-06-01,1,Ascension / Rosh Hashana
+1916-06-01,1,Ascension
 1916-06-12,1,Lundi de Pentecôte
-1916-07-14,1,Fête nationale / Ramadan
-1916-07-31,1,Aïd el-Fitr
+1916-07-14,1,Fête nationale
 1916-08-15,1,Assomption
 1916-11-01,1,Toussaint
-1916-12-25,1,Noël / Rosh Hashana
+1916-12-25,1,Noël
 1917-01-01,1,Jour de l'an
-1917-04-09,1,Lundi de Pâques / Pessa'h (fête)
-1917-05-01,1,Fête du Travail
-1917-05-08,1,Fête de la Victoire / Lag BaOmer
+1917-04-09,1,Lundi de Pâques
 1917-05-17,1,Ascension
 1917-05-28,1,Lundi de Pentecôte
-1917-07-20,1,Aïd el-Fitr
 1917-08-15,1,Assomption
-1917-09-26,1,Aïd el-Adha
 1917-11-01,1,Toussaint
 1917-12-25,1,Noël
 1918-01-01,1,Jour de l'an
 1918-04-01,1,Lundi de Pâques
-1918-05-01,1,Fête du Travail / Pessa'h (7e jour)
-1918-05-08,1,Fête de la Victoire
 1918-05-09,1,Ascension
 1918-05-20,1,Lundi de Pentecôte
-1918-07-09,1,Aïd el-Fitr
-1918-08-15,1,Assomption / Tisha Beav
+1918-08-15,1,Assomption
 1918-11-01,1,Toussaint
-1918-11-11,1,Armistice 1918
 1918-12-25,1,Noël
-1919-01-01,1,Hanoucca / Jour de l'an
+1919-01-01,1,Jour de l'an
 1919-04-21,1,Lundi de Pâques
-1919-05-01,1,Fête du Travail / Rosh Hashana
-1919-05-08,1,Fête de la Victoire
+1919-05-01,1,1er mai
 1919-05-29,1,Ascension
-1919-06-09,1,Lundi de Pentecôte / Ramadan
+1919-06-09,1,Lundi de Pentecôte
 1919-07-14,1,Fête nationale
 1919-08-15,1,Assomption
-1919-09-05,1,Aïd el-Adha
-1919-11-11,1,Armistice 1918
 1919-12-25,1,Noël
 1920-01-01,1,Jour de l'an
-1920-04-05,1,Lundi de Pâques / Pessa'h (fête)
+1920-04-05,1,Lundi de Pâques
 1920-05-13,1,Ascension
-1920-05-24,1,Lundi de Pentecôte / Ramadan
-1920-06-17,1,Aïd el-Fitr
+1920-05-24,1,Lundi de Pentecôte
 1920-07-14,1,Fête nationale
-1920-08-24,1,Aïd el-Adha
 1920-11-01,1,Toussaint
-1920-11-11,1,Armistice 1918
 1921-03-28,1,Lundi de Pâques
 1921-05-05,1,Ascension
-1921-05-16,1,Lundi de Pentecôte / Ramadan
-1921-06-07,1,Aïd el-Fitr
+1921-05-16,1,Lundi de Pentecôte
 1921-07-14,1,Fête nationale
 1921-08-15,1,Assomption
-1921-11-01,1,Rosh Hashana / Toussaint
-1921-11-11,1,Armistice 1918
-1922-04-17,1,Lundi de Pâques / Pessa'h (7e jour)
-1922-05-01,1,Fête du Travail / Ramadan
-1922-05-08,1,Fête de la Victoire / Ramadan
-1922-05-25,1,Ascension / Ramadan
+1921-11-01,1,Toussaint
+1922-04-17,1,Lundi de Pâques
+1922-05-01,1,1er mai
+1922-05-25,1,Ascension
 1922-06-05,1,Lundi de Pentecôte
 1922-07-14,1,Fête nationale
-1922-08-03,1,Aïd el-Adha
 1922-08-15,1,Assomption
 1922-11-01,1,Toussaint
 1922-12-25,1,Noël
 1923-01-01,1,Jour de l'an
 1923-04-02,1,Lundi de Pâques
-1923-05-01,1,Fête du Travail / Pessa'h (fête) / Ramadan
-1923-05-08,1,Fête de la Victoire / Ramadan
-1923-05-10,1,Ascension / Ramadan
-1923-05-16,1,Aïd el-Fitr
+1923-05-01,1,1er mai
+1923-05-10,1,Ascension
 1923-05-21,1,Lundi de Pentecôte
-1923-07-23,1,Aïd el-Adha
 1923-08-15,1,Assomption
 1923-11-01,1,Toussaint
 1923-12-25,1,Noël
-1924-01-01,1,Hanoucca (1er jour) / Jour de l'an
-1924-04-21,1,Lundi de Pâques / Ramadan
-1924-05-01,1,Fête du Travail / Ramadan
-1924-05-05,1,Aïd el-Fitr
-1924-05-08,1,Fête de la Victoire
-1924-05-29,1,Ascension / Yom HaShoah
+1924-01-01,1,Jour de l'an
+1924-04-21,1,Lundi de Pâques
+1924-05-01,1,1er mai
+1924-05-29,1,Ascension
 1924-06-09,1,Lundi de Pentecôte
 1924-07-14,1,Fête nationale
 1924-08-15,1,Assomption
-1924-11-11,1,Armistice 1918
-1924-12-25,1,Hanoucca / Noël
+1924-11-11,1,Armistice
+1924-12-25,1,Noël
 1925-01-01,1,Jour de l'an
-1925-04-13,1,Lundi de Pâques / Pessa'h (fête) / Ramadan
-1925-04-24,1,Aïd el-Fitr
-1925-05-01,1,Fête du Travail
-1925-05-08,1,Fête de la Victoire
+1925-04-13,1,Lundi de Pâques
+1925-05-01,1,1er mai
 1925-05-21,1,Ascension
 1925-06-01,1,Lundi de Pentecôte
-1925-07-01,1,Aïd el-Adha
 1925-07-14,1,Fête nationale
-1925-11-11,1,Armistice 1918
+1925-11-11,1,Armistice
 1925-12-25,1,Noël
 1926-01-01,1,Jour de l'an
-1926-04-05,1,Lundi de Pâques / Ramadan
-1926-04-13,1,Aïd el-Fitr / Rosh Hashana
+1926-04-05,1,Lundi de Pâques
 1926-05-13,1,Ascension
 1926-05-24,1,Lundi de Pentecôte
 1926-07-14,1,Fête nationale
 1926-11-01,1,Toussaint
-1926-11-11,1,Armistice 1918
+1926-11-11,1,Armistice
 1927-04-18,1,Lundi de Pâques
 1927-05-26,1,Ascension
 1927-06-06,1,Lundi de Pentecôte
-1927-06-10,1,Aïd el-Adha
 1927-07-14,1,Fête nationale
 1927-08-15,1,Assomption
 1927-11-01,1,Toussaint
-1927-11-11,1,Armistice 1918
-1928-03-22,1,Aïd el-Fitr
-1928-04-09,1,Lundi de Pâques / Pessa'h (fête)
-1928-05-01,1,Fête du Travail
-1928-05-08,1,Fête de la Victoire
+1927-11-11,1,Armistice
+1928-04-09,1,Lundi de Pâques
+1928-05-01,1,1er mai
 1928-05-17,1,Ascension
 1928-05-28,1,Lundi de Pentecôte
-1928-05-29,1,Aïd el-Adha
-1928-08-15,1,Assomption / Rosh Hashana
+1928-08-15,1,Assomption
 1928-11-01,1,Toussaint
 1928-12-25,1,Noël
 1929-01-01,1,Jour de l'an
-1929-03-12,1,Aïd el-Fitr
 1929-04-01,1,Lundi de Pâques
-1929-05-01,1,Fête du Travail
-1929-05-08,1,Fête de la Victoire
-1929-05-09,1,Ascension / Rosh Hashana
+1929-05-01,1,1er mai
+1929-05-09,1,Ascension
 1929-05-20,1,Lundi de Pentecôte
 1929-08-15,1,Assomption
 1929-11-01,1,Toussaint
-1929-11-11,1,Armistice 1918
+1929-11-11,1,Armistice
 1929-12-25,1,Noël
-1930-01-01,1,Jour de l'an / Rosh Hashana
+1930-01-01,1,Jour de l'an
 1930-04-21,1,Lundi de Pâques
-1930-05-01,1,Fête du Travail
-1930-05-08,1,Aïd el-Adha / Fête de la Victoire
-1930-05-29,1,Ascension / Nouvel An islamique
+1930-05-01,1,1er mai
+1930-05-29,1,Ascension
 1930-06-09,1,Lundi de Pentecôte
 1930-07-14,1,Fête nationale
 1930-08-15,1,Assomption
-1930-11-11,1,Armistice 1918
+1930-11-11,1,Armistice
 1930-12-25,1,Noël
 1931-01-01,1,Jour de l'an
-1931-02-18,1,Aïd el-Fitr
 1931-04-06,1,Lundi de Pâques
-1931-04-27,1,Aïd el-Adha
-1931-05-01,1,Fête du Travail
-1931-05-08,1,Fête de la Victoire / Pessa'h (fête)
+1931-05-01,1,1er mai
 1931-05-14,1,Ascension
 1931-05-25,1,Lundi de Pentecôte
 1931-07-14,1,Fête nationale
-1931-11-11,1,Armistice 1918
+1931-11-11,1,Armistice
 1931-12-25,1,Noël
 1932-01-01,1,Jour de l'an
-1932-02-08,1,Aïd el-Fitr / Rosh Hashana
 1932-03-28,1,Lundi de Pâques
 1932-05-05,1,Ascension
 1932-05-16,1,Lundi de Pentecôte
 1932-07-14,1,Fête nationale
 1932-08-15,1,Assomption
 1932-11-01,1,Toussaint
-1932-11-11,1,Armistice 1918
-1933-01-27,1,Aïd el-Fitr
-1933-04-05,1,Aïd el-Adha
+1932-11-11,1,Armistice
 1933-04-17,1,Lundi de Pâques
-1933-05-01,1,Fête du Travail
-1933-05-08,1,Fête de la Victoire
+1933-05-01,1,1er mai
 1933-05-25,1,Ascension
 1933-06-05,1,Lundi de Pentecôte
 1933-07-14,1,Fête nationale
 1933-08-15,1,Assomption
 1933-11-01,1,Toussaint
-1933-12-25,1,Noël / Ramadan
-1934-01-01,1,Jour de l'an / Ramadan
-1934-01-16,1,Aïd el-Fitr / Hanoucca
+1933-12-25,1,Noël
+1934-01-01,1,Jour de l'an
 1934-04-02,1,Lundi de Pâques
-1934-05-01,1,Fête du Travail / Pessa'h (fête)
-1934-05-08,1,Fête de la Victoire
+1934-05-01,1,1er mai
 1934-05-10,1,Ascension
 1934-05-21,1,Lundi de Pentecôte
 1934-08-15,1,Assomption
 1934-11-01,1,Toussaint
-1934-12-25,1,Noël / Ramadan
-1935-01-01,1,Hanoucca (1er jour) / Jour de l'an / Ramadan
-1935-03-15,1,Aïd el-Adha
+1934-12-25,1,Noël
+1935-01-01,1,Jour de l'an
 1935-04-22,1,Lundi de Pâques
-1935-05-01,1,Fête du Travail
-1935-05-08,1,Fête de la Victoire
-1935-05-30,1,Ascension / Yom HaShoah
+1935-05-01,1,1er mai
+1935-05-30,1,Ascension
 1935-06-10,1,Lundi de Pentecôte
 1935-08-15,1,Assomption
 1935-11-01,1,Toussaint
-1935-11-11,1,Armistice 1918
-1935-12-25,1,Hanoucca / Noël / Ramadan
-1935-12-26,1,Aïd el-Fitr / Rosh Hashana / Saint-Étienne
+1935-11-11,1,Armistice
+1935-12-25,1,Noël
 1936-01-01,1,Jour de l'an
-1936-03-03,1,Aïd el-Adha
 1936-04-13,1,Lundi de Pâques
-1936-05-01,1,Fête du Travail
-1936-05-08,1,Fête de la Victoire / Lag BaOmer
-1936-05-21,1,Ascension / Rosh Hashana
+1936-05-01,1,1er mai
+1936-05-21,1,Ascension
 1936-06-01,1,Lundi de Pentecôte
 1936-07-14,1,Fête nationale
-1936-11-11,1,Armistice 1918
-1936-12-14,1,Aïd el-Fitr / Rosh Hashana
+1936-11-11,1,Armistice
 1936-12-25,1,Noël
 1937-01-01,1,Jour de l'an
 1937-03-29,1,Lundi de Pâques
@@ -385,633 +273,518 @@ date,is_market_holiday,market_holiday_name
 1937-05-17,1,Lundi de Pentecôte
 1937-07-14,1,Fête nationale
 1937-11-01,1,Toussaint
-1937-11-11,1,Armistice 1918 / Ramadan
-1938-02-10,1,Aïd el-Adha
+1937-11-11,1,Armistice
 1938-04-18,1,Lundi de Pâques
-1938-05-26,1,Ascension / Yom HaShoah
+1938-05-26,1,Ascension
 1938-06-06,1,Lundi de Pentecôte
 1938-07-14,1,Fête nationale
 1938-08-15,1,Assomption
-1938-11-01,1,Ramadan / Toussaint
-1938-11-11,1,Armistice 1918 / Ramadan
-1938-11-23,1,Aïd el-Fitr / Rosh Hashana
-1939-01-30,1,Aïd el-Adha
+1938-11-01,1,Toussaint
+1938-11-11,1,Armistice
 1939-04-10,1,Lundi de Pâques
-1939-05-01,1,Fête du Travail
-1939-05-08,1,Fête de la Victoire
-1939-05-18,1,Ascension / Rosh Hashana
+1939-05-01,1,1er mai
+1939-05-18,1,Ascension
 1939-05-29,1,Lundi de Pentecôte
 1939-07-14,1,Fête nationale
 1939-08-15,1,Assomption
-1939-11-01,1,Ramadan / Toussaint
-1939-11-13,1,Aïd el-Fitr
+1939-11-01,1,Toussaint
 1939-12-25,1,Noël
 1940-01-01,1,Jour de l'an
 1940-03-25,1,Lundi de Pâques
-1940-05-01,1,Fête du Travail
+1940-05-01,1,1er mai
 1940-05-02,1,Ascension
-1940-05-08,1,Fête de la Victoire
 1940-05-13,1,Lundi de Pentecôte
 1940-08-15,1,Assomption
-1940-11-01,1,Aïd el-Fitr / Toussaint
-1940-11-11,1,Armistice 1918
-1940-12-25,1,Hanoucca (1er jour) / Noël
+1940-11-01,1,Toussaint
+1940-11-11,1,Armistice
+1940-12-25,1,Noël
 1941-01-01,1,Jour de l'an
-1941-01-08,1,Aïd el-Adha
-1941-04-14,1,Lundi de Pâques / Pessa'h (fête)
-1941-05-01,1,Fête du Travail
-1941-05-08,1,Fête de la Victoire
+1941-04-14,1,Lundi de Pâques
+1941-05-01,1,Fête du Travail et de la Concorde sociale
 1941-05-22,1,Ascension
 1941-06-02,1,Lundi de Pentecôte
 1941-07-14,1,Fête nationale
 1941-08-15,1,Assomption
-1941-10-21,1,Aïd el-Fitr / Rosh Hashana
-1941-11-11,1,Armistice 1918 / Chemini Atseret
+1941-11-11,1,Armistice
 1941-12-25,1,Noël
 1942-01-01,1,Jour de l'an
 1942-04-06,1,Lundi de Pâques
-1942-05-01,1,Fête du Travail / Pessa'h (fête)
-1942-05-08,1,Fête de la Victoire
+1942-05-01,1,Fête du Travail et de la Concorde sociale
 1942-05-14,1,Ascension
 1942-05-25,1,Lundi de Pentecôte
 1942-07-14,1,Fête nationale
-1942-11-11,1,Armistice 1918
-1942-12-18,1,Aïd el-Adha
+1942-11-11,1,Armistice
 1942-12-25,1,Noël
 1943-01-01,1,Jour de l'an
 1943-04-26,1,Lundi de Pâques
-1943-06-03,1,Ascension / Rosh Hashana
+1943-06-03,1,Ascension
 1943-06-14,1,Lundi de Pentecôte
 1943-07-14,1,Fête nationale
-1943-09-30,1,Aïd el-Fitr / Rosh Hashana
 1943-11-01,1,Toussaint
-1943-11-11,1,Armistice 1918
-1943-12-07,1,Aïd el-Adha
-1944-04-10,1,Lundi de Pâques / Pessa'h (fête)
-1944-05-01,1,Fête du Travail
-1944-05-08,1,Fête de la Victoire
+1943-11-11,1,Armistice
+1944-04-10,1,Lundi de Pâques
+1944-05-01,1,Fête du Travail et de la Concorde sociale
 1944-05-18,1,Ascension
 1944-05-29,1,Lundi de Pentecôte
 1944-07-14,1,Fête nationale
 1944-08-15,1,Assomption
-1944-09-18,1,Aïd el-Fitr
 1944-11-01,1,Toussaint
 1944-12-25,1,Noël
 1945-01-01,1,Jour de l'an
 1945-04-02,1,Lundi de Pâques
-1945-05-01,1,Fête du Travail / Pessa'h (fête)
-1945-05-08,1,Fête de la Victoire / Yom HaShoah
+1945-05-01,1,Fête du Travail et de la Concorde sociale
 1945-05-10,1,Ascension
 1945-05-21,1,Lundi de Pentecôte
-1945-08-15,1,Assomption / Ramadan
+1945-08-15,1,Assomption
 1945-11-01,1,Toussaint
-1945-11-15,1,Aïd el-Adha
 1945-12-25,1,Noël
-1946-01-01,1,Hanoucca / Jour de l'an
+1946-01-01,1,Jour de l'an
 1946-04-22,1,Lundi de Pâques
-1946-05-01,1,Fête du Travail
-1946-05-08,1,Fête de la Victoire
+1946-05-01,1,1er mai
 1946-05-30,1,Ascension
 1946-06-10,1,Lundi de Pentecôte
-1946-08-15,1,Assomption / Ramadan
-1946-08-28,1,Aïd el-Fitr / Rosh Hashana
+1946-08-15,1,Assomption
 1946-11-01,1,Toussaint
-1946-11-04,1,Aïd el-Adha
-1946-11-11,1,Armistice 1918
-1946-12-25,1,Hanoucca / Noël
+1946-11-11,1,Armistice
+1946-12-25,1,Noël
 1947-01-01,1,Jour de l'an
-1947-04-07,1,Lundi de Pâques / Pessa'h (fête)
-1947-05-01,1,Fête du Travail
-1947-05-08,1,Fête de la Victoire
+1947-04-07,1,Lundi de Pâques
+1947-05-01,1,1er mai
 1947-05-15,1,Ascension
 1947-05-26,1,Lundi de Pentecôte
 1947-07-14,1,Fête nationale
-1947-08-15,1,Assomption / Ramadan
-1947-10-24,1,Aïd el-Adha / Yom Kippour
-1947-11-11,1,Armistice 1918
+1947-08-15,1,Assomption
+1947-11-11,1,Armistice
 1947-12-25,1,Noël
 1948-01-01,1,Jour de l'an
 1948-03-29,1,Lundi de Pâques
 1948-05-06,1,Ascension
 1948-05-17,1,Lundi de Pentecôte
-1948-07-14,1,Fête nationale / Ramadan
-1948-08-06,1,Aïd el-Fitr
-1948-10-13,1,Aïd el-Adha
+1948-07-14,1,Fête nationale
 1948-11-01,1,Toussaint
-1948-11-11,1,Armistice 1918
-1949-04-18,1,Lundi de Pâques / Pessa'h (7e jour)
+1948-11-11,1,Armistice
+1949-04-18,1,Lundi de Pâques
 1949-05-26,1,Ascension
 1949-06-06,1,Lundi de Pentecôte
-1949-07-14,1,Fête nationale / Ramadan
-1949-07-26,1,Aïd el-Fitr
+1949-07-14,1,Fête nationale
 1949-08-15,1,Assomption
-1949-11-01,1,Toussaint / Yom Kippour
-1949-11-11,1,Armistice 1918
+1949-11-01,1,Toussaint
+1949-11-11,1,Armistice
 1950-04-10,1,Lundi de Pâques
 1950-05-01,1,Fête du Travail
-1950-05-08,1,Fête de la Victoire / Pessa'h (7e jour)
 1950-05-18,1,Ascension
 1950-05-29,1,Lundi de Pentecôte
-1950-07-14,1,Fête nationale / Ramadan
+1950-07-14,1,Fête nationale
 1950-08-15,1,Assomption
-1950-09-22,1,Aïd el-Adha
 1950-11-01,1,Toussaint
 1950-12-25,1,Noël
 1951-01-01,1,Jour de l'an
 1951-03-26,1,Lundi de Pâques
 1951-05-01,1,Fête du Travail
 1951-05-03,1,Ascension
-1951-05-08,1,Fête de la Victoire
 1951-05-14,1,Lundi de Pentecôte
-1951-07-05,1,Aïd el-Fitr / Rosh Hashana
 1951-08-15,1,Assomption
-1951-09-11,1,Aïd el-Adha
-1951-11-01,1,Rosh Hashana / Toussaint
-1951-12-25,1,Hanoucca / Noël
+1951-11-01,1,Toussaint
+1951-12-25,1,Noël
 1952-01-01,1,Jour de l'an
-1952-04-14,1,Lundi de Pâques / Pessa'h (fête)
+1952-04-14,1,Lundi de Pâques
 1952-05-01,1,Fête du Travail
-1952-05-08,1,Fête de la Victoire
 1952-05-22,1,Ascension
-1952-06-02,1,Lundi de Pentecôte / Ramadan
-1952-06-23,1,Aïd el-Fitr
+1952-06-02,1,Lundi de Pentecôte
 1952-07-14,1,Fête nationale
 1952-08-15,1,Assomption
-1952-11-11,1,Armistice 1918
+1952-11-11,1,Armistice
 1952-12-25,1,Noël
 1953-01-01,1,Jour de l'an
 1953-04-06,1,Lundi de Pâques
-1953-05-01,1,Fête du Travail / Pessa'h (fête)
+1953-05-01,1,Fête du Travail
 1953-05-08,1,Fête de la Victoire
 1953-05-14,1,Ascension
-1953-05-25,1,Lundi de Pentecôte / Ramadan
+1953-05-25,1,Lundi de Pentecôte
 1953-07-14,1,Fête nationale
-1953-08-20,1,Aïd el-Adha
-1953-11-11,1,Armistice 1918
+1953-11-11,1,Armistice
 1953-12-25,1,Noël
-1954-01-01,1,Hanoucca / Jour de l'an
+1954-01-01,1,Jour de l'an
 1954-04-19,1,Lundi de Pâques
-1954-05-27,1,Ascension / Ramadan
-1954-06-02,1,Aïd el-Fitr
+1954-05-27,1,Ascension
 1954-06-07,1,Lundi de Pentecôte
 1954-07-14,1,Fête nationale
-1954-08-09,1,Aïd el-Adha
 1954-11-01,1,Toussaint
-1954-11-11,1,Armistice 1918
-1955-04-11,1,Lundi de Pâques / Pessa'h (fête)
-1955-05-19,1,Ascension / Ramadan
+1954-11-11,1,Armistice
+1955-04-11,1,Lundi de Pâques
+1955-05-19,1,Ascension
 1955-05-30,1,Lundi de Pentecôte
 1955-07-14,1,Fête nationale
-1955-07-29,1,Aïd el-Adha
 1955-08-15,1,Assomption
 1955-11-01,1,Toussaint
-1955-11-11,1,Armistice 1918
+1955-11-11,1,Armistice
 1956-04-02,1,Lundi de Pâques
-1956-05-01,1,Fête du Travail / Ramadan
-1956-05-08,1,Fête de la Victoire / Ramadan
-1956-05-10,1,Ascension / Ramadan
-1956-05-11,1,Aïd el-Fitr
+1956-05-01,1,Fête du Travail
+1956-05-08,1,Fête de la Victoire
+1956-05-10,1,Ascension
 1956-05-21,1,Lundi de Pentecôte
-1956-07-18,1,Aïd el-Adha
 1956-08-15,1,Assomption
 1956-11-01,1,Toussaint
 1956-12-25,1,Noël
-1957-01-01,1,Jour de l'an / Rosh Hashana
-1957-04-22,1,Lundi de Pâques / Ramadan
-1957-04-30,1,Aïd el-Fitr
+1957-01-01,1,Jour de l'an
+1957-04-22,1,Lundi de Pâques
 1957-05-01,1,Fête du Travail
 1957-05-08,1,Fête de la Victoire
 1957-05-30,1,Ascension
 1957-06-10,1,Lundi de Pentecôte
 1957-08-15,1,Assomption
 1957-11-01,1,Toussaint
-1957-11-11,1,Armistice 1918
+1957-11-11,1,Armistice
 1957-12-25,1,Noël
 1958-01-01,1,Jour de l'an
-1958-04-07,1,Lundi de Pâques / Pessa'h (fête) / Ramadan
+1958-04-07,1,Lundi de Pâques
 1958-05-01,1,Fête du Travail
 1958-05-08,1,Fête de la Victoire
 1958-05-15,1,Ascension
 1958-05-26,1,Lundi de Pentecôte
-1958-06-27,1,Aïd el-Adha
 1958-07-14,1,Fête nationale
 1958-08-15,1,Assomption
-1958-11-11,1,Armistice 1918
+1958-11-11,1,Armistice
 1958-12-25,1,Noël
 1959-01-01,1,Jour de l'an
-1959-03-30,1,Lundi de Pâques / Ramadan
-1959-04-09,1,Aïd el-Fitr
+1959-03-30,1,Lundi de Pâques
 1959-05-01,1,Fête du Travail
 1959-05-07,1,Ascension
 1959-05-08,1,Fête de la Victoire
 1959-05-18,1,Lundi de Pentecôte
-1959-06-16,1,Aïd el-Adha
 1959-07-14,1,Fête nationale
-1959-11-11,1,Armistice 1918
-1959-12-25,1,Hanoucca / Noël
+1959-11-11,1,Armistice
+1959-12-25,1,Noël
 1960-01-01,1,Jour de l'an
-1960-03-28,1,Aïd el-Fitr
 1960-04-18,1,Lundi de Pâques
 1960-05-26,1,Ascension
 1960-06-06,1,Lundi de Pentecôte
 1960-07-14,1,Fête nationale
 1960-08-15,1,Assomption
 1960-11-01,1,Toussaint
-1960-11-11,1,Armistice 1918 / Chemini Atseret
+1960-11-11,1,Armistice
 1961-04-03,1,Lundi de Pâques
-1961-05-01,1,Fête du Travail / Pessa'h (fête)
-1961-05-08,1,Fête de la Victoire
+1961-05-01,1,Fête du Travail
 1961-05-11,1,Ascension
 1961-05-22,1,Lundi de Pentecôte
-1961-05-25,1,Aïd el-Adha
 1961-07-14,1,Fête nationale
 1961-08-15,1,Assomption
-1961-11-01,1,Chemini Atseret / Toussaint
+1961-11-01,1,Toussaint
 1961-12-25,1,Noël
 1962-01-01,1,Jour de l'an
-1962-03-07,1,Aïd el-Fitr / Rosh Hashana
 1962-04-23,1,Lundi de Pâques
 1962-05-01,1,Fête du Travail
-1962-05-08,1,Fête de la Victoire
-1962-05-14,1,Aïd el-Adha
-1962-05-31,1,Ascension / Yom HaShoah
+1962-05-31,1,Ascension
 1962-06-11,1,Lundi de Pentecôte
 1962-08-15,1,Assomption
 1962-11-01,1,Toussaint
-1962-12-25,1,Hanoucca / Noël
+1962-12-25,1,Noël
 1963-01-01,1,Jour de l'an
 1963-04-15,1,Lundi de Pâques
 1963-05-01,1,Fête du Travail
-1963-05-03,1,Aïd el-Adha
-1963-05-08,1,Fête de la Victoire
-1963-05-23,1,Ascension / Rosh Hashana
+1963-05-23,1,Ascension
 1963-06-03,1,Lundi de Pentecôte
 1963-08-15,1,Assomption
-1963-11-01,1,Souccot / Toussaint
-1963-11-11,1,Armistice 1918
+1963-11-01,1,Toussaint
+1963-11-11,1,Armistice
 1963-12-25,1,Noël
 1964-01-01,1,Jour de l'an
-1964-02-14,1,Aïd el-Fitr
 1964-03-30,1,Lundi de Pâques
-1964-04-22,1,Aïd el-Adha
-1964-05-01,1,Fête du Travail / Pessa'h (fête)
+1964-05-01,1,Fête du Travail
 1964-05-07,1,Ascension
-1964-05-08,1,Fête de la Victoire / Yom HaShoah
 1964-05-18,1,Lundi de Pentecôte
 1964-07-14,1,Fête nationale
-1964-11-11,1,Armistice 1918
+1964-11-11,1,Armistice
 1964-12-25,1,Noël
-1965-01-01,1,Hanoucca / Jour de l'an
-1965-02-02,1,Aïd el-Fitr
+1965-01-01,1,Jour de l'an
 1965-04-19,1,Lundi de Pâques
-1965-05-27,1,Ascension / Yom HaShoah
+1965-05-27,1,Ascension
 1965-06-07,1,Lundi de Pentecôte
 1965-07-14,1,Fête nationale
 1965-11-01,1,Toussaint
-1965-11-11,1,Armistice 1918
-1966-03-31,1,Aïd el-Adha
-1966-04-11,1,Lundi de Pâques / Pessa'h (7e jour)
+1965-11-11,1,Armistice
+1966-04-11,1,Lundi de Pâques
 1966-05-19,1,Ascension
 1966-05-30,1,Lundi de Pentecôte
 1966-07-14,1,Fête nationale
 1966-08-15,1,Assomption
 1966-11-01,1,Toussaint
-1966-11-11,1,Armistice 1918
-1967-01-12,1,Aïd el-Fitr / Rosh Hashana
-1967-03-21,1,Aïd el-Adha
+1966-11-11,1,Armistice
 1967-03-27,1,Lundi de Pâques
 1967-05-01,1,Fête du Travail
 1967-05-04,1,Ascension
-1967-05-08,1,Fête de la Victoire
 1967-05-15,1,Lundi de Pentecôte
 1967-07-14,1,Fête nationale
 1967-08-15,1,Assomption
 1967-11-01,1,Toussaint
-1967-12-25,1,Noël / Ramadan
-1968-01-01,1,Aïd el-Fitr / Jour de l'an / Rosh Hashana
-1968-04-15,1,Lundi de Pâques / Pessa'h (fête)
-1968-05-01,1,Fête du Travail / Yom HaAtzmaout
-1968-05-08,1,Fête de la Victoire
+1967-12-25,1,Noël
+1968-01-01,1,Jour de l'an
+1968-04-15,1,Lundi de Pâques
+1968-05-01,1,Fête du Travail
 1968-05-23,1,Ascension
 1968-06-03,1,Lundi de Pentecôte
 1968-08-15,1,Assomption
 1968-11-01,1,Toussaint
-1968-11-11,1,Armistice 1918
+1968-11-11,1,Armistice
 1968-12-25,1,Noël
 1969-01-01,1,Jour de l'an
-1969-02-27,1,Aïd el-Adha
 1969-04-07,1,Lundi de Pâques
-1969-05-01,1,Fête du Travail / Pessa'h
-1969-05-08,1,Fête de la Victoire
+1969-05-01,1,Fête du Travail
 1969-05-15,1,Ascension
 1969-05-26,1,Lundi de Pentecôte
-1969-07-14,1,Fête nationale / Rosh Hashana
+1969-07-14,1,Fête nationale
 1969-08-15,1,Assomption
-1969-11-11,1,1er jour de Ramadan / Armistice 1918 / Rosh Hashana
-1969-12-10,1,Aïd el-Fitr / Rosh Hashana
+1969-11-11,1,Armistice
 1969-12-25,1,Noël
 1970-01-01,1,Jour de l'an
-1970-02-16,1,Aïd el-Adha
 1970-03-30,1,Lundi de Pâques
 1970-05-01,1,Fête du Travail
-1970-05-07,1,Ascension / Rosh Hashana
-1970-05-08,1,Fête de la Victoire
+1970-05-07,1,Ascension
 1970-05-18,1,Lundi de Pentecôte
 1970-07-14,1,Fête nationale
-1970-11-11,1,Armistice 1918 / Ramadan
-1970-12-25,1,Hanoucca / Noël
+1970-11-11,1,Armistice
+1970-12-25,1,Noël
 1971-01-01,1,Jour de l'an
-1971-02-05,1,Aïd el-Adha
-1971-04-12,1,Lundi de Pâques / Pessa'h (fête)
+1971-04-12,1,Lundi de Pâques
 1971-05-20,1,Ascension
 1971-05-31,1,Lundi de Pentecôte
 1971-07-14,1,Fête nationale
-1971-11-01,1,Ramadan / Toussaint
-1971-11-11,1,Armistice 1918 / Ramadan
-1971-11-19,1,Aïd el-Fitr / Rosh Hashana
-1972-01-26,1,Aïd el-Adha
+1971-11-01,1,Toussaint
+1971-11-11,1,Armistice
 1972-04-03,1,Lundi de Pâques
-1972-05-01,1,Fête du Travail / Pessa'h (fête)
-1972-05-08,1,Fête de la Victoire
+1972-05-01,1,Fête du Travail
 1972-05-11,1,Ascension
 1972-05-22,1,Lundi de Pentecôte
 1972-07-14,1,Fête nationale
 1972-08-15,1,Assomption
-1972-11-01,1,Ramadan / Toussaint
-1972-11-07,1,Aïd el-Fitr / Rosh Hashana
+1972-11-01,1,Toussaint
 1972-12-25,1,Noël
-1973-01-01,1,Hanoucca / Jour de l'an
+1973-01-01,1,Jour de l'an
 1973-04-23,1,Lundi de Pâques
 1973-05-01,1,Fête du Travail
-1973-05-08,1,Fête de la Victoire
 1973-05-31,1,Ascension
 1973-06-11,1,Lundi de Pentecôte
 1973-08-15,1,Assomption
 1973-11-01,1,Toussaint
-1973-12-25,1,Noël / Rosh Hashana
+1973-12-25,1,Noël
 1974-01-01,1,Jour de l'an
-1974-01-03,1,Aïd el-Adha
 1974-04-15,1,Lundi de Pâques
 1974-05-01,1,Fête du Travail
-1974-05-08,1,Fête de la Victoire / Lag BaOmer
 1974-05-23,1,Ascension
 1974-06-03,1,Lundi de Pentecôte
 1974-08-15,1,Assomption
-1974-10-17,1,Aïd el-Fitr / Rosh Hashana (2e jour)
 1974-11-01,1,Toussaint
-1974-11-11,1,Armistice 1918
-1974-12-24,1,Aïd el-Adha
+1974-11-11,1,Armistice
 1974-12-25,1,Noël
 1975-01-01,1,Jour de l'an
 1975-03-31,1,Lundi de Pâques
 1975-05-01,1,Fête du Travail
-1975-05-08,1,Ascension / Fête de la Victoire
+1975-05-08,1,Ascension
 1975-05-19,1,Lundi de Pentecôte
 1975-07-14,1,Fête nationale
 1975-08-15,1,Assomption
-1975-10-06,1,Aïd el-Fitr
-1975-11-11,1,Armistice 1918
+1975-11-11,1,Armistice
 1975-12-25,1,Noël
-1976-01-01,1,Hanoucca / Jour de l'an
+1976-01-01,1,Jour de l'an
 1976-04-19,1,Lundi de Pâques
-1976-05-27,1,Ascension / Yom HaShoah
+1976-05-27,1,Ascension
 1976-06-07,1,Lundi de Pentecôte
 1976-07-14,1,Fête nationale
-1976-09-24,1,Aïd el-Fitr / Rosh Hashana
 1976-11-01,1,Toussaint
-1976-11-11,1,Armistice 1918
-1976-12-01,1,Aïd el-Adha
+1976-11-11,1,Armistice
 1977-04-11,1,Lundi de Pâques
 1977-05-19,1,Ascension
 1977-05-30,1,Lundi de Pentecôte
 1977-07-14,1,Fête nationale
 1977-08-15,1,Assomption
-1977-09-14,1,Aïd el-Fitr
 1977-11-01,1,Toussaint
-1977-11-11,1,Armistice 1918
-1977-11-21,1,Aïd el-Adha
+1977-11-11,1,Armistice
 1978-03-27,1,Lundi de Pâques
 1978-05-01,1,Fête du Travail
 1978-05-04,1,Ascension
-1978-05-08,1,Fête de la Victoire / Rosh Hashana
 1978-05-15,1,Lundi de Pentecôte
 1978-07-14,1,Fête nationale
-1978-08-15,1,Assomption / Ramadan
+1978-08-15,1,Assomption
 1978-11-01,1,Toussaint
-1978-11-10,1,Aïd el-Adha
-1978-12-25,1,Hanoucca (1er jour) / Noël
+1978-12-25,1,Noël
 1979-01-01,1,Jour de l'an
-1979-04-16,1,Lundi de Pâques / Pessa'h (fête)
+1979-04-16,1,Lundi de Pâques
 1979-05-01,1,Fête du Travail
-1979-05-08,1,Fête de la Victoire
 1979-05-24,1,Ascension
 1979-06-04,1,Lundi de Pentecôte
-1979-08-15,1,Assomption / Ramadan
-1979-08-24,1,Aïd el-Fitr
-1979-10-31,1,Aïd el-Adha
+1979-08-15,1,Assomption
 1979-11-01,1,Toussaint
 1979-12-25,1,Noël
 1980-01-01,1,Jour de l'an
 1980-04-07,1,Lundi de Pâques
-1980-05-01,1,Fête du Travail / Pessa'h (fête)
-1980-05-08,1,Fête de la Victoire
+1980-05-01,1,Fête du Travail
 1980-05-15,1,Ascension
 1980-05-26,1,Lundi de Pentecôte
-1980-07-14,1,1er jour de Ramadan / Fête nationale
-1980-08-12,1,Aïd el-Fitr
+1980-07-14,1,Fête nationale
 1980-08-15,1,Assomption
-1980-11-11,1,Armistice 1918
+1980-11-11,1,Armistice
 1980-12-25,1,Noël
-1981-01-01,1,Hanoucca (1er jour) / Jour de l'an
+1981-01-01,1,Jour de l'an
 1981-04-20,1,Lundi de Pâques
 1981-05-01,1,Fête du Travail
-1981-05-08,1,Fête de la Victoire
 1981-05-28,1,Ascension
 1981-06-08,1,Lundi de Pentecôte
-1981-07-14,1,Fête nationale / Ramadan
-1981-10-08,1,Aïd el-Adha / Yom Kippour
-1981-11-11,1,Armistice 1918
-1981-12-25,1,Hanoucca / Noël
+1981-07-14,1,Fête nationale
+1981-11-11,1,Armistice
+1981-12-25,1,Noël
 1982-01-01,1,Jour de l'an
-1982-04-12,1,Lundi de Pâques / Pessa'h (fête)
+1982-04-12,1,Lundi de Pâques
 1982-05-20,1,Ascension
 1982-05-31,1,Lundi de Pentecôte
-1982-07-14,1,Fête nationale / Ramadan
-1982-07-22,1,Aïd el-Fitr
-1982-09-28,1,Aïd el-Adha
+1982-07-14,1,Fête nationale
 1982-11-01,1,Toussaint
-1982-11-11,1,Armistice 1918
+1982-11-11,1,Armistice
 1983-04-04,1,Lundi de Pâques
-1983-05-12,1,Ascension / Rosh Hashana
+1983-05-12,1,Ascension
 1983-05-23,1,Lundi de Pentecôte
-1983-07-11,1,Aïd el-Fitr
 1983-07-14,1,Fête nationale
 1983-08-15,1,Assomption
 1983-11-01,1,Toussaint
-1983-11-11,1,Armistice 1918
+1983-11-11,1,Armistice
 1984-04-23,1,Lundi de Pâques
 1984-05-01,1,Fête du Travail
 1984-05-08,1,Fête de la Victoire
-1984-05-31,1,1er jour de Ramadan / Ascension
-1984-06-11,1,Lundi de Pentecôte / Ramadan
-1984-06-29,1,Aïd el-Fitr
+1984-05-31,1,Ascension
+1984-06-11,1,Lundi de Pentecôte
 1984-08-15,1,Assomption
-1984-09-05,1,Aïd el-Adha
 1984-11-01,1,Toussaint
 1984-12-25,1,Noël
 1985-01-01,1,Jour de l'an
-1985-04-08,1,Lundi de Pâques / Pessa'h (fête)
+1985-04-08,1,Lundi de Pâques
 1985-05-01,1,Fête du Travail
 1985-05-08,1,Fête de la Victoire
 1985-05-16,1,Ascension
-1985-05-27,1,Lundi de Pentecôte / Ramadan
-1985-06-19,1,Aïd el-Fitr
+1985-05-27,1,Lundi de Pentecôte
 1985-08-15,1,Assomption
-1985-08-26,1,Aïd el-Adha
 1985-11-01,1,Toussaint
-1985-11-11,1,Armistice 1918
+1985-11-11,1,Armistice
 1985-12-25,1,Noël
 1986-01-01,1,Jour de l'an
 1986-03-31,1,Lundi de Pâques
 1986-05-01,1,Fête du Travail
-1986-05-08,1,Ascension / Fête de la Victoire
-1986-05-19,1,Lundi de Pentecôte / Ramadan
+1986-05-08,1,Ascension; Fête de la Victoire
+1986-05-19,1,Lundi de Pentecôte
 1986-07-14,1,Fête nationale
-1986-08-15,1,Assomption / Aïd el-Adha
-1986-11-11,1,Armistice 1918
+1986-08-15,1,Assomption
+1986-11-11,1,Armistice
 1986-12-25,1,Noël
-1987-01-01,1,Jour de l'an / Rosh Hashana
+1987-01-01,1,Jour de l'an
 1987-04-20,1,Lundi de Pâques
-1987-05-01,1,Fête du Travail / Ramadan
-1987-05-08,1,Fête de la Victoire / Ramadan
-1987-05-28,1,Ascension / Ramadan / Rosh Hashana
-1987-05-29,1,Aïd el-Fitr
+1987-05-01,1,Fête du Travail
+1987-05-08,1,Fête de la Victoire
+1987-05-28,1,Ascension
 1987-06-08,1,Lundi de Pentecôte
 1987-07-14,1,Fête nationale
-1987-08-05,1,Aïd el-Adha
-1987-11-11,1,Armistice 1918
+1987-11-11,1,Armistice
 1987-12-25,1,Noël
 1988-01-01,1,Jour de l'an
 1988-04-04,1,Lundi de Pâques
-1988-05-12,1,Ascension / Ramadan
-1988-05-17,1,Aïd el-Fitr
+1988-05-12,1,Ascension
 1988-05-23,1,Lundi de Pentecôte
-1988-07-14,1,Fête nationale / Rosh Hashana
+1988-07-14,1,Fête nationale
 1988-08-15,1,Assomption
 1988-11-01,1,Toussaint
-1988-11-11,1,Armistice 1918 / Rosh Hashana
+1988-11-11,1,Armistice
 1989-03-27,1,Lundi de Pâques
-1989-05-01,1,Fête du Travail / Ramadan
-1989-05-04,1,Ascension / Ramadan
+1989-05-01,1,Fête du Travail
+1989-05-04,1,Ascension
 1989-05-08,1,Fête de la Victoire
 1989-05-15,1,Lundi de Pentecôte
-1989-07-13,1,Aïd el-Adha
 1989-07-14,1,Fête nationale
 1989-08-15,1,Assomption
 1989-11-01,1,Toussaint
-1989-12-25,1,Hanoucca / Noël
+1989-12-25,1,Noël
 1990-01-01,1,Jour de l'an
-1990-04-16,1,Lundi de Pâques / Ramadan
-1990-04-26,1,Aïd el-Fitr
+1990-04-16,1,Lundi de Pâques
 1990-05-01,1,Fête du Travail
 1990-05-08,1,Fête de la Victoire
-1990-05-24,1,Ascension / Rosh Hashana
+1990-05-24,1,Ascension
 1990-06-04,1,Lundi de Pentecôte
-1990-07-03,1,Aïd el-Adha
 1990-08-15,1,Assomption
 1990-11-01,1,Toussaint
 1990-12-25,1,Noël
 1991-01-01,1,Jour de l'an
-1991-04-01,1,Lundi de Pâques / Ramadan
-1991-04-15,1,Aïd el-Fitr
-1991-05-01,1,Fête du Travail / Pessa'h (fête)
+1991-04-01,1,Lundi de Pâques
+1991-05-01,1,Fête du Travail
 1991-05-08,1,Fête de la Victoire
 1991-05-09,1,Ascension
 1991-05-20,1,Lundi de Pentecôte
 1991-08-15,1,Assomption
 1991-11-01,1,Toussaint
-1991-11-11,1,Armistice 1918
+1991-11-11,1,Armistice
 1991-12-25,1,Noël
-1992-01-01,1,Hanoucca / Jour de l'an
-1992-04-03,1,Aïd el-Fitr / Rosh Hashana
+1992-01-01,1,Jour de l'an
 1992-04-20,1,Lundi de Pâques
 1992-05-01,1,Fête du Travail
 1992-05-08,1,Fête de la Victoire
-1992-05-28,1,Ascension / Yom HaShoah
+1992-05-28,1,Ascension
 1992-06-08,1,Lundi de Pentecôte
-1992-06-10,1,Aïd el-Adha
 1992-07-14,1,Fête nationale
-1992-11-11,1,Armistice 1918
-1992-12-25,1,Noël / Rosh Hashana
+1992-11-11,1,Armistice
+1992-12-25,1,Noël
 1993-01-01,1,Jour de l'an
-1993-03-24,1,Aïd el-Fitr
-1993-04-12,1,Lundi de Pâques / Pessa'h (7e jour)
+1993-04-12,1,Lundi de Pâques
 1993-05-20,1,Ascension
-1993-05-31,1,Aïd el-Adha / Lundi de Pentecôte
+1993-05-31,1,Lundi de Pentecôte
 1993-07-14,1,Fête nationale
 1993-11-01,1,Toussaint
-1993-11-11,1,Armistice 1918
+1993-11-11,1,Armistice
 1994-04-04,1,Lundi de Pâques
 1994-05-12,1,Ascension
-1994-05-20,1,Aïd el-Adha
 1994-05-23,1,Lundi de Pentecôte
 1994-07-14,1,Fête nationale
-1994-08-15,1,Assomption / Tisha Beav
+1994-08-15,1,Assomption
 1994-11-01,1,Toussaint
-1994-11-11,1,Armistice 1918
-1995-03-02,1,Aïd el-Fitr
+1994-11-11,1,Armistice
 1995-04-17,1,Lundi de Pâques
 1995-05-01,1,Fête du Travail
 1995-05-08,1,Fête de la Victoire
-1995-05-09,1,Aïd el-Adha
-1995-05-25,1,Ascension / Yom HaShoah
+1995-05-25,1,Ascension
 1995-06-05,1,Lundi de Pentecôte
 1995-07-14,1,Fête nationale
 1995-08-15,1,Assomption
 1995-11-01,1,Toussaint
 1995-12-25,1,Noël
 1996-01-01,1,Jour de l'an
-1996-02-20,1,Aïd el-Fitr / Rosh Hashana
-1996-04-08,1,Lundi de Pâques / Pessa'h (fête)
+1996-04-08,1,Lundi de Pâques
 1996-05-01,1,Fête du Travail
 1996-05-08,1,Fête de la Victoire
 1996-05-16,1,Ascension
 1996-05-27,1,Lundi de Pentecôte
 1996-08-15,1,Assomption
 1996-11-01,1,Toussaint
-1996-11-11,1,Armistice 1918
+1996-11-11,1,Armistice
 1996-12-25,1,Noël
 1997-01-01,1,Jour de l'an
 1997-03-31,1,Lundi de Pâques
-1997-04-17,1,Aïd el-Adha
 1997-05-01,1,Fête du Travail
-1997-05-08,1,Ascension / Fête de la Victoire / Rosh Hashana
+1997-05-08,1,Ascension; Fête de la Victoire
 1997-05-19,1,Lundi de Pentecôte
 1997-07-14,1,Fête nationale
 1997-08-15,1,Assomption
-1997-11-11,1,Armistice 1918
-1997-12-25,1,Hanoucca (1er jour) / Noël
-1998-01-01,1,Jour de l'an / Ramadan
-1998-01-29,1,Aïd el-Fitr
-1998-04-07,1,Aïd el-Adha
-1998-04-13,1,Lundi de Pâques / Pessa'h (fête)
+1997-11-11,1,Armistice
+1997-12-25,1,Noël
+1998-01-01,1,Jour de l'an
+1998-04-13,1,Lundi de Pâques
 1998-05-01,1,Fête du Travail
 1998-05-08,1,Fête de la Victoire
 1998-05-21,1,Ascension
 1998-06-01,1,Lundi de Pentecôte
 1998-07-14,1,Fête nationale
-1998-11-11,1,Armistice 1918 / Chemini Atseret
-1998-12-25,1,Noël / Ramadan
-1999-01-01,1,Jour de l'an / Ramadan
-1999-01-18,1,Aïd el-Fitr / Hanoucca
+1998-11-11,1,Armistice
+1998-12-25,1,Noël
+1999-01-01,1,Jour de l'an
 1999-04-05,1,Lundi de Pâques
 1999-05-13,1,Ascension
 1999-05-24,1,Lundi de Pentecôte
 1999-07-14,1,Fête nationale
 1999-11-01,1,Toussaint
-1999-11-11,1,Armistice 1918
-2000-01-07,1,Aïd el-Fitr / Rosh Hashana
-2000-03-15,1,Aïd el-Adha
+1999-11-11,1,Armistice
 2000-04-24,1,Lundi de Pâques
 2000-05-01,1,Fête du Travail
 2000-05-08,1,Fête de la Victoire
@@ -1020,10 +793,8 @@ date,is_market_holiday,market_holiday_name
 2000-07-14,1,Fête nationale
 2000-08-15,1,Assomption
 2000-11-01,1,Toussaint
-2000-12-25,1,Hanoucca / Noël / Ramadan
-2000-12-27,1,Aïd el-Fitr / Hanoucca
+2000-12-25,1,Noël
 2001-01-01,1,Jour de l'an
-2001-03-05,1,Aïd el-Adha
 2001-04-16,1,Lundi de Pâques
 2001-05-01,1,Fête du Travail
 2001-05-08,1,Fête de la Victoire
@@ -1033,340 +804,209 @@ date,is_market_holiday,market_holiday_name
 2001-11-01,1,Toussaint
 2001-12-25,1,Noël
 2002-01-01,1,Jour de l'an
-2002-02-22,1,Aïd el-Adha
 2002-04-01,1,Lundi de Pâques
-2002-05-01,1,Fête du Travail / Pessa'h (7e jour)
+2002-05-01,1,Fête du Travail
 2002-05-08,1,Fête de la Victoire
 2002-05-09,1,Ascension
 2002-05-20,1,Lundi de Pentecôte
-2002-08-15,1,Assomption / Tisha Beav
+2002-08-15,1,Assomption
 2002-11-01,1,Toussaint
-2002-11-11,1,Armistice 1918 / Ramadan
-2002-12-05,1,Aïd el-Fitr
+2002-11-11,1,Armistice
 2002-12-25,1,Noël
-2003-01-01,1,Hanoucca / Jour de l'an
-2003-02-11,1,Aïd el-Adha
+2003-01-01,1,Jour de l'an
 2003-04-21,1,Lundi de Pâques
 2003-05-01,1,Fête du Travail
 2003-05-08,1,Fête de la Victoire
-2003-05-29,1,Ascension / Yom HaShoah
+2003-05-29,1,Ascension
 2003-06-09,1,Lundi de Pentecôte
 2003-07-14,1,Fête nationale
 2003-08-15,1,Assomption
-2003-11-11,1,Armistice 1918 / Ramadan
-2003-11-25,1,Aïd el-Fitr
-2003-12-25,1,Hanoucca / Noël
+2003-11-11,1,Armistice
+2003-12-25,1,Noël
 2004-01-01,1,Jour de l'an
 2004-04-12,1,Lundi de Pâques
 2004-05-20,1,Ascension
 2004-05-31,1,Lundi de Pentecôte
 2004-07-14,1,Fête nationale
-2004-11-01,1,Ramadan / Toussaint
-2004-11-11,1,Armistice 1918 / Ramadan
-2005-01-20,1,Aïd el-Adha
+2004-11-01,1,Toussaint
+2004-11-11,1,Armistice
 2005-03-28,1,Lundi de Pâques
 2005-05-05,1,Ascension
-2005-05-16,1,Lundi de Pentecôte
 2005-07-14,1,Fête nationale
 2005-08-15,1,Assomption
-2005-11-01,1,Ramadan / Toussaint
-2005-11-02,1,Aïd el-Fitr
-2005-11-11,1,Armistice 1918
-2006-01-09,1,Aïd el-Adha
-2006-04-17,1,Lundi de Pâques / Pessa'h (fête)
-2006-05-01,1,Fête du Travail / Yom HaAtzmaout
+2005-11-01,1,Toussaint
+2005-11-11,1,Armistice
+2006-04-17,1,Lundi de Pâques
+2006-05-01,1,Fête du Travail
 2006-05-08,1,Fête de la Victoire
 2006-05-25,1,Ascension
-2006-06-05,1,Lundi de Pentecôte
-2006-07-14,1,Fête nationale
-2006-08-15,1,Assomption
-2006-10-23,1,Aïd el-Fitr / Rosh Hashana (2e jour)
-2006-11-01,1,Toussaint
 2006-12-25,1,Noël
+2006-12-26,1,Market Closure
 2007-01-01,1,Jour de l'an
+2007-04-06,1,Market Closure
 2007-04-09,1,Lundi de Pâques
-2007-05-01,1,Fête du Travail / Pessa'h
-2007-05-08,1,Fête de la Victoire
-2007-05-17,1,Ascension
-2007-05-28,1,Lundi de Pentecôte
-2007-08-15,1,Assomption
-2007-10-12,1,Aïd el-Fitr / Rosh Hashana
-2007-11-01,1,Toussaint
-2007-12-19,1,Aïd el-Adha
+2007-05-01,1,Fête du Travail
 2007-12-25,1,Noël
+2007-12-26,1,Market Closure
 2008-01-01,1,Jour de l'an
+2008-03-21,1,Market Closure
 2008-03-24,1,Lundi de Pâques
-2008-05-01,1,Ascension / Fête du Travail
-2008-05-08,1,Fête de la Victoire
-2008-05-12,1,Lundi de Pentecôte
-2008-07-14,1,Fête nationale
-2008-08-15,1,Assomption
-2008-10-01,1,Aïd el-Fitr / Rosh Hashana (2e jour)
-2008-11-11,1,Armistice 1918
-2008-12-08,1,Aïd el-Adha
-2008-12-25,1,Hanoucca / Noël
+2008-05-01,1,Ascension; Fête du Travail
+2008-12-25,1,Noël
+2008-12-26,1,Market Closure
 2009-01-01,1,Jour de l'an
-2009-04-13,1,Lundi de Pâques / Pessa'h (fête)
+2009-04-10,1,Market Closure
+2009-04-13,1,Lundi de Pâques
 2009-05-01,1,Fête du Travail
-2009-05-08,1,Fête de la Victoire
-2009-05-21,1,Ascension
-2009-06-01,1,Lundi de Pentecôte
-2009-07-14,1,Fête nationale
-2009-11-11,1,Armistice 1918
-2009-11-27,1,Aïd el-Adha
 2009-12-25,1,Noël
 2010-01-01,1,Jour de l'an
+2010-04-02,1,Market Closure
 2010-04-05,1,Lundi de Pâques
-2010-05-13,1,Ascension / Rosh Hashana
-2010-05-24,1,Lundi de Pentecôte
-2010-07-14,1,Fête nationale
-2010-09-09,1,Aïd el-Fitr
-2010-11-01,1,Toussaint
-2010-11-11,1,Armistice 1918
-2010-11-16,1,Aïd el-Adha
+2011-04-22,1,Market Closure
 2011-04-25,1,Lundi de Pâques
-2011-06-02,1,Ascension
-2011-06-13,1,Lundi de Pentecôte
-2011-07-14,1,Fête nationale
-2011-08-15,1,Assomption / Ramadan
-2011-08-30,1,Aïd el-Fitr
-2011-11-01,1,Toussaint
-2011-11-11,1,Armistice 1918
-2012-04-09,1,Lundi de Pâques / Pessa'h (fête)
+2011-12-26,1,Market Closure
+2012-04-06,1,Market Closure
+2012-04-09,1,Lundi de Pâques
 2012-05-01,1,Fête du Travail
-2012-05-08,1,Fête de la Victoire / Lag BaOmer
-2012-05-17,1,Ascension
-2012-05-28,1,Lundi de Pentecôte
-2012-08-15,1,Assomption / Ramadan
-2012-10-25,1,Aïd el-Adha / Yom Kippour
-2012-11-01,1,Toussaint
 2012-12-25,1,Noël
+2012-12-26,1,Market Closure
 2013-01-01,1,Jour de l'an
+2013-03-29,1,Market Closure
 2013-04-01,1,Lundi de Pâques
-2013-05-01,1,Fête du Travail / Pessa'h (7e jour)
-2013-05-08,1,Fête de la Victoire
-2013-05-09,1,Ascension
-2013-05-20,1,Lundi de Pentecôte
-2013-08-07,1,Aïd el-Fitr / Rosh Hashana
-2013-08-15,1,Assomption / Tisha Beav
-2013-10-14,1,Aïd el-Adha
-2013-11-01,1,Toussaint
-2013-11-11,1,Armistice 1918
+2013-05-01,1,Fête du Travail
 2013-12-25,1,Noël
-2014-01-01,1,Hanoucca / Jour de l'an
+2013-12-26,1,Market Closure
+2014-01-01,1,Jour de l'an
+2014-04-18,1,Market Closure
 2014-04-21,1,Lundi de Pâques
 2014-05-01,1,Fête du Travail
-2014-05-08,1,Fête de la Victoire
-2014-05-29,1,Ascension / Rosh Hashana
-2014-06-09,1,Lundi de Pentecôte
-2014-07-14,1,Fête nationale / Ramadan
-2014-07-28,1,Aïd el-Fitr
-2014-08-15,1,Assomption
-2014-11-11,1,Armistice 1918
 2014-12-25,1,Noël
+2014-12-26,1,Market Closure
 2015-01-01,1,Jour de l'an
-2015-04-06,1,Lundi de Pâques / Pessa'h (fête)
+2015-04-03,1,Market Closure
+2015-04-06,1,Lundi de Pâques
 2015-05-01,1,Fête du Travail
-2015-05-08,1,Fête de la Victoire
-2015-05-14,1,Ascension
-2015-05-25,1,Lundi de Pentecôte
-2015-07-14,1,Fête nationale / Ramadan
-2015-07-17,1,Aïd el-Fitr
-2015-09-23,1,Aïd el-Adha
-2015-11-11,1,Armistice 1918
 2015-12-25,1,Noël
 2016-01-01,1,Jour de l'an
+2016-03-25,1,Market Closure
 2016-03-28,1,Lundi de Pâques
-2016-05-05,1,Ascension
-2016-05-16,1,Lundi de Pentecôte
-2016-07-06,1,Aïd el-Fitr
-2016-07-14,1,Fête nationale
-2016-08-15,1,Assomption
-2016-09-12,1,Aïd el-Adha
-2016-11-01,1,Rosh Hashana / Toussaint
-2016-11-11,1,Armistice 1918
+2016-12-26,1,Market Closure
+2017-04-14,1,Market Closure
 2017-04-17,1,Lundi de Pâques
 2017-05-01,1,Fête du Travail
-2017-05-08,1,Fête de la Victoire
-2017-05-25,1,Ascension / Rosh Hashana
-2017-06-05,1,Lundi de Pentecôte / Ramadan
-2017-07-14,1,Fête nationale
-2017-08-15,1,Assomption
-2017-09-01,1,Aïd el-Adha
-2017-11-01,1,Toussaint
 2017-12-25,1,Noël
+2017-12-26,1,Market Closure
 2018-01-01,1,Jour de l'an
+2018-03-30,1,Market Closure
 2018-04-02,1,Lundi de Pâques
-2018-05-01,1,Fête du Travail / Pessa'h (fête)
-2018-05-08,1,Fête de la Victoire
-2018-05-10,1,Ascension
-2018-05-21,1,Lundi de Pentecôte / Ramadan
-2018-06-14,1,Aïd el-Fitr
-2018-08-15,1,Assomption
-2018-08-21,1,Aïd el-Adha
-2018-11-01,1,Toussaint
+2018-05-01,1,Fête du Travail
 2018-12-25,1,Noël
-2019-01-01,1,Hanoucca (1er jour) / Jour de l'an
+2018-12-26,1,Market Closure
+2019-01-01,1,Jour de l'an
+2019-04-19,1,Market Closure
 2019-04-22,1,Lundi de Pâques
 2019-05-01,1,Fête du Travail
-2019-05-08,1,Fête de la Victoire / Ramadan
-2019-05-30,1,Ascension / Ramadan / Yom HaShoah
-2019-06-04,1,Aïd el-Fitr
-2019-06-10,1,Lundi de Pentecôte
-2019-08-15,1,Assomption
-2019-11-01,1,Toussaint
-2019-11-11,1,Armistice 1918
-2019-12-25,1,Hanoucca / Noël
+2019-12-25,1,Noël
+2019-12-26,1,Market Closure
 2020-01-01,1,Jour de l'an
-2020-04-13,1,Lundi de Pâques / Pessa'h (7e jour)
-2020-05-01,1,Fête du Travail / Ramadan
-2020-05-08,1,Fête de la Victoire / Ramadan
-2020-05-21,1,Ascension / Ramadan
-2020-06-01,1,Lundi de Pentecôte
-2020-07-14,1,Fête nationale
-2020-07-30,1,Aïd el-Adha
-2020-11-11,1,Armistice 1918
+2020-04-10,1,Market Closure
+2020-04-13,1,Lundi de Pâques
+2020-05-01,1,Fête du Travail
 2020-12-25,1,Noël
 2021-01-01,1,Jour de l'an
+2021-04-02,1,Market Closure
 2021-04-05,1,Lundi de Pâques
-2021-05-12,1,Aïd el-Fitr
-2021-05-13,1,Ascension
-2021-05-24,1,Lundi de Pentecôte
-2021-07-14,1,Fête nationale
-2021-07-19,1,Aïd el-Adha
-2021-11-01,1,Toussaint
-2021-11-11,1,Armistice 1918
-2022-04-18,1,Lundi de Pâques / Ramadan
-2022-05-02,1,Aïd el-Fitr
-2022-05-26,1,Ascension / Yom HaShoah
-2022-06-06,1,Lundi de Pentecôte
-2022-07-14,1,Fête nationale
-2022-08-15,1,Assomption
-2022-11-01,1,Toussaint
-2022-11-11,1,Armistice 1918
-2023-04-10,1,Lundi de Pâques / Pessa'h (fête) / Ramadan
-2023-04-21,1,Aïd el-Fitr
+2022-04-15,1,Market Closure
+2022-04-18,1,Lundi de Pâques
+2022-12-26,1,Market Closure
+2023-04-07,1,Market Closure
+2023-04-10,1,Lundi de Pâques
 2023-05-01,1,Fête du Travail
-2023-05-08,1,Fête de la Victoire
-2023-05-18,1,Ascension
-2023-05-29,1,Lundi de Pentecôte
-2023-06-28,1,Aïd el-Adha
-2023-07-14,1,Fête nationale
-2023-08-15,1,Assomption
-2023-11-01,1,Toussaint
 2023-12-25,1,Noël
+2023-12-26,1,Market Closure
 2024-01-01,1,Jour de l'an
-2024-04-01,1,Lundi de Pâques / Ramadan
-2024-04-09,1,Aïd el-Fitr
+2024-03-29,1,Market Closure
+2024-04-01,1,Lundi de Pâques
 2024-05-01,1,Fête du Travail
-2024-05-08,1,Fête de la Victoire
-2024-05-09,1,Ascension / Rosh Hashana
-2024-05-20,1,Lundi de Pentecôte
-2024-08-15,1,Assomption
-2024-11-01,1,Toussaint
-2024-11-11,1,Armistice 1918
 2024-12-25,1,Noël
-2025-01-01,1,Hanoucca / Jour de l'an
+2024-12-26,1,Market Closure
+2025-01-01,1,Jour de l'an
+2025-04-18,1,Market Closure
 2025-04-21,1,Lundi de Pâques
-2025-05-01,1,Fête du Travail / Yom HaAtzmaout
-2025-05-08,1,Fête de la Victoire
-2025-05-29,1,Ascension
-2025-06-06,1,Aïd el-Adha
-2025-06-09,1,Lundi de Pentecôte
-2025-07-14,1,Fête nationale
-2025-08-15,1,Assomption
-2025-11-11,1,Armistice 1918
+2025-05-01,1,Fête du Travail
 2025-12-25,1,Noël
+2025-12-26,1,Market Closure
 2026-01-01,1,Jour de l'an
-2026-03-19,1,Aïd el-Fitr
+2026-04-03,1,Market Closure
 2026-04-06,1,Lundi de Pâques
-2026-05-01,1,Fête du Travail / Pessa'h (fête)
-2026-05-08,1,Fête de la Victoire
-2026-05-14,1,Ascension
-2026-05-25,1,Lundi de Pentecôte
-2026-05-26,1,Aïd el-Adha
-2026-07-14,1,Fête nationale
-2026-11-11,1,Armistice 1918
+2026-05-01,1,Fête du Travail
 2026-12-25,1,Noël
 2027-01-01,1,Jour de l'an
-2027-03-09,1,Aïd el-Fitr
+2027-03-26,1,Market Closure
 2027-03-29,1,Lundi de Pâques
-2027-05-06,1,Ascension / Rosh Hashana
-2027-05-17,1,Lundi de Pentecôte
 2027-07-14,1,Fête nationale
 2027-11-01,1,Toussaint
-2027-11-11,1,Armistice 1918
+2027-11-11,1,Armistice
 2028-04-17,1,Lundi de Pâques
 2028-05-01,1,Fête du Travail
-2028-05-04,1,Aïd el-Adha
 2028-05-08,1,Fête de la Victoire
-2028-05-25,1,Ascension / Nouvel An islamique
+2028-05-25,1,Ascension
 2028-06-05,1,Lundi de Pentecôte
 2028-07-14,1,Fête nationale
 2028-08-15,1,Assomption
 2028-11-01,1,Toussaint
 2028-12-25,1,Noël
 2029-01-01,1,Jour de l'an
-2029-02-14,1,Aïd el-Fitr
 2029-04-02,1,Lundi de Pâques
-2029-04-23,1,Aïd el-Adha
-2029-05-01,1,Fête du Travail / Pessa'h (fête)
+2029-05-01,1,Fête du Travail
 2029-05-08,1,Fête de la Victoire
 2029-05-10,1,Ascension
 2029-05-21,1,Lundi de Pentecôte
 2029-08-15,1,Assomption
 2029-11-01,1,Toussaint
 2029-12-25,1,Noël
-2030-01-01,1,Hanoucca (1er jour) / Jour de l'an
-2030-02-04,1,Aïd el-Fitr / Rosh Hashana
+2030-01-01,1,Jour de l'an
 2030-04-22,1,Lundi de Pâques
 2030-05-01,1,Fête du Travail
 2030-05-08,1,Fête de la Victoire
-2030-05-30,1,Ascension / Yom HaShoah
+2030-05-30,1,Ascension
 2030-06-10,1,Lundi de Pentecôte
 2030-08-15,1,Assomption
 2030-11-01,1,Toussaint
-2030-11-11,1,Armistice 1918
-2030-12-25,1,Noël / Rosh Hashana
-2031-01-01,1,Jour de l'an / Ramadan
-2031-01-24,1,Aïd el-Fitr
-2031-04-02,1,Aïd el-Adha
+2030-11-11,1,Armistice
+2030-12-25,1,Noël
+2031-01-01,1,Jour de l'an
 2031-04-14,1,Lundi de Pâques
 2031-05-01,1,Fête du Travail
-2031-05-08,1,Fête de la Victoire / Lag BaOmer
+2031-05-08,1,Fête de la Victoire
 2031-05-22,1,Ascension
 2031-06-02,1,Lundi de Pentecôte
 2031-07-14,1,Fête nationale
 2031-08-15,1,Assomption
-2031-11-11,1,Armistice 1918
-2031-12-25,1,Noël / Ramadan
-2032-01-01,1,Jour de l'an / Ramadan
-2032-01-13,1,Aïd el-Fitr / Hanoucca
+2031-11-11,1,Armistice
+2031-12-25,1,Noël
+2032-01-01,1,Jour de l'an
 2032-03-29,1,Lundi de Pâques
 2032-05-06,1,Ascension
 2032-05-17,1,Lundi de Pentecôte
 2032-07-14,1,Fête nationale
 2032-11-01,1,Toussaint
-2032-11-11,1,Armistice 1918
-2033-03-11,1,Aïd el-Adha
+2032-11-11,1,Armistice
 2033-04-18,1,Lundi de Pâques
-2033-05-26,1,Ascension / Yom HaShoah
+2033-05-26,1,Ascension
 2033-06-06,1,Lundi de Pentecôte
 2033-07-14,1,Fête nationale
 2033-08-15,1,Assomption
 2033-11-01,1,Toussaint
-2033-11-11,1,Armistice 1918
-2033-12-22,1,Aïd el-Fitr / Rosh Hashana
-2034-02-28,1,Aïd el-Adha
+2033-11-11,1,Armistice
 2034-04-10,1,Lundi de Pâques
 2034-05-01,1,Fête du Travail
 2034-05-08,1,Fête de la Victoire
-2034-05-18,1,Ascension / Rosh Hashana
+2034-05-18,1,Ascension
 2034-05-29,1,Lundi de Pentecôte
 2034-07-14,1,Fête nationale
 2034-08-15,1,Assomption
 2034-11-01,1,Toussaint
-2034-12-11,1,Aïd el-Fitr / Rosh Hashana
 2034-12-25,1,Noël
 2035-01-01,1,Jour de l'an
 2035-03-26,1,Lundi de Pâques
@@ -1375,79 +1015,68 @@ date,is_market_holiday,market_holiday_name
 2035-05-08,1,Fête de la Victoire
 2035-05-14,1,Lundi de Pentecôte
 2035-08-15,1,Assomption
-2035-11-01,1,Rosh Hashana / Toussaint
-2035-12-25,1,Hanoucca / Noël
+2035-11-01,1,Toussaint
+2035-12-25,1,Noël
 2036-01-01,1,Jour de l'an
-2036-02-07,1,Aïd el-Adha
-2036-04-14,1,Lundi de Pâques / Pessa'h (fête)
+2036-04-14,1,Lundi de Pâques
 2036-05-01,1,Fête du Travail
 2036-05-08,1,Fête de la Victoire
 2036-05-22,1,Ascension
 2036-06-02,1,Lundi de Pentecôte
 2036-07-14,1,Fête nationale
 2036-08-15,1,Assomption
-2036-11-11,1,Armistice 1918 / Chemini Atseret / Ramadan
-2036-11-19,1,Aïd el-Fitr
+2036-11-11,1,Armistice
 2036-12-25,1,Noël
 2037-01-01,1,Jour de l'an
-2037-01-26,1,Aïd el-Adha
 2037-04-06,1,Lundi de Pâques
-2037-05-01,1,Fête du Travail / Pessa'h (fête)
+2037-05-01,1,Fête du Travail
 2037-05-08,1,Fête de la Victoire
 2037-05-14,1,Ascension
 2037-05-25,1,Lundi de Pentecôte
 2037-07-14,1,Fête nationale
-2037-11-09,1,Aïd el-Fitr
-2037-11-11,1,Armistice 1918
+2037-11-11,1,Armistice
 2037-12-25,1,Noël
 2038-01-01,1,Jour de l'an
 2038-04-26,1,Lundi de Pâques
-2038-06-03,1,Ascension / Rosh Hashana
+2038-06-03,1,Ascension
 2038-06-14,1,Lundi de Pentecôte
 2038-07-14,1,Fête nationale
-2038-10-29,1,Aïd el-Fitr
 2038-11-01,1,Toussaint
-2038-11-11,1,Armistice 1918
-2039-01-05,1,Aïd el-Adha
-2039-04-11,1,Lundi de Pâques / Pessa'h (fête)
+2038-11-11,1,Armistice
+2039-04-11,1,Lundi de Pâques
 2039-05-19,1,Ascension
 2039-05-30,1,Lundi de Pentecôte
 2039-07-14,1,Fête nationale
 2039-08-15,1,Assomption
-2039-10-18,1,Aïd el-Fitr / Rosh Hashana
-2039-11-01,1,Souccot / Toussaint
-2039-11-11,1,Armistice 1918
+2039-11-01,1,Toussaint
+2039-11-11,1,Armistice
 2040-04-02,1,Lundi de Pâques
-2040-05-01,1,Fête du Travail / Pessa'h (fête)
-2040-05-08,1,Fête de la Victoire / Yom HaShoah
+2040-05-01,1,Fête du Travail
+2040-05-08,1,Fête de la Victoire
 2040-05-10,1,Ascension
 2040-05-21,1,Lundi de Pentecôte
 2040-08-15,1,Assomption
 2040-11-01,1,Toussaint
-2040-12-14,1,Aïd el-Adha
 2040-12-25,1,Noël
-2041-01-01,1,Hanoucca / Jour de l'an
+2041-01-01,1,Jour de l'an
 2041-04-22,1,Lundi de Pâques
 2041-05-01,1,Fête du Travail
 2041-05-08,1,Fête de la Victoire
 2041-05-30,1,Ascension
 2041-06-10,1,Lundi de Pentecôte
 2041-08-15,1,Assomption
-2041-09-26,1,Aïd el-Fitr / Rosh Hashana
 2041-11-01,1,Toussaint
-2041-11-11,1,Armistice 1918
-2041-12-03,1,Aïd el-Adha
-2041-12-25,1,Hanoucca / Noël
+2041-11-11,1,Armistice
+2041-12-25,1,Noël
 2042-01-01,1,Jour de l'an
-2042-04-07,1,Lundi de Pâques / Pessa'h (fête)
+2042-04-07,1,Lundi de Pâques
 2042-05-01,1,Fête du Travail
 2042-05-08,1,Fête de la Victoire
 2042-05-15,1,Ascension
 2042-05-26,1,Lundi de Pentecôte
 2042-07-14,1,Fête nationale
 2042-08-15,1,Assomption
-2042-09-15,1,Aïd el-Fitr / Rosh Hashana
-2042-11-11,1,Armistice 1918
+2042-11-11,1,Armistice
 2042-12-25,1,Noël
 2043-01-01,1,Jour de l'an
 2043-03-30,1,Lundi de Pâques
@@ -1456,28 +1085,24 @@ date,is_market_holiday,market_holiday_name
 2043-05-08,1,Fête de la Victoire
 2043-05-18,1,Lundi de Pentecôte
 2043-07-14,1,Fête nationale
-2043-11-11,1,Armistice 1918
-2043-11-12,1,Aïd el-Adha
+2043-11-11,1,Armistice
 2043-12-25,1,Noël
-2044-01-01,1,Jour de l'an / Rosh Hashana
-2044-04-18,1,Lundi de Pâques / Pessa'h (7e jour)
+2044-01-01,1,Jour de l'an
+2044-04-18,1,Lundi de Pâques
 2044-05-26,1,Ascension
 2044-06-06,1,Lundi de Pentecôte
 2044-07-14,1,Fête nationale
-2044-08-15,1,Assomption / Ramadan
-2044-08-24,1,Aïd el-Fitr
-2044-10-31,1,Aïd el-Adha
-2044-11-01,1,Toussaint / Yom Kippour
-2044-11-11,1,Armistice 1918
+2044-08-15,1,Assomption
+2044-11-01,1,Toussaint
+2044-11-11,1,Armistice
 2045-04-10,1,Lundi de Pâques
-2045-05-01,1,Fête du Travail / Pessa'h
+2045-05-01,1,Fête du Travail
 2045-05-08,1,Fête de la Victoire
 2045-05-18,1,Ascension
 2045-05-29,1,Lundi de Pentecôte
-2045-07-14,1,Fête nationale / Rosh Hashana
-2045-08-14,1,Aïd el-Fitr
+2045-07-14,1,Fête nationale
 2045-08-15,1,Assomption
-2045-11-01,1,Chemini Atseret / Toussaint
+2045-11-01,1,Toussaint
 2045-12-25,1,Noël
 2046-01-01,1,Jour de l'an
 2046-03-26,1,Lundi de Pâques
@@ -1485,271 +1110,233 @@ date,is_market_holiday,market_holiday_name
 2046-05-03,1,Ascension
 2046-05-08,1,Fête de la Victoire
 2046-05-14,1,Lundi de Pentecôte
-2046-08-03,1,Aïd el-Fitr
 2046-08-15,1,Assomption
-2046-10-10,1,Aïd el-Adha
 2046-11-01,1,Toussaint
-2046-12-25,1,Hanoucca / Noël
+2046-12-25,1,Noël
 2047-01-01,1,Jour de l'an
-2047-04-15,1,Lundi de Pâques / Pessa'h (7e jour)
+2047-04-15,1,Lundi de Pâques
 2047-05-01,1,Fête du Travail
 2047-05-08,1,Fête de la Victoire
 2047-05-23,1,Ascension
 2047-06-03,1,Lundi de Pentecôte
-2047-07-23,1,Aïd el-Fitr
 2047-08-15,1,Assomption
 2047-11-01,1,Toussaint
-2047-11-11,1,Armistice 1918
+2047-11-11,1,Armistice
 2047-12-25,1,Noël
 2048-01-01,1,Jour de l'an
 2048-04-06,1,Lundi de Pâques
-2048-05-01,1,Fête du Travail / Pessa'h (fête)
+2048-05-01,1,Fête du Travail
 2048-05-08,1,Fête de la Victoire
 2048-05-14,1,Ascension
 2048-05-25,1,Lundi de Pentecôte
 2048-07-14,1,Fête nationale
-2048-09-18,1,Aïd el-Adha
-2048-11-11,1,Armistice 1918
+2048-11-11,1,Armistice
 2048-12-25,1,Noël
-2049-01-01,1,Hanoucca / Jour de l'an
+2049-01-01,1,Jour de l'an
 2049-04-19,1,Lundi de Pâques
 2049-05-27,1,Ascension
-2049-06-07,1,Lundi de Pentecôte / Ramadan
-2049-07-01,1,Aïd el-Fitr / Rosh Hashana
+2049-06-07,1,Lundi de Pentecôte
 2049-07-14,1,Fête nationale
-2049-09-07,1,Aïd el-Adha
 2049-11-01,1,Toussaint
-2049-11-11,1,Armistice 1918
-2050-04-11,1,Lundi de Pâques / Pessa'h (fête)
+2049-11-11,1,Armistice
+2050-04-11,1,Lundi de Pâques
 2050-05-19,1,Ascension
-2050-05-30,1,Lundi de Pentecôte / Ramadan
-2050-06-20,1,Aïd el-Fitr
+2050-05-30,1,Lundi de Pentecôte
 2050-07-14,1,Fête nationale
 2050-08-15,1,Assomption
 2050-11-01,1,Toussaint
-2050-11-11,1,Armistice 1918
+2050-11-11,1,Armistice
 2051-04-03,1,Lundi de Pâques
-2051-05-01,1,Fête du Travail / Pessa'h (7e jour)
+2051-05-01,1,Fête du Travail
 2051-05-08,1,Fête de la Victoire
 2051-05-11,1,Ascension
-2051-05-22,1,Lundi de Pentecôte / Ramadan
+2051-05-22,1,Lundi de Pentecôte
 2051-07-14,1,Fête nationale
-2051-08-15,1,Assomption / Tisha Beav
-2051-08-17,1,Aïd el-Adha
+2051-08-15,1,Assomption
 2051-11-01,1,Toussaint
 2051-12-25,1,Noël
-2052-01-01,1,Hanoucca / Jour de l'an
+2052-01-01,1,Jour de l'an
 2052-04-22,1,Lundi de Pâques
-2052-05-01,1,Fête du Travail / Ramadan
-2052-05-08,1,Fête de la Victoire / Ramadan
-2052-05-29,1,Aïd el-Fitr
+2052-05-01,1,Fête du Travail
+2052-05-08,1,Fête de la Victoire
 2052-05-30,1,Ascension
 2052-06-10,1,Lundi de Pentecôte
-2052-08-05,1,Aïd el-Adha
 2052-08-15,1,Assomption
 2052-11-01,1,Toussaint
-2052-11-11,1,Armistice 1918
+2052-11-11,1,Armistice
 2052-12-25,1,Noël
 2053-01-01,1,Jour de l'an
-2053-04-07,1,Lundi de Pâques / Pessa'h (fête)
-2053-05-01,1,Fête du Travail / Ramadan
-2053-05-08,1,Fête de la Victoire / Ramadan
-2053-05-15,1,Ascension / Ramadan
+2053-04-07,1,Lundi de Pâques
+2053-05-01,1,Fête du Travail
+2053-05-08,1,Fête de la Victoire
+2053-05-15,1,Ascension
 2053-05-26,1,Lundi de Pentecôte
 2053-07-14,1,Fête nationale
-2053-07-25,1,Aïd el-Adha
 2053-08-15,1,Assomption
-2053-11-11,1,Armistice 1918
+2053-11-11,1,Armistice
 2053-12-25,1,Noël
 2054-01-01,1,Jour de l'an
 2054-03-30,1,Lundi de Pâques
-2054-05-01,1,Fête du Travail / Ramadan
-2054-05-07,1,Ascension / Ramadan
-2054-05-08,1,Aïd el-Fitr / Fête de la Victoire
+2054-05-01,1,Fête du Travail
+2054-05-07,1,Ascension
+2054-05-08,1,Fête de la Victoire
 2054-05-18,1,Lundi de Pentecôte
 2054-07-14,1,Fête nationale
-2054-07-15,1,Aïd el-Adha
-2054-11-11,1,Armistice 1918
-2054-12-25,1,Hanoucca / Noël
+2054-11-11,1,Armistice
+2054-12-25,1,Noël
 2055-01-01,1,Jour de l'an
-2055-04-19,1,Lundi de Pâques / Ramadan
-2055-04-27,1,Aïd el-Fitr
+2055-04-19,1,Lundi de Pâques
 2055-05-27,1,Ascension
 2055-06-07,1,Lundi de Pentecôte
 2055-07-14,1,Fête nationale
 2055-11-01,1,Toussaint
-2055-11-11,1,Armistice 1918
-2056-04-03,1,Lundi de Pâques / Ramadan
-2056-05-01,1,Fête du Travail / Pessa'h (fête)
+2055-11-11,1,Armistice
+2056-04-03,1,Lundi de Pâques
+2056-05-01,1,Fête du Travail
 2056-05-08,1,Fête de la Victoire
 2056-05-11,1,Ascension
 2056-05-22,1,Lundi de Pentecôte
-2056-06-23,1,Aïd el-Adha
-2056-07-14,1,Fête nationale / Nouvel An islamique
+2056-07-14,1,Fête nationale
 2056-08-15,1,Assomption
-2056-11-01,1,Chemini Atseret / Toussaint
+2056-11-01,1,Toussaint
 2056-12-25,1,Noël
 2057-01-01,1,Jour de l'an
-2057-04-05,1,Aïd el-Fitr
 2057-04-23,1,Lundi de Pâques
 2057-05-01,1,Fête du Travail
 2057-05-08,1,Fête de la Victoire
-2057-05-31,1,Ascension / Yom HaShoah
+2057-05-31,1,Ascension
 2057-06-11,1,Lundi de Pentecôte
-2057-06-12,1,Aïd el-Adha
 2057-08-15,1,Assomption
 2057-11-01,1,Toussaint
-2057-12-25,1,Hanoucca / Noël
+2057-12-25,1,Noël
 2058-01-01,1,Jour de l'an
-2058-03-25,1,Aïd el-Fitr / Rosh Hashana
 2058-04-15,1,Lundi de Pâques
 2058-05-01,1,Fête du Travail
 2058-05-08,1,Fête de la Victoire
-2058-05-23,1,Ascension / Rosh Hashana
+2058-05-23,1,Ascension
 2058-06-03,1,Lundi de Pentecôte
 2058-08-15,1,Assomption
-2058-11-01,1,Souccot / Toussaint
-2058-11-11,1,Armistice 1918
+2058-11-01,1,Toussaint
+2058-11-11,1,Armistice
 2058-12-25,1,Noël
 2059-01-01,1,Jour de l'an
 2059-03-31,1,Lundi de Pâques
-2059-05-01,1,Fête du Travail / Pessa'h (fête)
-2059-05-08,1,Ascension / Fête de la Victoire
+2059-05-01,1,Fête du Travail
+2059-05-08,1,Ascension; Fête de la Victoire
 2059-05-19,1,Lundi de Pentecôte
-2059-05-22,1,Aïd el-Adha
 2059-07-14,1,Fête nationale
 2059-08-15,1,Assomption
-2059-11-11,1,Armistice 1918
+2059-11-11,1,Armistice
 2059-12-25,1,Noël
-2060-01-01,1,Hanoucca / Jour de l'an
-2060-03-03,1,Aïd el-Fitr / Rosh Hashana
+2060-01-01,1,Jour de l'an
 2060-04-19,1,Lundi de Pâques
-2060-05-10,1,Aïd el-Adha
-2060-05-27,1,Ascension / Yom HaShoah
+2060-05-27,1,Ascension
 2060-06-07,1,Lundi de Pentecôte
 2060-07-14,1,Fête nationale
 2060-11-01,1,Toussaint
-2060-11-11,1,Armistice 1918
+2060-11-11,1,Armistice
 2061-04-11,1,Lundi de Pâques
-2061-04-29,1,Aïd el-Adha
-2061-05-19,1,Ascension / Rosh Hashana
+2061-05-19,1,Ascension
 2061-05-30,1,Lundi de Pentecôte
 2061-07-14,1,Fête nationale
-2061-08-15,1,Assomption / Rosh Hashana
+2061-08-15,1,Assomption
 2061-11-01,1,Toussaint
-2061-11-11,1,Armistice 1918
-2062-02-10,1,Aïd el-Fitr
+2061-11-11,1,Armistice
 2062-03-27,1,Lundi de Pâques
-2062-04-19,1,Aïd el-Adha
 2062-05-01,1,Fête du Travail
 2062-05-04,1,Ascension
-2062-05-08,1,Fête de la Victoire / Rosh Hashana
+2062-05-08,1,Fête de la Victoire
 2062-05-15,1,Lundi de Pentecôte
 2062-07-14,1,Fête nationale
 2062-08-15,1,Assomption
 2062-11-01,1,Toussaint
-2062-12-25,1,Hanoucca (1er jour) / Noël
-2063-01-01,1,1er jour de Ramadan / Hanoucca / Jour de l'an
-2063-01-30,1,Aïd el-Fitr
-2063-04-16,1,Lundi de Pâques / Pessa'h (fête)
-2063-05-01,1,Fête du Travail / Yom HaAtzmaout
+2062-12-25,1,Noël
+2063-01-01,1,Jour de l'an
+2063-04-16,1,Lundi de Pâques
+2063-05-01,1,Fête du Travail
 2063-05-08,1,Fête de la Victoire
 2063-05-24,1,Ascension
 2063-06-04,1,Lundi de Pentecôte
 2063-08-15,1,Assomption
-2063-11-01,1,Toussaint / Yom Kippour
-2063-12-25,1,Noël / Ramadan
-2064-01-01,1,Jour de l'an / Ramadan
-2064-03-27,1,Aïd el-Adha
+2063-11-01,1,Toussaint
+2063-12-25,1,Noël
+2064-01-01,1,Jour de l'an
 2064-04-07,1,Lundi de Pâques
-2064-05-01,1,Fête du Travail / Pessa'h
+2064-05-01,1,Fête du Travail
 2064-05-08,1,Fête de la Victoire
 2064-05-15,1,Ascension
 2064-05-26,1,Lundi de Pentecôte
-2064-07-14,1,Fête nationale / Rosh Hashana
+2064-07-14,1,Fête nationale
 2064-08-15,1,Assomption
-2064-11-11,1,Armistice 1918 / Rosh Hashana
-2064-12-25,1,Noël / Ramadan
-2065-01-01,1,Jour de l'an / Ramadan
-2065-01-08,1,Aïd el-Fitr / Rosh Hashana
-2065-03-17,1,Aïd el-Adha
+2064-11-11,1,Armistice
+2064-12-25,1,Noël
+2065-01-01,1,Jour de l'an
 2065-03-30,1,Lundi de Pâques
 2065-05-01,1,Fête du Travail
 2065-05-07,1,Ascension
 2065-05-08,1,Fête de la Victoire
 2065-05-18,1,Lundi de Pentecôte
 2065-07-14,1,Fête nationale
-2065-11-11,1,Armistice 1918
-2065-12-25,1,Hanoucca / Noël / Ramadan
-2065-12-28,1,Aïd el-Fitr / Rosh Hashana
+2065-11-11,1,Armistice
+2065-12-25,1,Noël
 2066-01-01,1,Jour de l'an
-2066-04-12,1,Lundi de Pâques / Pessa'h (fête)
+2066-04-12,1,Lundi de Pâques
 2066-05-20,1,Ascension
 2066-05-31,1,Lundi de Pentecôte
 2066-07-14,1,Fête nationale
 2066-11-01,1,Toussaint
-2066-11-11,1,Armistice 1918
-2067-02-24,1,Aïd el-Adha
+2066-11-11,1,Armistice
 2067-04-04,1,Lundi de Pâques
 2067-05-12,1,Ascension
 2067-05-23,1,Lundi de Pentecôte
 2067-07-14,1,Fête nationale
 2067-08-15,1,Assomption
 2067-11-01,1,Toussaint
-2067-11-11,1,Armistice 1918 / Ramadan
-2067-12-07,1,Aïd el-Fitr / Rosh Hashana
-2068-02-13,1,Aïd el-Adha
+2067-11-11,1,Armistice
 2068-04-23,1,Lundi de Pâques
 2068-05-01,1,Fête du Travail
 2068-05-08,1,Fête de la Victoire
 2068-05-31,1,Ascension
 2068-06-11,1,Lundi de Pentecôte
 2068-08-15,1,Assomption
-2068-11-01,1,Ramadan / Toussaint
-2068-12-25,1,Noël / Rosh Hashana
+2068-11-01,1,Toussaint
+2068-12-25,1,Noël
 2069-01-01,1,Jour de l'an
-2069-02-01,1,Aïd el-Adha
 2069-04-15,1,Lundi de Pâques
 2069-05-01,1,Fête du Travail
-2069-05-08,1,Fête de la Victoire / Lag BaOmer
+2069-05-08,1,Fête de la Victoire
 2069-05-23,1,Ascension
 2069-06-03,1,Lundi de Pentecôte
 2069-08-15,1,Assomption
-2069-11-01,1,Ramadan / Toussaint
-2069-11-11,1,Armistice 1918 / Ramadan
-2069-11-15,1,Aïd el-Fitr / Rosh Hashana
+2069-11-01,1,Toussaint
+2069-11-11,1,Armistice
 2069-12-25,1,Noël
 2070-01-01,1,Jour de l'an
-2070-01-22,1,Aïd el-Adha
 2070-03-31,1,Lundi de Pâques
 2070-05-01,1,Fête du Travail
-2070-05-08,1,Ascension / Fête de la Victoire
+2070-05-08,1,Ascension; Fête de la Victoire
 2070-05-19,1,Lundi de Pentecôte
 2070-07-14,1,Fête nationale
 2070-08-15,1,Assomption
-2070-11-04,1,Aïd el-Fitr / Rosh Hashana
-2070-11-11,1,Armistice 1918
+2070-11-11,1,Armistice
 2070-12-25,1,Noël
-2071-01-01,1,Hanoucca / Jour de l'an
+2071-01-01,1,Jour de l'an
 2071-04-20,1,Lundi de Pâques
 2071-05-01,1,Fête du Travail
 2071-05-08,1,Fête de la Victoire
 2071-05-28,1,Ascension
 2071-06-08,1,Lundi de Pentecôte
 2071-07-14,1,Fête nationale
-2071-11-11,1,Armistice 1918
+2071-11-11,1,Armistice
 2071-12-25,1,Noël
-2071-12-31,1,Aïd el-Adha
 2072-01-01,1,Jour de l'an
 2072-04-11,1,Lundi de Pâques
 2072-05-19,1,Ascension
 2072-05-30,1,Lundi de Pentecôte
 2072-07-14,1,Fête nationale
 2072-08-15,1,Assomption
-2072-10-13,1,Aïd el-Fitr / Rosh Hashana (2e jour)
 2072-11-01,1,Toussaint
-2072-11-11,1,Armistice 1918 / Rosh Hashana
-2072-12-20,1,Aïd el-Adha
+2072-11-11,1,Armistice
 2073-03-27,1,Lundi de Pâques
 2073-05-01,1,Fête du Travail
 2073-05-04,1,Ascension
@@ -1757,30 +1344,26 @@ date,is_market_holiday,market_holiday_name
 2073-05-15,1,Lundi de Pentecôte
 2073-07-14,1,Fête nationale
 2073-08-15,1,Assomption
-2073-10-02,1,Aïd el-Fitr
 2073-11-01,1,Toussaint
-2073-12-25,1,Hanoucca (1er jour) / Noël
+2073-12-25,1,Noël
 2074-01-01,1,Jour de l'an
-2074-04-16,1,Lundi de Pâques / Pessa'h (fête)
+2074-04-16,1,Lundi de Pâques
 2074-05-01,1,Fête du Travail
 2074-05-08,1,Fête de la Victoire
 2074-05-24,1,Ascension
 2074-06-04,1,Lundi de Pentecôte
 2074-08-15,1,Assomption
 2074-11-01,1,Toussaint
-2074-11-29,1,Aïd el-Adha
 2074-12-25,1,Noël
 2075-01-01,1,Jour de l'an
 2075-04-08,1,Lundi de Pâques
-2075-05-01,1,Fête du Travail / Pessa'h (fête)
+2075-05-01,1,Fête du Travail
 2075-05-08,1,Fête de la Victoire
 2075-05-16,1,Ascension
 2075-05-27,1,Lundi de Pentecôte
-2075-08-15,1,Assomption / Ramadan
-2075-09-11,1,Aïd el-Fitr
-2075-11-01,1,Chemini Atseret / Toussaint
-2075-11-11,1,Armistice 1918
-2075-11-18,1,Aïd el-Adha
+2075-08-15,1,Assomption
+2075-11-01,1,Toussaint
+2075-11-11,1,Armistice
 2075-12-25,1,Noël
 2076-01-01,1,Jour de l'an
 2076-04-20,1,Lundi de Pâques
@@ -1789,198 +1372,168 @@ date,is_market_holiday,market_holiday_name
 2076-05-28,1,Ascension
 2076-06-08,1,Lundi de Pentecôte
 2076-07-14,1,Fête nationale
-2076-11-06,1,Aïd el-Adha
-2076-11-11,1,Armistice 1918
-2076-12-25,1,Hanoucca / Noël
+2076-11-11,1,Armistice
+2076-12-25,1,Noël
 2077-01-01,1,Jour de l'an
-2077-04-12,1,Lundi de Pâques / Pessa'h (fête)
+2077-04-12,1,Lundi de Pâques
 2077-05-20,1,Ascension
 2077-05-31,1,Lundi de Pentecôte
 2077-07-14,1,Fête nationale
-2077-08-20,1,Aïd el-Fitr
-2077-10-27,1,Aïd el-Adha
 2077-11-01,1,Toussaint
-2077-11-11,1,Armistice 1918
+2077-11-11,1,Armistice
 2078-04-04,1,Lundi de Pâques
 2078-05-12,1,Ascension
 2078-05-23,1,Lundi de Pentecôte
-2078-07-14,1,Fête nationale / Ramadan
-2078-08-09,1,Aïd el-Fitr
+2078-07-14,1,Fête nationale
 2078-08-15,1,Assomption
 2078-11-01,1,Toussaint
-2078-11-11,1,Armistice 1918
+2078-11-11,1,Armistice
 2079-04-24,1,Lundi de Pâques
-2079-05-01,1,Fête du Travail / Rosh Hashana
+2079-05-01,1,Fête du Travail
 2079-05-08,1,Fête de la Victoire
 2079-06-01,1,Ascension
 2079-06-12,1,Lundi de Pentecôte
-2079-07-14,1,Fête nationale / Ramadan
+2079-07-14,1,Fête nationale
 2079-08-15,1,Assomption
-2079-10-05,1,Aïd el-Adha / Yom Kippour
 2079-11-01,1,Toussaint
 2079-12-25,1,Noël
 2080-01-01,1,Jour de l'an
-2080-04-08,1,Lundi de Pâques / Pessa'h (fête)
+2080-04-08,1,Lundi de Pâques
 2080-05-01,1,Fête du Travail
 2080-05-08,1,Fête de la Victoire
 2080-05-16,1,Ascension
 2080-05-27,1,Lundi de Pentecôte
-2080-07-18,1,Aïd el-Fitr
 2080-08-15,1,Assomption
-2080-09-24,1,Aïd el-Adha
 2080-11-01,1,Toussaint
-2080-11-11,1,Armistice 1918
+2080-11-11,1,Armistice
 2080-12-25,1,Noël
 2081-01-01,1,Jour de l'an
 2081-03-31,1,Lundi de Pâques
 2081-05-01,1,Fête du Travail
-2081-05-08,1,Ascension / Fête de la Victoire
+2081-05-08,1,Ascension; Fête de la Victoire
 2081-05-19,1,Lundi de Pentecôte
-2081-07-07,1,Aïd el-Fitr
 2081-07-14,1,Fête nationale
 2081-08-15,1,Assomption
-2081-11-11,1,Armistice 1918
-2081-12-25,1,Hanoucca (1er jour) / Noël
-2082-01-01,1,Hanoucca / Jour de l'an
+2081-11-11,1,Armistice
+2081-12-25,1,Noël
+2082-01-01,1,Jour de l'an
 2082-04-20,1,Lundi de Pâques
-2082-05-01,1,Fête du Travail / Yom HaAtzmaout
+2082-05-01,1,Fête du Travail
 2082-05-08,1,Fête de la Victoire
-2082-05-28,1,1er jour de Ramadan / Ascension
-2082-06-08,1,Lundi de Pentecôte / Ramadan
-2082-06-26,1,Aïd el-Fitr
+2082-05-28,1,Ascension
+2082-06-08,1,Lundi de Pentecôte
 2082-07-14,1,Fête nationale
-2082-09-02,1,Aïd el-Adha
-2082-11-11,1,Armistice 1918
+2082-11-11,1,Armistice
 2082-12-25,1,Noël
 2083-01-01,1,Jour de l'an
 2083-04-05,1,Lundi de Pâques
 2083-05-13,1,Ascension
-2083-05-24,1,Lundi de Pentecôte / Ramadan
-2083-06-16,1,Aïd el-Fitr / Rosh Hashana
+2083-05-24,1,Lundi de Pentecôte
 2083-07-14,1,Fête nationale
-2083-08-23,1,Aïd el-Adha
 2083-11-01,1,Toussaint
-2083-11-11,1,Armistice 1918
+2083-11-11,1,Armistice
 2084-03-27,1,Lundi de Pâques
 2084-05-01,1,Fête du Travail
 2084-05-04,1,Ascension
-2084-05-08,1,Fête de la Victoire / Ramadan
-2084-05-15,1,Lundi de Pentecôte / Ramadan
+2084-05-08,1,Fête de la Victoire
+2084-05-15,1,Lundi de Pentecôte
 2084-07-14,1,Fête nationale
-2084-08-11,1,Aïd el-Adha
 2084-08-15,1,Assomption
 2084-11-01,1,Toussaint
-2084-12-25,1,Hanoucca / Noël
+2084-12-25,1,Noël
 2085-01-01,1,Jour de l'an
 2085-04-16,1,Lundi de Pâques
-2085-05-01,1,Fête du Travail / Ramadan
-2085-05-08,1,Fête de la Victoire / Ramadan
-2085-05-24,1,Ascension / Ramadan / Rosh Hashana
-2085-05-25,1,Aïd el-Fitr
+2085-05-01,1,Fête du Travail
+2085-05-08,1,Fête de la Victoire
+2085-05-24,1,Ascension
 2085-06-04,1,Lundi de Pentecôte
-2085-08-01,1,Aïd el-Adha
 2085-08-15,1,Assomption
 2085-11-01,1,Toussaint
 2085-12-25,1,Noël
 2086-01-01,1,Jour de l'an
 2086-04-01,1,Lundi de Pâques
-2086-05-01,1,Fête du Travail / Pessa'h (fête) / Ramadan
-2086-05-08,1,Fête de la Victoire / Ramadan
-2086-05-09,1,Ascension / Ramadan
-2086-05-14,1,Aïd el-Fitr
+2086-05-01,1,Fête du Travail
+2086-05-08,1,Fête de la Victoire
+2086-05-09,1,Ascension
 2086-05-20,1,Lundi de Pentecôte
 2086-08-15,1,Assomption
 2086-11-01,1,Toussaint
-2086-11-11,1,Armistice 1918
+2086-11-11,1,Armistice
 2086-12-25,1,Noël
-2087-01-01,1,Hanoucca / Jour de l'an
-2087-04-21,1,Lundi de Pâques / Ramadan
-2087-05-01,1,Fête du Travail / Ramadan
+2087-01-01,1,Jour de l'an
+2087-04-21,1,Lundi de Pâques
+2087-05-01,1,Fête du Travail
 2087-05-08,1,Fête de la Victoire
-2087-05-29,1,Ascension / Yom HaShoah
+2087-05-29,1,Ascension
 2087-06-09,1,Lundi de Pentecôte
-2087-07-10,1,Aïd el-Adha
 2087-07-14,1,Fête nationale
 2087-08-15,1,Assomption
-2087-11-11,1,Armistice 1918
-2087-12-25,1,Noël / Rosh Hashana
+2087-11-11,1,Armistice
+2087-12-25,1,Noël
 2088-01-01,1,Jour de l'an
-2088-04-12,1,Lundi de Pâques / Ramadan
-2088-04-22,1,Aïd el-Fitr
-2088-05-20,1,Ascension / Rosh Hashana
+2088-04-12,1,Lundi de Pâques
+2088-05-20,1,Ascension
 2088-05-31,1,Lundi de Pentecôte
-2088-06-29,1,Aïd el-Adha
 2088-07-14,1,Fête nationale
 2088-11-01,1,Toussaint
-2088-11-11,1,Armistice 1918
-2089-04-04,1,Lundi de Pâques / Ramadan
-2089-04-11,1,Aïd el-Fitr
+2088-11-11,1,Armistice
+2089-04-04,1,Lundi de Pâques
 2089-05-12,1,Ascension
 2089-05-23,1,Lundi de Pentecôte
 2089-07-14,1,Fête nationale
 2089-08-15,1,Assomption
 2089-11-01,1,Toussaint
-2089-11-11,1,Armistice 1918
-2090-03-31,1,Aïd el-Fitr / Rosh Hashana
+2089-11-11,1,Armistice
 2090-04-17,1,Lundi de Pâques
 2090-05-01,1,Fête du Travail
 2090-05-08,1,Fête de la Victoire
-2090-05-25,1,Ascension / Yom HaShoah
+2090-05-25,1,Ascension
 2090-06-05,1,Lundi de Pentecôte
-2090-06-07,1,Aïd el-Adha
 2090-07-14,1,Fête nationale
 2090-08-15,1,Assomption
 2090-11-01,1,Toussaint
 2090-12-25,1,Noël
 2091-01-01,1,Jour de l'an
-2091-03-21,1,Aïd el-Fitr
-2091-04-09,1,Lundi de Pâques / Pessa'h (7e jour)
+2091-04-09,1,Lundi de Pâques
 2091-05-01,1,Fête du Travail
 2091-05-08,1,Fête de la Victoire
 2091-05-17,1,Ascension
-2091-05-28,1,Aïd el-Adha / Lundi de Pentecôte
+2091-05-28,1,Lundi de Pentecôte
 2091-08-15,1,Assomption
 2091-11-01,1,Toussaint
 2091-12-25,1,Noël
 2092-01-01,1,Jour de l'an
 2092-03-31,1,Lundi de Pâques
 2092-05-01,1,Fête du Travail
-2092-05-08,1,Ascension / Fête de la Victoire
-2092-05-16,1,Aïd el-Adha
+2092-05-08,1,Ascension; Fête de la Victoire
 2092-05-19,1,Lundi de Pentecôte
 2092-07-14,1,Fête nationale
 2092-08-15,1,Assomption
-2092-11-11,1,Armistice 1918
-2092-12-25,1,Hanoucca / Noël
+2092-11-11,1,Armistice
+2092-12-25,1,Noël
 2093-01-01,1,Jour de l'an
-2093-02-26,1,Aïd el-Fitr / Rosh Hashana
-2093-04-13,1,Lundi de Pâques / Pessa'h (fête)
+2093-04-13,1,Lundi de Pâques
 2093-05-01,1,Fête du Travail
-2093-05-05,1,Aïd el-Adha
 2093-05-08,1,Fête de la Victoire
 2093-05-21,1,Ascension
 2093-06-01,1,Lundi de Pentecôte
 2093-07-14,1,Fête nationale
-2093-11-11,1,Armistice 1918
+2093-11-11,1,Armistice
 2093-12-25,1,Noël
 2094-01-01,1,Jour de l'an
-2094-02-16,1,Aïd el-Fitr
 2094-04-05,1,Lundi de Pâques
 2094-05-13,1,Ascension
 2094-05-24,1,Lundi de Pentecôte
 2094-07-14,1,Fête nationale
 2094-11-01,1,Toussaint
-2094-11-11,1,Armistice 1918
-2095-04-14,1,Aïd el-Adha
+2094-11-11,1,Armistice
 2095-04-25,1,Lundi de Pâques
 2095-06-02,1,Ascension
 2095-06-13,1,Lundi de Pentecôte
 2095-07-14,1,Fête nationale
 2095-08-15,1,Assomption
 2095-11-01,1,Toussaint
-2095-11-11,1,Armistice 1918
-2096-01-26,1,Aïd el-Fitr
-2096-04-03,1,Aïd el-Adha
+2095-11-11,1,Armistice
 2096-04-16,1,Lundi de Pâques
 2096-05-01,1,Fête du Travail
 2096-05-08,1,Fête de la Victoire
@@ -1988,47 +1541,40 @@ date,is_market_holiday,market_holiday_name
 2096-06-04,1,Lundi de Pentecôte
 2096-08-15,1,Assomption
 2096-11-01,1,Toussaint
-2096-12-25,1,Noël / Ramadan
-2097-01-01,1,Jour de l'an / Ramadan
-2097-01-14,1,Aïd el-Fitr / Hanoucca
+2096-12-25,1,Noël
+2097-01-01,1,Jour de l'an
 2097-04-01,1,Lundi de Pâques
-2097-05-01,1,Fête du Travail / Pessa'h (7e jour)
+2097-05-01,1,Fête du Travail
 2097-05-08,1,Fête de la Victoire
 2097-05-09,1,Ascension
 2097-05-20,1,Lundi de Pentecôte
-2097-08-15,1,Assomption / Tisha Beav
+2097-08-15,1,Assomption
 2097-11-01,1,Toussaint
-2097-11-11,1,Armistice 1918
-2097-12-25,1,Noël / Ramadan
-2098-01-01,1,Hanoucca / Jour de l'an / Ramadan
-2098-01-03,1,Aïd el-Fitr / Rosh Hashana
-2098-03-12,1,Aïd el-Adha
+2097-11-11,1,Armistice
+2097-12-25,1,Noël
+2098-01-01,1,Jour de l'an
 2098-04-21,1,Lundi de Pâques
-2098-05-01,1,Fête du Travail / Rosh Hashana
+2098-05-01,1,Fête du Travail
 2098-05-08,1,Fête de la Victoire
 2098-05-29,1,Ascension
 2098-06-09,1,Lundi de Pentecôte
 2098-07-14,1,Fête nationale
 2098-08-15,1,Assomption
-2098-11-11,1,Armistice 1918
-2098-12-24,1,Aïd el-Fitr / Hanoucca
+2098-11-11,1,Armistice
 2098-12-25,1,Noël
 2099-01-01,1,Jour de l'an
-2099-03-02,1,Aïd el-Adha
 2099-04-13,1,Lundi de Pâques
 2099-05-01,1,Fête du Travail
 2099-05-08,1,Fête de la Victoire
 2099-05-21,1,Ascension
 2099-06-01,1,Lundi de Pentecôte
 2099-07-14,1,Fête nationale
-2099-11-11,1,Armistice 1918
+2099-11-11,1,Armistice
 2099-12-25,1,Noël
 2100-01-01,1,Jour de l'an
-2100-02-19,1,Aïd el-Adha
 2100-03-29,1,Lundi de Pâques
 2100-05-06,1,Ascension
 2100-05-17,1,Lundi de Pentecôte
 2100-07-14,1,Fête nationale
 2100-11-01,1,Toussaint
-2100-11-11,1,Armistice 1918 / Ramadan
-2100-12-02,1,Aïd el-Fitr
+2100-11-11,1,Armistice
