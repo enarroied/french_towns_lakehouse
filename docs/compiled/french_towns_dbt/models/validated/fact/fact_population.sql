@@ -75,6 +75,7 @@ all_years AS (
 SELECT
     a.id,
     a.year,
+    a.year * 10000 + 101 AS date_id,
     p.population,
     (p.population - pp.population) AS year_evolution,
     CASE
