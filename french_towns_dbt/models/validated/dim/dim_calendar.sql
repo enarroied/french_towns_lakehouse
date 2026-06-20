@@ -101,9 +101,9 @@ LEFT JOIN {{ source('french_towns', 'market_holidays') }} m
 LEFT JOIN {{ source('french_towns', 'religious_holidays') }} r
     ON cp.date = r.date
 LEFT JOIN {{ source('french_towns', 'french_presidents') }} p
-    ON cp.date >= p.start_date AND (cp.date <= p.end_date OR p.end_date IS NULL)
+    ON cp.date >= p.start_date AND (cp.date < p.end_date OR p.end_date IS NULL)
 LEFT JOIN {{ source('french_towns', 'french_prime_ministers') }} pm
-    ON cp.date >= pm.start_date AND (cp.date <= pm.end_date OR pm.end_date IS NULL)
+    ON cp.date >= pm.start_date AND (cp.date < pm.end_date OR pm.end_date IS NULL)
 LEFT JOIN {{ source('french_towns', 'french_legislatures') }} l
-    ON cp.date >= l.start_date AND (cp.date <= l.end_date OR l.end_date IS NULL)
+    ON cp.date >= l.start_date AND (cp.date < l.end_date OR l.end_date IS NULL)
 ORDER BY cp.date_id
