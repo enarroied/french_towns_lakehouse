@@ -61,6 +61,18 @@ sources:
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/market_holidays_*.csv')"
 
-      - name: political_context
+      - name: religious_holidays
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/political_context_*.csv')"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/religious_holidays_*.csv')"
+
+      - name: french_presidents
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_presidents_*.csv')"
+
+      - name: french_prime_ministers
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_prime_ministers_*.csv')"
+
+      - name: french_legislatures
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_legislatures_*.csv')"

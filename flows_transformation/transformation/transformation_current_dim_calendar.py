@@ -17,7 +17,10 @@ MODEL_SELECTOR = "dim_calendar"
 INPUT_SOURCES = [
     "french_holidays",
     "market_holidays",
-    "political_context",
+    "religious_holidays",
+    "french_presidents",
+    "french_prime_ministers",
+    "french_legislatures",
 ]
 
 

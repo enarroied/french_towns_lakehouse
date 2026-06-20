@@ -1,5 +1,6 @@
 from flows_integration.shared.connection import get_duckdb_connection
 from flows_integration.shared.fact_loader import append_new_rows
+from flows_integration.shared.fact_loader import drop_table_if_exists
 from flows_integration.shared.validation import assert_validated_exists
 from flows_staging.shared.audit import finalize_run
 from flows_staging.shared.audit import init_run
@@ -24,6 +25,7 @@ def integration_current_dim_calendar() -> None:
 
         for table_name, nk in FACT_TABLES:
             assert_validated_exists(conn, table_name)
+            drop_table_if_exists(conn, table_name)
             append_new_rows(conn, table_name, nk)
 
         finalize_run(run_id=run_id, status="SUCCESS", number_files=1)

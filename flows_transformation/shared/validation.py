@@ -19,7 +19,10 @@ SOURCE_FOLDERS: dict[str, str] = {
     "dim_equipment": "dim_equipment",
     "french_holidays": "dim_calendar",
     "market_holidays": "dim_calendar",
-    "political_context": "dim_calendar",
+    "religious_holidays": "dim_calendar",
+    "french_presidents": "dim_calendar",
+    "french_prime_ministers": "dim_calendar",
+    "french_legislatures": "dim_calendar",
 }
 
 SOURCE_PREFIXES: dict[str, str] = {
@@ -37,7 +40,10 @@ SOURCE_PREFIXES: dict[str, str] = {
     "dim_equipment": "dim_equipment",
     "french_holidays": "french_holidays",
     "market_holidays": "market_holidays",
-    "political_context": "political_context",
+    "religious_holidays": "religious_holidays",
+    "french_presidents": "french_presidents",
+    "french_prime_ministers": "french_prime_ministers",
+    "french_legislatures": "french_legislatures",
 }
 
 

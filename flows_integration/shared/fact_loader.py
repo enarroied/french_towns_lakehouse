@@ -5,6 +5,12 @@ SCHEMA = "lakehouse"
 VALIDATED_BUCKET = "validated"
 
 
+def drop_table_if_exists(conn: duckdb.DuckDBPyConnection, table_name: str) -> None:
+    """Drop an Iceberg table in Polaris if it exists (for schema migration)."""
+    full_name = f"polaris.{SCHEMA}.{table_name}"
+    conn.execute(f"DROP TABLE IF EXISTS {full_name}")
+
+
 def append_new_rows(
     conn: duckdb.DuckDBPyConnection,
     table_name: str,

@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: dim_calendar
-    description: "Master calendar dimension — one row per day from 1900-01-01 to 2100-12-31 with French holidays, market holidays, and 5th-Republic political context"
+    description: "Master calendar dimension — one row per day from 1900-01-01 to 2100-12-31 with holidays, religious calendars, market closures, and 5th-Republic political context"
 
     columns:
       - name: date_id
@@ -59,25 +59,45 @@ models:
         description: "Month name in French (e.g. Janvier, Février)"
         data_type: VARCHAR(10)
 
+      - name: day_name_en
+        description: "Day name in English (e.g. Monday, Tuesday)"
+        data_type: VARCHAR(10)
+
+      - name: month_name_en
+        description: "Month name in English (e.g. January, February)"
+        data_type: VARCHAR(10)
+
       - name: is_weekend
         description: "TRUE if Saturday or Sunday"
         data_type: BOOLEAN
 
       - name: is_public_holiday
-        description: "TRUE if date is a French public holiday (`ferie` = 1)"
+        description: "TRUE if date is a French public holiday"
         data_type: BOOLEAN
 
       - name: fete
-        description: "Holiday name(s); multiple holidays on the same date are joined with ' / '"
+        description: "Holiday name(s) in French"
         data_type: VARCHAR(255)
 
       - name: is_market_holiday
-        description: "TRUE if financial markets are closed on this date"
+        description: "TRUE if Euronext Paris is closed on this date"
         data_type: BOOLEAN
 
-      - name: market_holiday_name
-        description: "Market holiday name"
-        data_type: VARCHAR(255)
+      - name: is_christian_holiday
+        description: "TRUE if date is a Christian feast day"
+        data_type: BOOLEAN
+
+      - name: is_jewish_holiday
+        description: "TRUE if date is a Jewish religious holiday"
+        data_type: BOOLEAN
+
+      - name: is_muslim_holiday
+        description: "TRUE if date is a Muslim religious holiday"
+        data_type: BOOLEAN
+
+      - name: is_chinese_holiday
+        description: "TRUE if date is a traditional Chinese festival"
+        data_type: BOOLEAN
 
       - name: president
         description: "French President in office on this date (5th Republic)"
@@ -89,4 +109,4 @@ models:
 
       - name: legislature
         description: "National Assembly legislature number (5th Republic)"
-        data_type: VARCHAR(10)
+        data_type: VARCHAR(20)

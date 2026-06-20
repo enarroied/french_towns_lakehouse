@@ -40,6 +40,7 @@ dependencies = [
     "plotly>=6.8.0",
     "holidays>=0.99",
     "exchange-calendars>=4.13.2",
+    "lunarcalendar>=0.0.9",
 ]
 
 [dependency-groups]

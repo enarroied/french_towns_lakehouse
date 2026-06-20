@@ -1,8 +1,8 @@
 """Stage dim_calendar enrichment CSVs to MinIO (bronze layer).
 
-Copies 3 static CSVs from data_sources/dim_calendar/ to the staging
-bucket using the shared _process_single_file mechanism (MD5 check,
-archive old version, upload, audit trail).
+Copies CSVs from data_sources/dim_calendar/ to the staging bucket using
+the shared _process_single_file mechanism (MD5 check, archive old
+version, upload, audit trail).
 """
 
 import csv
@@ -34,18 +34,33 @@ FILES = [
     {
         "base_name": "market_holidays",
         "csv_path": ENRICHMENT_DIR / "market_holidays.csv",
-        "fieldnames": ["date", "is_market_holiday", "market_holiday_name"],
+        "fieldnames": ["date", "is_market_holiday"],
     },
     {
-        "base_name": "political_context",
-        "csv_path": ENRICHMENT_DIR / "political_context.csv",
+        "base_name": "religious_holidays",
+        "csv_path": ENRICHMENT_DIR / "religious_holidays.csv",
         "fieldnames": [
-            "start_date",
-            "end_date",
-            "president",
-            "prime_minister",
-            "legislature",
+            "date",
+            "is_christian_holiday",
+            "is_jewish_holiday",
+            "is_muslim_holiday",
+            "is_chinese_holiday",
         ],
+    },
+    {
+        "base_name": "french_presidents",
+        "csv_path": ENRICHMENT_DIR / "french_presidents.csv",
+        "fieldnames": ["start_date", "end_date", "name"],
+    },
+    {
+        "base_name": "french_prime_ministers",
+        "csv_path": ENRICHMENT_DIR / "french_prime_ministers.csv",
+        "fieldnames": ["start_date", "end_date", "name"],
+    },
+    {
+        "base_name": "french_legislatures",
+        "csv_path": ENRICHMENT_DIR / "french_legislatures.csv",
+        "fieldnames": ["start_date", "end_date", "name"],
     },
 ]
 
