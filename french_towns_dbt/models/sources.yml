@@ -76,3 +76,7 @@ sources:
       - name: french_legislatures
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_legislatures_*.csv')"
+
+      - name: lunar_phases
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/lunar_phases_*.csv')"

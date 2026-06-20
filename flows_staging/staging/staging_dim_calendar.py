@@ -62,6 +62,19 @@ FILES = [
         "csv_path": ENRICHMENT_DIR / "french_legislatures.csv",
         "fieldnames": ["start_date", "end_date", "name"],
     },
+    {
+        "base_name": "lunar_phases",
+        "csv_path": ENRICHMENT_DIR / "lunar_phases.csv",
+        "fieldnames": [
+            "date",
+            "moon_phase_value",
+            "moon_phase_name",
+            "moon_illumination_fraction",
+            "is_full_moon",
+            "is_new_moon",
+            "lunar_cycle_id",
+        ],
+    },
 ]
 
 

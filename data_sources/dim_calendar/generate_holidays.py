@@ -18,6 +18,7 @@ from pathlib import Path
 import exchange_calendars as xc
 import holidays
 from dateutil.easter import easter
+from generate_lunar_dimension import write_lunar_dimension_csv
 from lunarcalendar.festival import ChineseNewYear
 from lunarcalendar.festival import ChingMing
 from lunarcalendar.festival import ChongYang
@@ -202,6 +203,10 @@ def write_csv_files() -> None:
     _write_french_holidays(fr_holidays)
     _write_market_holidays(fr_holiday_dates)
     _write_religious_holidays()
+    lunar_count = write_lunar_dimension_csv(
+        START_YEAR, END_YEAR, str(OUTPUT_DIR / "lunar_phases.csv")
+    )
+    print(f"✅ lunar_phases.csv: {lunar_count} dates")
 
     # Dynamic runner execution
     _tl_spec = importlib.util.spec_from_file_location(

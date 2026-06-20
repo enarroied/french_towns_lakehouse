@@ -21,6 +21,7 @@ INPUT_SOURCES = [
     "french_presidents",
     "french_prime_ministers",
     "french_legislatures",
+    "lunar_phases",
 ]
 
 

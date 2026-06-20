@@ -41,6 +41,7 @@ dependencies = [
     "holidays>=0.99",
     "exchange-calendars>=4.13.2",
     "lunarcalendar>=0.0.9",
+    "astral>=3.2",
 ]
 
 [dependency-groups]

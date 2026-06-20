@@ -92,7 +92,13 @@ SELECT
     COALESCE(r.is_chinese_holiday::BOOLEAN, FALSE) AS is_chinese_holiday,
     COALESCE(p.name, '') AS president,
     COALESCE(pm.name, '') AS prime_minister,
-    COALESCE(l.name, '') AS legislature
+    COALESCE(l.name, '') AS legislature,
+    COALESCE(lm.moon_phase_value::DOUBLE, 0.0) AS moon_phase_value,
+    COALESCE(lm.moon_phase_name, '') AS moon_phase_name,
+    COALESCE(lm.moon_illumination_fraction::DOUBLE, 0.0) AS moon_illumination_fraction,
+    COALESCE(lm.is_full_moon::BOOLEAN, FALSE) AS is_full_moon,
+    COALESCE(lm.is_new_moon::BOOLEAN, FALSE) AS is_new_moon,
+    COALESCE(lm.lunar_cycle_id::INTEGER, 0) AS lunar_cycle_id
 FROM calendar_parts cp
 LEFT JOIN {{ source('french_towns', 'french_holidays') }} f
     ON cp.date = f.date
@@ -106,4 +112,6 @@ LEFT JOIN {{ source('french_towns', 'french_prime_ministers') }} pm
     ON cp.date >= pm.start_date AND (cp.date < pm.end_date OR pm.end_date IS NULL)
 LEFT JOIN {{ source('french_towns', 'french_legislatures') }} l
     ON cp.date >= l.start_date AND (cp.date < l.end_date OR l.end_date IS NULL)
+LEFT JOIN {{ source('french_towns', 'lunar_phases') }} lm
+    ON cp.date = lm.date
 ORDER BY cp.date_id

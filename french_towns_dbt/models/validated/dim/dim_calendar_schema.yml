@@ -110,3 +110,27 @@ models:
       - name: legislature
         description: "National Assembly legislature number (5th Republic)"
         data_type: VARCHAR(20)
+
+      - name: moon_phase_value
+        description: "Continuous lunar phase value on astral's 0-28 scale (0=new, 7=first quarter, 14=full, 21=last quarter)"
+        data_type: DOUBLE
+
+      - name: moon_phase_name
+        description: "Categorical phase name (New Moon / Waxing Crescent / First Quarter / Waxing Gibbous / Full Moon / Waning Gibbous / Last Quarter / Waning Crescent)"
+        data_type: VARCHAR(20)
+
+      - name: moon_illumination_fraction
+        description: "Illuminated fraction (0.0-1.0), linear triangle approximation peaking at full moon"
+        data_type: DOUBLE
+
+      - name: is_full_moon
+        description: "TRUE if date falls in the Full Moon band"
+        data_type: BOOLEAN
+
+      - name: is_new_moon
+        description: "TRUE if date falls in the New Moon band"
+        data_type: BOOLEAN
+
+      - name: lunar_cycle_id
+        description: "Brown Lunation Number (Lunation #1 = 1923-01-17 epoch)"
+        data_type: INTEGER
