@@ -52,3 +52,31 @@ sources:
       - name: dim_equipment
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/dim_equipment/dim_equipment_*.csv')"
+
+      - name: french_holidays
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_holidays_*.csv')"
+
+      - name: market_holidays
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/market_holidays_*.csv')"
+
+      - name: religious_holidays
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/religious_holidays_*.csv')"
+
+      - name: french_presidents
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_presidents_*.csv')"
+
+      - name: french_prime_ministers
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_prime_ministers_*.csv')"
+
+      - name: french_legislatures
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/french_legislatures_*.csv')"
+
+      - name: lunar_phases
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/lunar_phases_*.csv')"

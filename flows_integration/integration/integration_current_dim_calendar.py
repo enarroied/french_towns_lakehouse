@@ -9,16 +9,15 @@ from prefect import flow
 
 
 FACT_TABLES = [
-    ("fact_population", ["id", "year"]),
-    ("fact_salaries", ["id", "year"]),
+    ("dim_calendar", ["date_id"]),
 ]
 
 
-@flow(name="integration_current_fact_demographics")
-def integration_current_fact_demographics() -> None:
+@flow(name="integration_current_dim_calendar")
+def integration_current_dim_calendar() -> None:
     preflight()
     run_id = init_run(
-        domain="demographics", layer="INTEGRATION", technical_type="ICEBERG"
+        domain="dim_calendar", layer="INTEGRATION", technical_type="ICEBERG"
     )
 
     try:
@@ -29,11 +28,11 @@ def integration_current_fact_demographics() -> None:
             drop_table_if_exists(conn, table_name)
             append_new_rows(conn, table_name, nk)
 
-        finalize_run(run_id=run_id, status="SUCCESS", number_files=2)
+        finalize_run(run_id=run_id, status="SUCCESS", number_files=1)
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")
         raise
 
 
 if __name__ == "__main__":
-    integration_current_fact_demographics()
+    integration_current_dim_calendar()

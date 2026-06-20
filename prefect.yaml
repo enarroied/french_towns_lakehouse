@@ -58,6 +58,20 @@ deployments:
   work_pool:
     name: local-dev-pool
 
+- name: staging-dim-calendar
+  entrypoint: flows_staging/staging/staging_dim_calendar.py:staging_dim_calendar
+  tags: ["downloader", "calendar", "staging"]
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: transformation-dim-calendar
+  entrypoint: flows_transformation/transformation/transformation_current_dim_calendar.py:transformation_current_dim_calendar
+  tags: ["dbt", "calendar", "transformation"]
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
 - name: transformation-dim-geography
   entrypoint: flows_transformation/transformation/transformation_current_dim_geography.py:transformation_current_dim_geography
   tags: ["dbt", "geography", "transformation"]
@@ -154,6 +168,13 @@ deployments:
   parameters:
     parser_name: ville_sportive
   tags: ["parser", "labels", "staging"]
+  schedules: []
+  work_pool:
+    name: local-dev-pool
+
+- name: integration-dim-calendar
+  entrypoint: flows_integration/integration/integration_current_dim_calendar.py:integration_current_dim_calendar
+  tags: ["iceberg", "calendar", "integration"]
   schedules: []
   work_pool:
     name: local-dev-pool

@@ -1,0 +1,136 @@
+version: 2
+
+models:
+  - name: dim_calendar
+    description: "Master calendar dimension — one row per day from 1900-01-01 to 2100-12-31 with holidays, religious calendars, market closures, and 5th-Republic political context"
+
+    columns:
+      - name: date_id
+        description: "Surrogate key in YYYYMMDD format"
+        data_type: INTEGER
+        tests:
+          - unique
+          - not_null
+
+      - name: date
+        description: "Calendar date"
+        data_type: DATE
+        tests:
+          - unique
+          - not_null
+
+      - name: year
+        description: "Year (ISO 8601)"
+        data_type: INTEGER
+
+      - name: month
+        description: "Month number (1-12)"
+        data_type: INTEGER
+
+      - name: day
+        description: "Day of month (1-31)"
+        data_type: INTEGER
+
+      - name: day_of_year
+        description: "Day of year (1-366)"
+        data_type: INTEGER
+
+      - name: quarter
+        description: "Quarter (1-4)"
+        data_type: INTEGER
+
+      - name: year_month
+        description: "Year-month label (e.g. 2024-01)"
+        data_type: VARCHAR(7)
+
+      - name: iso_week
+        description: "ISO week number (1-53)"
+        data_type: INTEGER
+
+      - name: iso_day_of_week
+        description: "ISO day of week (1=Monday, 7=Sunday)"
+        data_type: INTEGER
+
+      - name: day_name_fr
+        description: "Day name in French (e.g. Lundi, Mardi)"
+        data_type: VARCHAR(10)
+
+      - name: month_name_fr
+        description: "Month name in French (e.g. Janvier, Février)"
+        data_type: VARCHAR(10)
+
+      - name: day_name_en
+        description: "Day name in English (e.g. Monday, Tuesday)"
+        data_type: VARCHAR(10)
+
+      - name: month_name_en
+        description: "Month name in English (e.g. January, February)"
+        data_type: VARCHAR(10)
+
+      - name: is_weekend
+        description: "TRUE if Saturday or Sunday"
+        data_type: BOOLEAN
+
+      - name: is_public_holiday
+        description: "TRUE if date is a French public holiday"
+        data_type: BOOLEAN
+
+      - name: fete
+        description: "Holiday name(s) in French"
+        data_type: VARCHAR(255)
+
+      - name: is_market_holiday
+        description: "TRUE if Euronext Paris is closed on this date"
+        data_type: BOOLEAN
+
+      - name: is_christian_holiday
+        description: "TRUE if date is a Christian feast day"
+        data_type: BOOLEAN
+
+      - name: is_jewish_holiday
+        description: "TRUE if date is a Jewish religious holiday"
+        data_type: BOOLEAN
+
+      - name: is_muslim_holiday
+        description: "TRUE if date is a Muslim religious holiday"
+        data_type: BOOLEAN
+
+      - name: is_chinese_holiday
+        description: "TRUE if date is a traditional Chinese festival"
+        data_type: BOOLEAN
+
+      - name: president
+        description: "French President in office on this date (5th Republic)"
+        data_type: VARCHAR(50)
+
+      - name: prime_minister
+        description: "French Prime Minister in office on this date (5th Republic)"
+        data_type: VARCHAR(50)
+
+      - name: legislature
+        description: "National Assembly legislature number (5th Republic)"
+        data_type: VARCHAR(20)
+
+      - name: moon_phase_value
+        description: "Continuous lunar phase value on astral's 0-28 scale (0=new, 7=first quarter, 14=full, 21=last quarter)"
+        data_type: DOUBLE
+
+      - name: moon_phase_name
+        description: "Categorical phase name (New Moon / Waxing Crescent / First Quarter / Waxing Gibbous / Full Moon / Waning Gibbous / Last Quarter / Waning Crescent)"
+        data_type: VARCHAR(20)
+
+      - name: moon_illumination_fraction
+        description: "Illuminated fraction (0.0-1.0), linear triangle approximation peaking at full moon"
+        data_type: DOUBLE
+
+      - name: is_full_moon
+        description: "TRUE if date falls in the Full Moon band"
+        data_type: BOOLEAN
+
+      - name: is_new_moon
+        description: "TRUE if date falls in the New Moon band"
+        data_type: BOOLEAN
+
+      - name: lunar_cycle_id
+        description: "Brown Lunation Number (Lunation #1 = 1923-01-17 epoch)"
+        data_type: INTEGER
