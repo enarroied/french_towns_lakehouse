@@ -80,3 +80,11 @@ sources:
       - name: lunar_phases
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/dim_calendar/lunar_phases_*.csv')"
+
+      - name: sources
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_source/sources_*.csv')"
+
+      - name: bridge_model_sources
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_source/bridge_model_sources_*.csv')"

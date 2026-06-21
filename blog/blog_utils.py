@@ -23,6 +23,7 @@ GOLD_TABLES = [
     "dim_equipment",
     "dim_source",
     "dim_calendar",
+    "bridge_source_links",
 ]
 
 

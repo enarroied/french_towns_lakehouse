@@ -11,12 +11,10 @@ from prefect import flow
 from prefect import task
 
 
-MODEL_SELECTOR = "dim_equipment fact_equipment"
+MODEL_SELECTOR = "dim_source bridge_source_links"
 
 
-INPUT_SOURCES = [
-    "bpe",
-]
+INPUT_SOURCES = ["sources", "bridge_model_sources"]
 
 
 @task
@@ -25,7 +23,7 @@ def run_stage_external_sources() -> None:
 
 
 @task
-def run_fact_models() -> None:
+def run_models() -> None:
     run_and_test(MODEL_SELECTOR)
 
 
@@ -34,10 +32,12 @@ def check_skip(input_sources: list[str], known_hashes: dict) -> bool:
     return all(source in known_hashes for source in input_sources)
 
 
-@flow(name="transformation_current_fact_equipment")
-def transformation_current_fact_equipment() -> None:
+@flow(name="transformation_current_source_provenance")
+def transformation_current_source_provenance() -> None:
     preflight()
-    run_id = init_run(domain="equipment", layer="TRANSFORMATION", technical_type="DBT")
+    run_id = init_run(
+        domain="source_provenance", layer="TRANSFORMATION", technical_type="DBT"
+    )
 
     try:
         ensure_work_database_exists()
@@ -49,12 +49,9 @@ def transformation_current_fact_equipment() -> None:
 
         validate_inputs(source_names=INPUT_SOURCES)
         run_stage_external_sources()
-        run_fact_models()
+        run_models()
         handle_outputs(
-            model_names=[
-                "dim_equipment",
-                "fact_equipment",
-            ],
+            model_names=["dim_source", "bridge_source_links"],
             run_id=run_id,
         )
         finalize_run(run_id=run_id, status="SUCCESS", number_files=2)
@@ -64,4 +61,4 @@ def transformation_current_fact_equipment() -> None:
 
 
 if __name__ == "__main__":
-    transformation_current_fact_equipment()
+    transformation_current_source_provenance()

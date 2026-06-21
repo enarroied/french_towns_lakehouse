@@ -11,7 +11,7 @@ from prefect import flow
 from prefect import task
 
 
-MODEL_SELECTOR = "dim_labels"
+MODEL_SELECTOR = "dim_labels bridge_source_links"
 
 
 @task

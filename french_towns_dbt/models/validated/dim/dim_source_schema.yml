@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: dim_source
-    description: "Data sources for equipment counts (BPE, OSM, surveys, etc.)"
+    description: "Data sources provenance dimension. Every row in every fact/dimension/bridge table links here via bridge_source_links."
 
     columns:
       - name: source_id
@@ -13,17 +13,29 @@ models:
           - not_null
 
       - name: source_name
-        description: "Short source code (e.g. BPE, OSM)"
-        data_type: VARCHAR(10)
+        description: "Short source code (e.g. bpe, salaries, historical_population)"
+        data_type: VARCHAR(255)
+
+      - name: source_label
+        description: "Human-readable source name (e.g. Base permanente des équipements)"
+        data_type: VARCHAR(255)
 
       - name: organization
         description: "Organization that publishes the data"
-        data_type: VARCHAR(50)
+        data_type: VARCHAR(255)
+
+      - name: domain
+        description: "Data domain (demographics, geography, equipment, labels)"
+        data_type: VARCHAR(100)
+
+      - name: reference_url
+        description: "Webpage with the download link or metadata"
+        data_type: VARCHAR(1024)
 
       - name: license
         description: "Data license"
-        data_type: VARCHAR(100)
-
-      - name: website
-        description: "URL to the source"
         data_type: VARCHAR(255)
+
+      - name: description
+        description: "Detailed description of the dataset"
+        data_type: VARCHAR(4096)

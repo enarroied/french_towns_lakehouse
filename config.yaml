@@ -24,6 +24,12 @@ download:
 
 downloads:
   - name: "historical_population"
+    source_id: 1
+    source_label: "Populations historiques"
+    organization: INSEE
+    reference_url: "https://catalogue-donnees.insee.fr/fr/catalogue/recherche/DS_POPULATIONS_HISTORIQUES"
+    license: "INSEE RP license"
+    description: "Historical population data from French census (Recensement de la population)"
     url: "https://api.insee.fr/melodi/file/DS_POPULATIONS_HISTORIQUES/DS_POPULATIONS_HISTORIQUES_CSV_FR"
     source_file_patterns:
       - "DS_POPULATIONS_HISTORIQUES_data.csv"
@@ -35,6 +41,12 @@ downloads:
     target_folder: "demographics"
 
   - name: "salaries"
+    source_id: 6
+    source_label: "Base Recensement Tous Salaires"
+    organization: INSEE
+    reference_url: "https://www.insee.fr/fr/information/2407785"
+    license: "INSEE salary license"
+    description: "Mean salary by sex and socio-professional category"
     url: "https://api.insee.fr/melodi/file/DS_BTS_SAL_EQTP_SEX_PCS/DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR"
     filename: "salaries"
     source_file_patterns:
@@ -47,6 +59,12 @@ downloads:
     target_folder: "demographics"
 
   - name: "births"
+    source_id: 4
+    source_label: "Naissances — État Civil"
+    organization: INSEE
+    reference_url: "https://www.insee.fr/fr/statistiques/1893255"
+    license: "INSEE EC license"
+    description: "Births data from civil registry (2008-2024)"
     url: "https://www.insee.fr/fr/statistiques/fichier/1893255/base_naissances_2008-2024_geo2025_csv.zip"
     source_file_patterns:
       - "DS_ETAT_CIVIL_NAIS_COMMUNES_data.csv"
@@ -58,6 +76,12 @@ downloads:
     target_folder: "demographics"
 
   - name: "deaths"
+    source_id: 5
+    source_label: "Décès — État Civil"
+    organization: INSEE
+    reference_url: "https://www.insee.fr/fr/statistiques/1893253"
+    license: "INSEE EC license"
+    description: "Deaths data from civil registry"
     url: "https://api.insee.fr/melodi/file/DS_ETAT_CIVIL_DECES_COMMUNES/DS_ETAT_CIVIL_DECES_COMMUNES_CSV_FR"
     source_file_patterns:
       - "DS_ETAT_CIVIL_DECES_COMMUNES_data.csv"
@@ -69,6 +93,12 @@ downloads:
     target_folder: "demographics"
 
   - name: "family"
+    source_id: 2
+    source_label: "Famille — Recensement de la population"
+    organization: INSEE
+    reference_url: "https://catalogue-donnees.insee.fr/fr/catalogue/recherche/DS_RP_FAMILLE_COMP"
+    license: "INSEE RP license"
+    description: "Family composition data from census"
     url: "https://api.insee.fr/melodi/file/DS_RP_FAMILLE_COMP/DS_RP_FAMILLE_COMP_2022_CSV_FR"
     source_file_patterns:
       - "DS_RP_FAMILLE_COMP_2022_data.csv"
@@ -80,6 +110,12 @@ downloads:
     target_folder: "demographics"
 
   - name: "migration"
+    source_id: 3
+    source_label: "Immigration — Recensement de la population"
+    organization: INSEE
+    reference_url: "https://www.insee.fr/fr/statistiques/8582054"
+    license: "INSEE RP license"
+    description: "Migration/immigration data, 2022 dataset"
     url: "https://www.insee.fr/fr/statistiques/fichier/8582054/TD_IMG1A_2022_csv.zip"
     source_file_patterns:
       - "TD_IMG1A_2022.csv"
@@ -91,6 +127,12 @@ downloads:
     target_folder: "demographics"
 
   - name: "french_communes"
+    source_id: 8
+    source_label: "Communes France (GeoJSON)"
+    organization: data.gouv.fr / INSEE COG
+    reference_url: "https://www.data.gouv.fr/datasets/communes-france-1"
+    license: "Open License"
+    description: "Geographic boundaries of French communes from data.gouv.fr (original source INSEE COG)"
     url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
     filename: "communes_france"
     source_file_patterns:
@@ -103,6 +145,12 @@ downloads:
     target_folder: "geography"
 
   - name: "arrondissements"
+    source_id: 9
+    source_label: "Arrondissements — Code Officiel Géographique"
+    organization: INSEE COG
+    reference_url: "https://www.insee.fr/fr/information/6051727"
+    license: "INSEE COG license"
+    description: "Arrondissement codes and chef-lieu flags"
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/arrondissement_2022.csv"
     filename: "arrondissements"
     source_file_patterns:
@@ -115,6 +163,12 @@ downloads:
     target_folder: "geography"
 
   - name: "departements"
+    source_id: 10
+    source_label: "Départements — Code Officiel Géographique"
+    organization: INSEE COG
+    reference_url: "https://www.insee.fr/fr/information/6051727"
+    license: "INSEE COG license"
+    description: "Department codes and chef-lieu flags"
     url: "https://www.insee.fr/fr/statistiques/fichier/6051727/departement_2022.csv"
     filename: "departements"
     source_file_patterns:
@@ -127,6 +181,12 @@ downloads:
     target_folder: "geography"
 
   - name: "zip_codes"
+    source_id: 11
+    source_label: "Base officielle des codes postaux"
+    organization: LaPoste
+    reference_url: "https://datanova.laposte.fr/datasets/laposte-hexasmal"
+    license: "Open License"
+    description: "Official French postal codes from La Poste"
     url: "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-hexasmal/data-files/019HexaSmal.csv"
     filename: "zip_codes"
     source_file_patterns:
@@ -139,6 +199,12 @@ downloads:
     target_folder: "geography"
 
   - name: "bpe"
+    source_id: 7
+    source_label: "Base permanente des équipements"
+    organization: INSEE
+    reference_url: "https://www.insee.fr/fr/metadonnees/source/operation/s2216/politique-diffusion"
+    license: "INSEE BPE license"
+    description: "Permanent database of local facilities and equipment"
     url: "https://www.insee.fr/fr/statistiques/fichier/8217527/DS_BPE_CSV_FR.zip"
     source_file_patterns:
       - "DS_BPE_2024_data.csv"
@@ -150,8 +216,13 @@ downloads:
     target_folder: "equipment"
 
 scrapers:
-  # url = the sitemap; city detail URLs are derived from it
   - name: "petites_cites"
+    source_id: 13
+    source_label: "Petites Cités de Caractère"
+    organization: Petites Cités de Caractère
+    reference_url: "https://www.petitescitesdecaractere.com/"
+    license: "Public (scraped)"
+    description: "Label: Petites Cités de Caractère"
     module: "flows_staging.scrapers.scrape_petites_cites"
     enabled: true
     domain: "labels"
@@ -160,9 +231,13 @@ scrapers:
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
     concurrency: 5
 
-  # url = the human-readable listing page (also used as HTTP Referer)
-  # endpoint = the XHR POST target (scraper-specific, lives in extra)
   - name: "villes_fleuries"
+    source_id: 14
+    source_label: "Villes et Villages Fleuris"
+    organization: CNVVF
+    reference_url: "https://villes-et-villages-fleuris.com/"
+    license: "Public (scraped)"
+    description: "Label: Villes et Villages Fleuris"
     module: "flows_staging.scrapers.scrape_villes_fleuries"
     enabled: true
     domain: "labels"
@@ -174,6 +249,12 @@ scrapers:
     crawl_delay: 1
 
   - name: "plus_beaux_villages"
+    source_id: 15
+    source_label: "Les Plus Beaux Villages de France"
+    organization: Les Plus Beaux Villages de France
+    reference_url: "https://www.les-plus-beaux-villages-de-france.org/"
+    license: "Public (scraped)"
+    description: "Label: Les Plus Beaux Villages de France"
     module: "flows_staging.scrapers.scrape_plus_beaux_villages"
     enabled: true
     domain: "labels"
@@ -182,6 +263,12 @@ scrapers:
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "villes_prudentes"
+    source_id: 16
+    source_label: "Ville Prudente"
+    organization: Ville Prudente
+    reference_url: "https://www.villeprudente.fr/"
+    license: "Public (scraped)"
+    description: "Label: Ville Prudente"
     module: "flows_staging.scrapers.scrape_villes_prudentes"
     enabled: true
     domain: "labels"
@@ -190,6 +277,12 @@ scrapers:
     user_agent: "FrenchTownsBot/1.0 (contact: eric.narro.ied@gmail.com)"
 
   - name: "village_etape"
+    source_id: 17
+    source_label: "Village Étape"
+    organization: Village Étape
+    reference_url: "https://village-etape.fr/"
+    license: "Public (scraped)"
+    description: "Label: Village Étape"
     module: "flows_staging.scrapers.scrape_village_etape"
     enabled: true
     domain: "labels"
@@ -199,6 +292,12 @@ scrapers:
     concurrency: 3
 
   - name: "famille_plus"
+    source_id: 18
+    source_label: "Famille Plus"
+    organization: Famille Plus
+    reference_url: "https://www.familleplus.fr/"
+    license: "Public (scraped)"
+    description: "Label: Famille Plus"
     module: "flows_staging.scrapers.scrape_famille_plus"
     enabled: true
     domain: "labels"
@@ -208,9 +307,45 @@ scrapers:
 
 custom_parsers:
   - name: "ville_sportive"
+    source_id: 19
+    source_label: "Ville Active et Sportive"
+    organization: Ville Active et Sportive
+    reference_url: "https://www.ville-active-et-sportive.com/"
+    license: "Public (PDF parsed)"
+    description: "Label: Ville Active et Sportive"
     module: "flows_staging.custom_parsers.parse_ville_sportive"
     enabled: true
     domain: "labels"
     target_folder: "labels"
     input_dir: "data_sources/ville_active_sportive"
     pdf_file: "2025-palmares.pdf"
+
+sources:
+  - source_id: 12
+    source_name: dim_equipment
+    source_label: "Équipements — code-to-name mapping"
+    organization: INSEE BPE
+    domain: equipment
+    reference_url: "https://www.insee.fr/fr/metadonnees/source/operation/s2216/politique-diffusion"
+    license: "INSEE BPE license"
+    description: "Equipment type code-to-name mapping table (derived from BPE nomenclature)"
+
+source_links:
+  - model: fact_population
+    sources: [1, 2, 3, 4, 5]
+  - model: fact_salaries
+    sources: [6]
+  - model: fact_equipment
+    sources: [7]
+  - model: dim_communes_france
+    sources: [8, 9, 10]
+  - model: dim_zip_codes
+    sources: [11]
+  - model: dim_equipment
+    sources: [12]
+  - model: bridge_communes_zip_codes
+    sources: [11]
+  - model: dim_labels
+    sources: [13, 14, 15, 16, 17, 18, 19]
+  - model: dim_neighbour_communes
+    sources: [8]

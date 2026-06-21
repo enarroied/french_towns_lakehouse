@@ -24,6 +24,8 @@ SOURCE_FOLDERS: dict[str, str] = {
     "french_prime_ministers": "dim_calendar",
     "french_legislatures": "dim_calendar",
     "lunar_phases": "dim_calendar",
+    "sources": "dim_source",
+    "bridge_model_sources": "dim_source",
 }
 
 SOURCE_PREFIXES: dict[str, str] = {
@@ -46,6 +48,8 @@ SOURCE_PREFIXES: dict[str, str] = {
     "french_prime_ministers": "french_prime_ministers",
     "french_legislatures": "french_legislatures",
     "lunar_phases": "lunar_phases",
+    "sources": "sources",
+    "bridge_model_sources": "bridge_model_sources",
 }
 
 
