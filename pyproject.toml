@@ -35,6 +35,10 @@ dependencies = [
     "ipykernel>=7.2.0",
     "polars>=1.40.1",
     "matplotlib>=3.10.9",
+    "altair>=5.0.0",
+    "weasyprint>=60.0",
+    "vl-convert-python>=1.0.0",
+    "tqdm>=4.66.0",
     "great-tables>=0.21.0",
     "itables>=2.7.3",
     "plotly>=6.8.0",
@@ -42,6 +46,7 @@ dependencies = [
     "exchange-calendars>=4.13.2",
     "lunarcalendar>=0.0.9",
     "astral>=3.2",
+    "pdf2image>=1.17.0",
 ]
 
 [dependency-groups]

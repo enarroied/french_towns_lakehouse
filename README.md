@@ -717,6 +717,35 @@ source of truth. The only per-connection overhead is `LOAD iceberg;`
 
 ---
 
+---
+
+## Generate Reports
+
+Generate PNG slides + PDF summaries from lakehouse data:
+
+```bash
+# Specific department
+python -m generate_reports.cli --department 75
+
+# Multiple departments
+python -m generate_reports.cli --department 75 --department 33
+
+# All departments
+python -m generate_reports.cli --all-departments
+
+# Limit cities per department (for testing)
+python -m generate_reports.cli --department 75 --limit 5
+```
+
+**Output:**
+
+- `output/{department_code}/{commune_id}_slide{1..6}.png` — 6 slides per city (1920×1080)
+  - Slides 1-3: Population (hero KPI, trend chart, dept comparison)
+  - Slides 4-6: Salary (hero KPI, trend chart, dept comparison)
+- `output/{department_code}_summary.pdf` — Department summary with Great Table
+
+---
+
 ## Development
 
 ### Running Tests
