@@ -9,30 +9,31 @@ from prefect import flow
 
 
 FACT_TABLES = [
-    ("fact_equipment", ["commune_id", "year", "equipment_type_id"]),
-    ("dim_equipment", ["equipment_code"]),
+    ("dim_source", ["source_name"]),
+    ("bridge_source_links", ["source_link_id"]),
 ]
 
 
-@flow(name="integration_current_fact_equipment")
-def integration_current_fact_equipment() -> None:
+@flow(name="integration_current_source_provenance")
+def integration_current_source_provenance() -> None:
     preflight()
-    run_id = init_run(domain="equipment", layer="INTEGRATION", technical_type="ICEBERG")
+    run_id = init_run(
+        domain="source_provenance", layer="INTEGRATION", technical_type="ICEBERG"
+    )
 
     try:
         conn = get_duckdb_connection()
 
         for table_name, nk in FACT_TABLES:
             assert_validated_exists(conn, table_name)
-            if table_name == "fact_equipment":
-                drop_table_if_exists(conn, table_name)
+            drop_table_if_exists(conn, table_name)
             append_new_rows(conn, table_name, nk)
 
-        finalize_run(run_id=run_id, status="SUCCESS", number_files=1)
+        finalize_run(run_id=run_id, status="SUCCESS", number_files=2)
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")
         raise
 
 
 if __name__ == "__main__":
-    integration_current_fact_equipment()
+    integration_current_source_provenance()

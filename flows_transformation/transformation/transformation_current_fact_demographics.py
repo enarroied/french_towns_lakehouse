@@ -57,7 +57,10 @@ def transformation_current_fact_demographics() -> None:
         validate_inputs(source_names=INPUT_SOURCES)
         run_stage_external_sources()
         run_fact_models()
-        handle_outputs(model_names=["fact_population", "fact_salaries"], run_id=run_id)
+        handle_outputs(
+            model_names=["fact_population", "fact_salaries"],
+            run_id=run_id,
+        )
         finalize_run(run_id=run_id, status="SUCCESS", number_files=2)
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")

@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: bridge_source_links
+    description: "Row-level source provenance for all models. Each row links a target row in a model to its data source(s) in dim_source."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['target_table', 'target_key', 'source_id']
+
+    columns:
+      - name: source_link_id
+        description: "Surrogate primary key"
+        data_type: INTEGER
+        tests:
+          - unique
+          - not_null
+
+      - name: target_table
+        description: "Name of the target model (e.g. fact_population, dim_communes_france)"
+        data_type: VARCHAR
+
+      - name: target_key
+        description: "Natural key of the target row, serialised as pipe-separated values"
+        data_type: VARCHAR
+        tests:
+          - not_null
+
+      - name: source_id
+        description: "Foreign key to dim_source"
+        data_type: INTEGER
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_source')
+                field: source_id
