@@ -45,14 +45,13 @@ def _resolve_departments(
 
 
 def _collect_slides(dept_code: str, out_path: Path) -> list[Path]:
-    slide_paths = sorted(out_path.glob(f"{dept_code}/*_slide1.png"))
-    city_slides: list[Path] = []
-    for sp in slide_paths:
-        commune_id = sp.stem.replace("_slide1", "")
-        city_slides.extend(
-            sorted(out_path.glob(f"{dept_code}/{commune_id}_slide*.png"))
-        )
-    return city_slides
+    png_slides = list(out_path.glob(f"{dept_code}/*_slide*.png"))
+    html_slides = [
+        h
+        for h in out_path.glob(f"{dept_code}/*_slide*.html")
+        if not h.with_suffix(".png").exists()
+    ]
+    return sorted(png_slides + html_slides)
 
 
 def _run_parallel(pool_args: list[dict], workers: int) -> None:
@@ -109,7 +108,9 @@ def _process_department(
     city_slides = _collect_slides(dept_code, out_path)
     generate_dept_pdf(city_slides, df, dept_name, pdf_path)
 
-    click.echo(f"  Done: {len(df)} cities processed, {len(rows) * 6} slides generated")
+    click.echo(
+        f"  Done: {len(df)} cities processed, {len(city_slides)} slides generated"
+    )
 
 
 def _run(

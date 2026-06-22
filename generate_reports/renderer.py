@@ -4,28 +4,14 @@ from pathlib import Path
 
 import altair as alt
 import pandas as pd
-from generate_reports.config import ACCENT_BLUE
-from generate_reports.config import ACCENT_GREEN
-from generate_reports.config import ACCENT_RED
-from generate_reports.config import DARK_BG
-from generate_reports.config import DPI
 from generate_reports.config import HEIGHT
-from generate_reports.config import LIGHT_GRAY
-from generate_reports.config import MARGIN_X
-from generate_reports.config import MARGIN_Y
-from generate_reports.config import WHITE
 from generate_reports.config import WIDTH
-from generate_reports.config import get_font_path
 from generate_reports.queries import get_population_history
 from generate_reports.queries import get_population_timeseries
 from generate_reports.queries import get_salary_history
 from generate_reports.queries import get_salary_timeseries
-from generate_reports.tables import create_department_summary_table
 from great_tables import GT
 from pdf2image import convert_from_bytes
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
 from weasyprint import HTML
 
 
@@ -33,19 +19,6 @@ logger = logging.getLogger(__name__)
 
 alt.data_transformers.enable("default")
 alt.renderers.enable("default")
-
-
-def _text_bbox(text: str, font: ImageFont.FreeTypeFont) -> tuple[int, int, int, int]:
-    return font.getbbox(text)
-
-
-def _draw_top_left_text(
-    draw,
-    text: str,
-    font: ImageFont.FreeTypeFont,
-    fill: tuple[int, int, int] = WHITE,
-) -> None:
-    draw.text((MARGIN_X, MARGIN_Y), text, font=font, fill=fill)
 
 
 def create_slide_hero_combined(
@@ -57,42 +30,47 @@ def create_slide_hero_combined(
     pop_year: int | None = None,
     sal_year: int | None = None,
 ) -> None:
-    img = Image.new("RGB", (WIDTH, HEIGHT), DARK_BG)
-    draw = ImageDraw.Draw(img)
-
-    font_city = ImageFont.truetype(get_font_path(light=True), 48)
-    font_dept = ImageFont.truetype(get_font_path(light=True), 28)
-    font_value = ImageFont.truetype(get_font_path(bold=True), 160)
-    font_label = ImageFont.truetype(get_font_path(), 36)
-
-    draw.text((MARGIN_X, MARGIN_Y), city_name, font=font_city, fill=LIGHT_GRAY)
-    draw.text((MARGIN_X, MARGIN_Y + 60), dept_name, font=font_dept, fill=LIGHT_GRAY)
-
-    center_x = WIDTH // 2
-
-    def _draw_value(draw, value, label, x_center, color):
-        if value is None or pd.isna(value):
-            return
-        value_str = f"{int(value):,}"
-        bbox = _text_bbox(value_str, font_value)
-        vw = bbox[2] - bbox[0]
-        vh = bbox[3] - bbox[1]
-        vx = x_center - vw // 2
-        vy = (HEIGHT - vh) // 2 - 60
-        draw.text((vx, vy), value_str, font=font_value, fill=WHITE)
-
-        lb = _text_bbox(label, font_label)
-        lw = lb[2] - lb[0]
-        lx = x_center - lw // 2
-        draw.text((lx, vy + vh + 60), label, font=font_label, fill=color)
+    pop_is_null = pop_value is None or (
+        isinstance(pop_value, float) and pd.isna(pop_value)
+    )
+    sal_is_null = sal_value is None or (
+        isinstance(sal_value, float) and pd.isna(sal_value)
+    )
+    if pop_is_null and sal_is_null:
+        logger.info(
+            "Skipping hero slide for %s: no population or salary data", city_name
+        )
+        return
 
     pop_label = "Population" + (f" ({pop_year})" if pop_year else "")
     sal_label = "Mean Salary (€)" + (f" ({sal_year})" if sal_year else "")
 
-    _draw_value(draw, pop_value, pop_label, center_x // 2, ACCENT_GREEN)
-    _draw_value(draw, sal_value, sal_label, center_x + center_x // 2, ACCENT_BLUE)
+    pop_html = ""
+    if not pop_is_null:
+        pop_html = f"""
+    <div style="position:absolute;top:50%;left:25%;transform:translate(-50%,-60%);text-align:center;">
+      <div style="font-size:100px;font-weight:700;color:white;line-height:1.1;">{int(pop_value):,}</div>
+      <div style="font-size:28px;color:#4CAF50;margin-top:20px;">{pop_label}</div>
+    </div>"""
 
-    img.save(output_path, dpi=(DPI, DPI), optimize=True)
+    sal_html = ""
+    if not sal_is_null:
+        sal_html = f"""
+    <div style="position:absolute;top:50%;left:75%;transform:translate(-50%,-60%);text-align:center;">
+      <div style="font-size:100px;font-weight:700;color:white;line-height:1.1;">{int(sal_value):,}</div>
+      <div style="font-size:28px;color:#42A5F5;margin-top:20px;">{sal_label}</div>
+    </div>"""
+
+    html_content = f"""<div style="width:100%;height:100vh;background-color:#141923;color:white;font-family:Montserrat,'DejaVu Sans',sans-serif;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:40px;left:40px;">
+    <div style="font-size:32px;font-weight:300;color:#c8c8c8;">{city_name}</div>
+    <div style="font-size:20px;font-weight:300;color:#c8c8c8;margin-top:6px;">{dept_name}</div>
+  </div>
+  {pop_html}
+  {sal_html}
+</div>"""
+
+    Path(output_path).with_suffix(".html").write_text(html_content)
 
 
 def create_slide_trend(
@@ -101,22 +79,6 @@ def create_slide_trend(
     metric: str,
     output_path: str | Path,
 ) -> None:
-    if timeseries_df.empty:
-        img = Image.new("RGB", (WIDTH, HEIGHT), DARK_BG)
-        draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(get_font_path(), 36)
-        cx = WIDTH // 2
-        cy = HEIGHT // 2
-        bbox = _text_bbox(f"No trend data for {city_name}", font)
-        draw.text(
-            (cx - (bbox[2] - bbox[0]) // 2, cy),
-            f"No trend data for {city_name}",
-            font=font,
-            fill=ACCENT_RED,
-        )
-        img.save(output_path, dpi=(DPI, DPI))
-        return None
-
     if metric == "population":
         y_col = "population"
         title = f"{city_name} — Population Trend"
@@ -126,9 +88,12 @@ def create_slide_trend(
         title = f"{city_name} — Mean Salary Trend"
         y_title = "Mean Salary (€)"
 
+    if timeseries_df.empty or y_col not in timeseries_df.columns:
+        return
+
     df_clean = timeseries_df.dropna(subset=["year", y_col]).copy()
-    if df_clean.empty:
-        return create_slide_trend(city_name, pd.DataFrame(), metric, output_path)
+    if len(df_clean) < 2:
+        return
 
     df_clean["year"] = df_clean["year"].astype(int)
 
@@ -166,8 +131,8 @@ def create_slide_trend(
         .configure_view(strokeWidth=0)
     )
 
-    chart.save(str(output_path), scale_factor=1)
-    return None
+    chart.save(str(output_path), scale_factor=0.5)
+    return
 
 
 def create_slide_table_png(
@@ -179,19 +144,6 @@ def create_slide_table_png(
     output_path: str | Path,
 ) -> None:
     if df.empty or "year" not in df.columns:
-        img = Image.new("RGB", (WIDTH, HEIGHT), DARK_BG)
-        draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(get_font_path(), 36)
-        cx = WIDTH // 2
-        cy = HEIGHT // 2
-        bbox = _text_bbox(f"No data for {commune_name}", font)
-        draw.text(
-            (cx - (bbox[2] - bbox[0]) // 2, cy),
-            f"No data for {commune_name}",
-            font=font,
-            fill=ACCENT_RED,
-        )
-        img.save(output_path, dpi=(DPI, DPI))
         return
 
     if table_type == "population":
@@ -218,22 +170,10 @@ def create_slide_table_png(
 
     gt = _build_table(table_df, title, subtitle, table_type)
     if gt is None:
-        img = Image.new("RGB", (WIDTH, HEIGHT), DARK_BG)
-        draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(get_font_path(), 36)
-        cx = WIDTH // 2
-        cy = HEIGHT // 2
-        bbox = _text_bbox(f"No data for {commune_name}", font)
-        draw.text(
-            (cx - (bbox[2] - bbox[0]) // 2, cy),
-            f"No data for {commune_name}",
-            font=font,
-            fill=ACCENT_RED,
-        )
-        img.save(output_path, dpi=(DPI, DPI))
         return
 
     html = gt.as_raw_html()
+    Path(output_path).with_suffix(".html").write_text(html)
     slide_css = f"""
         @page {{
             size: {WIDTH}px {HEIGHT}px;
@@ -291,7 +231,7 @@ def create_slide_table_png(
     pdf_bytes = HTML(string=full_html).write_pdf()
     images = convert_from_bytes(pdf_bytes, dpi=72, first_page=1, last_page=1)
     if images:
-        images[0].save(str(output_path))
+        images[0].save(str(output_path), optimize=True)
 
 
 def _build_table(
@@ -391,19 +331,6 @@ def create_slide_comparison_combined(
         )
 
     if not metrics:
-        img = Image.new("RGB", (WIDTH, HEIGHT), DARK_BG)
-        draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(get_font_path(), 36)
-        cx = WIDTH // 2
-        cy = HEIGHT // 2
-        bbox = _text_bbox(f"No comparison data for {city_name}", font)
-        draw.text(
-            (cx - (bbox[2] - bbox[0]) // 2, cy),
-            f"No comparison data for {city_name}",
-            font=font,
-            fill=ACCENT_RED,
-        )
-        img.save(output_path, dpi=(DPI, DPI))
         return
 
     color_scale = alt.Scale(
@@ -553,7 +480,7 @@ def create_slide_comparison_combined(
         .configure_axis(grid=False)
     )
 
-    final.save(str(output_path), scale_factor=1)
+    final.save(str(output_path), scale_factor=0.5)
 
 
 def generate_city_slides(
@@ -565,6 +492,13 @@ def generate_city_slides(
     name = city_row["name"]
     dept_code = city_row["department_code"]
     dept_name = city_row["department_name"]
+    name_slug = (
+        name.lower()
+        .replace(" ", "_")
+        .replace("-", "_")
+        .replace("'", "")
+        .replace("/", "_")
+    )
 
     slide_dir = Path(output_dir) / dept_code
     slide_dir.mkdir(parents=True, exist_ok=True)
@@ -598,7 +532,7 @@ def generate_city_slides(
         dept_name,
         int(pop_val) if pop_val is not None and not pd.isna(pop_val) else None,
         int(sal_val) if sal_val is not None and not pd.isna(sal_val) else None,
-        slide_dir / f"{commune_id}_slide1.png",
+        slide_dir / f"{commune_id}_{name_slug}_slide1.png",
         pop_year=int(pop_year)
         if pop_year is not None and not pd.isna(pop_year)
         else None,
@@ -611,7 +545,7 @@ def generate_city_slides(
         name,
         pop_ts,
         "population",
-        slide_dir / f"{commune_id}_slide2.png",
+        slide_dir / f"{commune_id}_{name_slug}_slide2.png",
     )
 
     create_slide_table_png(
@@ -620,14 +554,14 @@ def generate_city_slides(
         dept_name,
         dept_code,
         "population",
-        slide_dir / f"{commune_id}_slide3.png",
+        slide_dir / f"{commune_id}_{name_slug}_slide3.png",
     )
 
     create_slide_trend(
         name,
         sal_ts,
         "salary",
-        slide_dir / f"{commune_id}_slide4.png",
+        slide_dir / f"{commune_id}_{name_slug}_slide4.png",
     )
 
     create_slide_table_png(
@@ -636,7 +570,7 @@ def generate_city_slides(
         dept_name,
         dept_code,
         "salary",
-        slide_dir / f"{commune_id}_slide5.png",
+        slide_dir / f"{commune_id}_{name_slug}_slide5.png",
     )
 
     create_slide_comparison_combined(
@@ -647,8 +581,102 @@ def generate_city_slides(
         float(sal_val) if sal_val is not None and not pd.isna(sal_val) else None,
         float(sal_avg) if sal_avg is not None and not pd.isna(sal_avg) else None,
         sal_ratio,
-        slide_dir / f"{commune_id}_slide6.png",
+        slide_dir / f"{commune_id}_{name_slug}_slide6.png",
     )
+
+
+def _build_combined_page_html(slide_path: Path, next_path: Path) -> str:
+    table_html = next_path.with_suffix(".html").read_text()
+    return f"""<div style="display:flex;width:100%;height:100vh;page-break-after:always;">
+  <div style="width:50%;background-color:#141923;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+    <img src="{slide_path.resolve().as_uri()}" style="max-width:100%;max-height:100%;object-fit:contain;">
+  </div>
+  <div style="width:50%;background-color:white;padding:20px;overflow:auto;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;">
+      <style>
+        .gt_table {{ font-size: 10px !important; }}
+        .gt_title {{ font-size: 14px !important; }}
+        .gt_subtitle {{ font-size: 10px !important; }}
+        .gt_heading {{ font-size: 12px !important; }}
+        th {{ font-size: 10px !important; padding: 4px 6px !important; }}
+        td {{ font-size: 9px !important; padding: 3px 6px !important; }}
+      </style>
+      {table_html}
+    </div>
+  </div>
+</div>"""
+
+
+def _build_toc_html(toc_items: list[tuple[str, str]], department_name: str) -> str:
+    toc_items_sorted = sorted(toc_items, key=lambda x: x[0].lower())
+    toc_entries = "".join(
+        f'<li><a href="#city-{cid}" style="color:#4CAF50;text-decoration:none;font-size:14px;">{name}</a></li>'
+        for name, cid in toc_items_sorted
+    )
+    return f"""<div style="page-break-after:always;color:white;padding:40px;background-color:#141923;min-height:100%;">
+    <h1 style="font-family:Montserrat,DejaVu Sans,sans-serif;font-size:36px;">{department_name}</h1>
+    <h2 style="font-family:Montserrat,DejaVu Sans,sans-serif;font-size:28px;color:#aaa;">Table of Contents</h2>
+    <ul style="columns:3;list-style:none;padding:0;font-family:Montserrat,DejaVu Sans,sans-serif;">{toc_entries}</ul>
+</div>"""
+
+
+def _process_slides(
+    city_slides: list[Path],
+    city_names: dict,
+) -> tuple[list[str], list[tuple[str, str]]]:
+    pages: list[str] = []
+    toc_items: list[tuple[str, str]] = []
+    seen_ids: set[str] = set()
+
+    i = 0
+    while i < len(city_slides):
+        slide_path = city_slides[i]
+        if not slide_path.exists():
+            i += 1
+            continue
+
+        stem = slide_path.stem
+        commune_id = stem.split("_")[0]
+        slide_num = int(stem.split("_")[-1].replace("slide", ""))
+
+        if commune_id not in seen_ids:
+            seen_ids.add(commune_id)
+            name = city_names.get(commune_id, commune_id)
+            toc_items.append((name, commune_id))
+            pages.append(f'<a id="city-{commune_id}"></a>')
+
+        is_trend = slide_num in (2, 4)
+        has_next = i + 1 < len(city_slides)
+        if is_trend and has_next:
+            next_path = city_slides[i + 1]
+            next_stem = next_path.stem
+            next_slide_num = int(next_stem.split("_")[-1].replace("slide", ""))
+            next_is_table = next_slide_num == slide_num + 1
+            next_same_commune = next_stem.split("_")[0] == commune_id
+            next_has_html = next_path.with_suffix(".html").exists()
+
+            if next_is_table and next_same_commune and next_has_html:
+                pages.append(_build_combined_page_html(slide_path, next_path))
+                i += 2
+                continue
+
+        if slide_path.suffix == ".html":
+            html_content = slide_path.read_text()
+            pages.append(f'<div style="page-break-after:always;">{html_content}</div>')
+        else:
+            html_path = slide_path.with_suffix(".html")
+            if html_path.exists():
+                table_html = html_path.read_text()
+                pages.append(
+                    f'<div style="page-break-after:always;background-color:white;padding:40px;">{table_html}</div>'
+                )
+            else:
+                pages.append(
+                    f'<img src="{slide_path.resolve().as_uri()}" style="width:100%;page-break-after:always;">'
+                )
+        i += 1
+
+    return pages, toc_items
 
 
 def generate_dept_pdf(
@@ -657,19 +685,15 @@ def generate_dept_pdf(
     department_name: str,
     output_path: str | Path,
 ) -> None:
-    pages = []
+    if df.empty or "id" not in df.columns:
+        city_names = {}
+    else:
+        city_names = dict(zip(df["id"], df["name"], strict=False))
 
-    for slide_path in city_slides:
-        if slide_path.exists():
-            pages.append(
-                f'<img src="{slide_path.resolve().as_uri()}" style="width:100%;page-break-after:always;">'
-            )
+    pages, toc_items = _process_slides(city_slides, city_names)
+    toc_html = _build_toc_html(toc_items, department_name) if toc_items else ""
 
-    gt = create_department_summary_table(df, department_name)
-    if gt is not None:
-        pages.append(gt.as_raw_html())
-
-    if not pages:
+    if not pages and not toc_html:
         logger.warning("No content for department %s, skipping PDF", department_name)
         return
 
@@ -687,26 +711,6 @@ def generate_dept_pdf(
             display: block;
             max-width: 100%;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            color: white;
-            font-family: 'Montserrat', 'DejaVu Sans', sans-serif;
-        }
-        th, td {
-            padding: 8px 12px;
-            text-align: right;
-        }
-        th {
-            background-color: #2a2f3f;
-            color: white;
-            font-weight: bold;
-            border-bottom: 2px solid #4CAF50;
-        }
-        td {
-            color: white;
-            border-bottom: 1px solid #333;
-        }
     """
 
     full_html = f"""<!DOCTYPE html>
@@ -716,6 +720,7 @@ def generate_dept_pdf(
     <style>{css}</style>
 </head>
 <body>
+    {toc_html}
     {"".join(pages)}
 </body>
 </html>"""
