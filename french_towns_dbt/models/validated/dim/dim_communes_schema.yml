@@ -1,24 +1,16 @@
 version: 2
 
 models:
-  - name: dim_communes_france
-    description: "Master dimension table of all French communes with geographic and administrative information"
+  - name: dim_communes
+    description: "Administrative dimension of all French communes including COM territories — built from INSEE COG"
     columns:
       - name: id
-        description: "INSEE commune code (5-character identifier, handles Corsica 2A/2B)"
+        description: "INSEE commune code (5-character identifier)"
         data_type: CHAR(5)
         tests:
           - unique:
               arguments:
                 severity: error
-          - not_null:
-              arguments:
-                severity: error
-
-      - name: current_code
-        description: "Current INSEE code if commune has changed (otherwise same as id)"
-        data_type: CHAR(5)
-        tests:
           - not_null:
               arguments:
                 severity: error
@@ -35,45 +27,46 @@ models:
         description: "Commune name in UPPERCASE"
         data_type: VARCHAR(255)
 
-      - name: name_lower
-        description: "Commune name in lowercase"
-        data_type: VARCHAR(255)
-
-      - name: siren_code
-        description: "SIREN code for the commune (administrative identifier)"
-        data_type: CHAR(10)
+      - name: arrondissement_code
+        description: "INSEE arrondissement code (NULL for COM territories)"
+        data_type: VARCHAR(4)
 
       - name: arrondissement_name
-        description: "Name of the arrondissement"
+        description: "Name of the arrondissement (NULL for COM territories)"
         data_type: VARCHAR(255)
-
-      - name: arrondissement_code
-        description: "INSEE arrondissement code"
-        data_type: CHAR(7)
-
-      - name: department_name
-        description: "Name of the department"
-        data_type: VARCHAR(255)
-        tests:
-          - not_null:
-              arguments:
-                severity: error
 
       - name: department_code
-        description: "INSEE department code (2A, 2B, 01, 02, etc.)"
+        description: "INSEE department code (2A, 2B, 01–95, 971–976, or COMER code for COM)"
         data_type: VARCHAR(3)
         tests:
           - not_null:
               arguments:
                 severity: error
 
-      - name: region_name
-        description: "Name of the region"
+      - name: department_name
+        description: "Name of the department or COM territory"
         data_type: VARCHAR(255)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
 
       - name: region_code
-        description: "INSEE region code (numeric)"
-        data_type: INTEGER
+        description: "INSEE region code (numeric, or COMER code for COM)"
+        data_type: VARCHAR(2)
+
+      - name: region_name
+        description: "Name of the region or COM territory"
+        data_type: VARCHAR(255)
+
+      - name: territory_type
+        description: "Classification: 'METROPOLE_DROM' for mainland + overseas departments, 'COM' for overseas collectivities"
+        data_type: VARCHAR(14)
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["METROPOLE_DROM", "COM"]
+                severity: error
 
       - name: flag_corsica
         description: "1 if commune is in Corsica (department 2A or 2B), 0 otherwise"
@@ -94,7 +87,7 @@ models:
                 severity: error
 
       - name: flag_prefecture
-        description: "1 if commune is a department prefecture (capital), 0 otherwise"
+        description: "1 if commune is a department prefecture (capital), 0 otherwise (always 0 for COM)"
         data_type: INTEGER
         tests:
           - accepted_values:
@@ -103,7 +96,7 @@ models:
                 severity: error
 
       - name: flag_chef_lieu_arrondissement
-        description: "1 if commune is an arrondissement capital, 0 otherwise"
+        description: "1 if commune is an arrondissement capital, 0 otherwise (always 0 for COM)"
         data_type: INTEGER
         tests:
           - accepted_values:
@@ -118,69 +111,4 @@ models:
           - accepted_values:
               arguments:
                 values: [0, 1]
-                severity: error
-
-      - name: geometry
-        description: "Geospatial geometry (multipolygon) of commune boundaries"
-        data_type: GEOMETRY
-
-      - name: geo_point_2d
-        description: "Centroid point coordinates [longitude, latitude]"
-        data_type: STRUCT
-
-      - name: area_km2
-        description: "Commune area in square kilometers (calculated using Lambert-93 projection for metropolitan France, \
-                      EPSG:2970 for Guadeloupe\
-                      EPSG:2973 for Martinique\
-                      EPSG:2972 for French Guiana\
-                      EPSG:2975 for Reunion Island\
-                      EPSG:2981 for St. Pierre et Miquelon\
-                      EPSG:4471 for Mayotte\
-                      )"
-        data_type: DOUBLE
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 300000  # 300,000 km² (covers French Guiana's largest communes)
-                severity: error
-
-      - name: centroid
-        description: "Geometric centroid point of the commune"
-        data_type: GEOMETRY
-
-      - name: bbox_xmin
-        description: "Minimum X coordinate of bounding box (longitude)"
-        data_type: DOUBLE
-
-      - name: bbox_xmax
-        description: "Maximum X coordinate of bounding box (longitude)"
-        data_type: DOUBLE
-
-      - name: bbox_ymin
-        description: "Minimum Y coordinate of bounding box (latitude)"
-        data_type: DOUBLE
-
-      - name: bbox_ymax
-        description: "Maximum Y coordinate of bounding box (latitude)"
-        data_type: DOUBLE
-
-      - name: perimeter
-        description: "Perimeter length of commune boundary"
-        data_type: DOUBLE
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 1000000000
-                severity: error
-
-      - name: number_enclaves
-        description: "Number of enclaves (holes) within the commune polygon"
-        data_type: INTEGER
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 100
                 severity: error

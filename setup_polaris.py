@@ -357,7 +357,8 @@ def main() -> None:
     print("        ENDPOINT 'http://localhost:8181/api/catalog',")
     print("        SECRET 'polaris_secret'")
     print("    );")
-    print("    SELECT * FROM polaris.lakehouse.dim_communes_france;")
+    print("    SELECT * FROM polaris.lakehouse.dim_communes;")
+    print("    SELECT * FROM polaris.lakehouse.dim_geography;")
 
 
 if __name__ == "__main__":

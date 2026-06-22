@@ -128,12 +128,12 @@ downloads:
 
   - name: "french_communes"
     source_id: 8
-    source_label: "Communes France (GeoJSON)"
-    organization: data.gouv.fr / INSEE COG
-    reference_url: "https://www.data.gouv.fr/datasets/communes-france-1"
-    license: "Open License"
-    description: "Geographic boundaries of French communes from data.gouv.fr (original source INSEE COG)"
-    url: "https://www.data.gouv.fr/api/1/datasets/r/127cbafe-c944-4502-a31a-9cbf64fcc08b"
+    source_label: "Contours administratifs — Communes (GéoJSON)"
+    organization: data.gouv.fr / IGN
+    reference_url: "https://www.data.gouv.fr/datasets/contours-administratifs"
+    license: "Open Database License (ODbL)"
+    description: "Geographic boundaries of all French communes including COM territories (Polynésie, Nouvelle-Calédonie, etc.) from data.gouv.fr contours administratifs"
+    url: "https://www.data.gouv.fr/api/1/datasets/r/7daa12dc-6fa4-44f6-9ccc-7bf2f6e2a594"
     filename: "communes_france"
     source_file_patterns:
       - "communes_france"
@@ -144,39 +144,33 @@ downloads:
     domain: "geography"
     target_folder: "geography"
 
-  - name: "arrondissements"
-    source_id: 9
-    source_label: "Arrondissements — Code Officiel Géographique"
+  - name: "cog_ensemble"
+    source_id: 20
+    source_label: "Code Officiel Géographique — ensemble 2026"
     organization: INSEE COG
-    reference_url: "https://www.insee.fr/fr/information/6051727"
+    reference_url: "https://www.insee.fr/fr/information/8740222"
     license: "INSEE COG license"
-    description: "Arrondissement codes and chef-lieu flags"
-    url: "https://www.insee.fr/fr/statistiques/fichier/6051727/arrondissement_2022.csv"
-    filename: "arrondissements"
+    description: "Complete COG administrative geography (communes, arrondissements, départements, régions) including COM territories"
+    url: "https://www.insee.fr/fr/statistiques/fichier/8740222/cog_ensemble_2026_csv.zip"
+    filename: "cog_ensemble"
     source_file_patterns:
-      - arrondissements
+      - "v_commune_2026\\.csv"
+      - "v_commune_comer_2026\\.csv"
+      - "v_departement_2026\\.csv"
+      - "v_arrondissement_2026\\.csv"
+      - "v_region_2026\\.csv"
     file_targets:
-      - arrondissements
+      - "v_commune_2026"
+      - "v_commune_comer_2026"
+      - "v_departement_2026"
+      - "v_arrondissement_2026"
+      - "v_region_2026"
     extensions:
-      - .csv
-    domain: "geography"
-    target_folder: "geography"
-
-  - name: "departements"
-    source_id: 10
-    source_label: "Départements — Code Officiel Géographique"
-    organization: INSEE COG
-    reference_url: "https://www.insee.fr/fr/information/6051727"
-    license: "INSEE COG license"
-    description: "Department codes and chef-lieu flags"
-    url: "https://www.insee.fr/fr/statistiques/fichier/6051727/departement_2022.csv"
-    filename: "departements"
-    source_file_patterns:
-      - departements
-    file_targets:
-      - departements
-    extensions:
-      - .csv
+      - ".csv"
+      - ".csv"
+      - ".csv"
+      - ".csv"
+      - ".csv"
     domain: "geography"
     target_folder: "geography"
 
@@ -337,8 +331,10 @@ source_links:
     sources: [6]
   - model: fact_equipment
     sources: [7]
-  - model: dim_communes_france
-    sources: [8, 9, 10]
+  - model: dim_communes
+    sources: [8, 20]
+  - model: dim_geography
+    sources: [8]
   - model: dim_zip_codes
     sources: [11]
   - model: dim_equipment

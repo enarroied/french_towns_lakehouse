@@ -15,15 +15,15 @@ models:
 
     columns:
       - name: id
-        description: "INSEE commune code (5-character identifier, foreign key to dim_communes_france.id)"
+        description: "INSEE commune code (5-character identifier, foreign key to dim_communes.id)"
         data_type: CHAR(5)
         tests:
           - not_null:
               arguments:
-                severity: warn
+                severity: error
           - relationships:
               arguments:
-                to: ref('dim_communes_france')
+                to: ref('dim_communes')
                 field: id
                 severity: error
 

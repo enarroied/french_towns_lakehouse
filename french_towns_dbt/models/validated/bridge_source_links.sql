@@ -9,7 +9,9 @@ UNION ALL
 UNION ALL
 {{ bridge_source_links_simple('fact_equipment', "commune_id || '|' || year || '|' || equipment_type_id", ['bpe']) }}
 UNION ALL
-{{ bridge_source_links_simple('dim_communes_france', "id", ['french_communes', 'arrondissements', 'departements']) }}
+{{ bridge_source_links_simple('dim_communes', "id", ['cog_ensemble']) }}
+UNION ALL
+{{ bridge_source_links_simple('dim_geography', "commune_id", ['french_communes']) }}
 UNION ALL
 {{ bridge_source_links_simple('dim_zip_codes', "id::VARCHAR", ['zip_codes']) }}
 UNION ALL

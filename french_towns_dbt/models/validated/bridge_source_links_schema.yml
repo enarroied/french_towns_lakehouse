@@ -17,7 +17,7 @@ models:
           - not_null
 
       - name: target_table
-        description: "Name of the target model (e.g. fact_population, dim_communes_france)"
+        description: "Name of the target model (e.g. fact_population, dim_communes)"
         data_type: VARCHAR
 
       - name: target_key

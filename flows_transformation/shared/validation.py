@@ -6,6 +6,7 @@ from prefect import task
 
 SOURCE_FOLDERS: dict[str, str] = {
     "french_communes": "geography",
+    "cog_ensemble": "geography",
     "arrondissements": "geography",
     "departements": "geography",
     "zip_codes": "geography",
@@ -30,6 +31,7 @@ SOURCE_FOLDERS: dict[str, str] = {
 
 SOURCE_PREFIXES: dict[str, str] = {
     "french_communes": "french_towns",
+    "cog_ensemble": "v",
     "arrondissements": "arrondissements",
     "departements": "departements",
     "zip_codes": "zip_codes",
@@ -52,6 +54,10 @@ SOURCE_PREFIXES: dict[str, str] = {
     "bridge_model_sources": "bridge_model_sources",
 }
 
+SOURCE_EXPECTED_COUNTS: dict[str, int] = {
+    "cog_ensemble": 5,
+}
+
 
 @task
 def validate_inputs(source_names: list[str]) -> None:
@@ -72,29 +78,44 @@ def validate_inputs(source_names: list[str]) -> None:
                 f"Failed to list MinIO objects for {source_name}: {e}"
             ) from e
 
+        expected = SOURCE_EXPECTED_COUNTS.get(source_name, 1)
+
         rows = db.query(
             "SELECT filename, md5_hash, filename_timestamp "
             "FROM audit.file_metadata "
             "WHERE filename LIKE %s || '%%' AND is_latest = 1 "
-            "ORDER BY upload_timestamp DESC LIMIT 1",
+            "ORDER BY upload_timestamp DESC",
             [minio_prefix],
         )
+        # For multi-file sources, deduplicate by filename
+        seen = set()
+        deduped = []
+        for row in rows:
+            if row[0] not in seen:
+                seen.add(row[0])
+                deduped.append(row)
 
         num_minio = len(files_in_minio)
-        num_audit = len(rows)
+        num_audit = len(deduped)
 
-        if num_minio != 1:
+        if num_minio < expected:
             raise RuntimeError(
                 f"Input validation failed for {source_name}: "
-                f"expected 1 file in MinIO, found {num_minio}: {files_in_minio}"
+                f"expected at least {expected} file(s) in MinIO, found {num_minio}: {files_in_minio}"
             )
 
-        if num_audit != 1:
+        if num_audit < expected:
             raise RuntimeError(
                 f"Input validation failed for {source_name}: "
-                f"expected 1 audit record, found {num_audit}"
+                f"expected at least {expected} audit record(s), found {num_audit}"
             )
 
-        md5 = rows[0][1]
-        timestamp = rows[0][2]
-        log(f"✅ {source_name} validated: {timestamp} | md5: {md5}")
+        if expected == 1:
+            md5 = deduped[0][1]
+            timestamp = deduped[0][2]
+            log(f"✅ {source_name} validated: {timestamp} | md5: {md5}")
+        else:
+            filenames = [r[0] for r in deduped[:expected]]
+            log(
+                f"✅ {source_name} validated: {len(deduped)} file(s) — {', '.join(filenames)}"
+            )

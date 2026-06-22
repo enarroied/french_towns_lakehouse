@@ -6,9 +6,9 @@ fact_population,4
 fact_population,5
 fact_salaries,6
 fact_equipment,7
-dim_communes_france,8
-dim_communes_france,9
-dim_communes_france,10
+dim_communes,8
+dim_communes,20
+dim_geography,8
 dim_zip_codes,11
 dim_equipment,12
 bridge_communes_zip_codes,11

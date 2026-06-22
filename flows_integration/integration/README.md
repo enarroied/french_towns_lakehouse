@@ -25,7 +25,7 @@ Examples:
 
 | Flow | Table | Strategy | Status |
 |------|-------|----------|--------|
-| `integration_current_dim_geography` | `dim_communes_france`, `dim_zip_codes` | SCD Type 2 (UPSERT) | ✅ |
+| `integration_current_dim_geography` | `dim_communes`, `dim_geography`, `dim_zip_codes` | SCD Type 2 (UPSERT) | ✅ |
 | `integration_current_dim_geography` | `bridge_communes_zip_codes` | Append-only with dedup | ✅ |
 | `integration_current_fact_demographics` | `fact_population`, `fact_salaries` | Append-only with dedup | ✅ |
 | `integration_current_labels` | `dim_labels`, `fact_labels` | **Blocked** (pending transformation layer) | ❌ |
@@ -68,14 +68,14 @@ ATTACH 'french_towns' AS polaris (
 SHOW TABLES IN polaris.lakehouse;
 
 -- Query dimension
-SELECT * FROM polaris.lakehouse.dim_communes_france LIMIT 10;
+SELECT * FROM polaris.lakehouse.dim_communes LIMIT 10;
 
 -- Time travel — query as of a specific timestamp or snapshot version
-SELECT * FROM polaris.lakehouse.dim_communes_france
+SELECT * FROM polaris.lakehouse.dim_communes
     AT (TIMESTAMP => '2025-01-01 00:00:00');
 
 -- Time travel — query by snapshot ID
-SELECT * FROM polaris.lakehouse.dim_communes_france
+SELECT * FROM polaris.lakehouse.dim_communes
     AT (VERSION => 1234567890);
 ```
 
@@ -110,7 +110,7 @@ conn.execute("""
     )
 """)
 
-df = conn.execute("SELECT * FROM polaris.lakehouse.dim_communes_france").df()
+df = conn.execute("SELECT * FROM polaris.lakehouse.dim_communes").df()
 print(df.head())
 ```
 

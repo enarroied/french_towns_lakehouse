@@ -1,7 +1,6 @@
 from flows.shared import log
-from flows_staging.staging.staging_arrondissements import staging_arrondissements
+from flows_staging.staging.staging_cog_ensemble import staging_cog_ensemble
 from flows_staging.staging.staging_current_labels import staging_current_labels
-from flows_staging.staging.staging_departements import staging_departements
 from flows_staging.staging.staging_french_communes import staging_french_communes
 from flows_staging.staging.staging_historical_population import (
     staging_historical_population,
@@ -22,8 +21,7 @@ def staging_pipeline() -> None:
 
     log("=== GEOGRAPHY ===")
     staging_french_communes()
-    staging_arrondissements()
-    staging_departements()
+    staging_cog_ensemble()
     staging_zip_codes()
 
     log("=== LABELS ===")

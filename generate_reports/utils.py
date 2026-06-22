@@ -27,7 +27,8 @@ def setup_duckdb_connection() -> duckdb.DuckDBPyConnection:
     conn.execute("CREATE SCHEMA IF NOT EXISTS silver;")
 
     parquet_files = {
-        "dim_communes_france": "s3://validated/dim_communes_france.parquet",
+        "dim_communes": "s3://validated/dim_communes.parquet",
+        "dim_geography": "s3://validated/dim_geography.parquet",
         "fact_population": "s3://validated/fact_population.parquet",
         "fact_salaries": "s3://validated/fact_salaries.parquet",
     }

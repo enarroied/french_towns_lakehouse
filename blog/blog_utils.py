@@ -13,7 +13,8 @@ from dotenv import load_dotenv
 load_dotenv(find_dotenv())
 
 GOLD_TABLES = [
-    "dim_communes_france",
+    "dim_communes",
+    "dim_geography",
     "dim_zip_codes",
     "bridge_communes_zip_codes",
     "fact_population",

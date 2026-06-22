@@ -19,7 +19,7 @@ models:
                   severity: error
           - relationships:
               arguments:
-                to: ref('dim_communes_france')
+                to: ref('dim_communes')
                 field: id
                 severity: error
 

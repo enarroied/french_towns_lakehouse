@@ -618,11 +618,11 @@ ATTACH IF NOT EXISTS 'french_towns' AS polaris (
 
 ```sql
 -- Gold: business-ready dimensions and facts
-SELECT * FROM gold.dim_communes_france LIMIT 10;
+SELECT * FROM gold.dim_communes LIMIT 10;
 SELECT code_commune, population FROM gold.fact_population WHERE year = 2021;
 
 -- Silver: validated parquet (identical data, no Polaris dependency)
-SELECT * FROM silver.dim_communes_france LIMIT 10;
+SELECT * FROM silver.dim_communes LIMIT 10;
 ```
 
 **Important:** The init SQL runs automatically every time DBeaver connects —
@@ -654,7 +654,7 @@ ATTACH IF NOT EXISTS 'french_towns' AS polaris (
     SECRET 'polaris_secret'
 );
 
-SELECT name, department_name FROM gold.dim_communes_france LIMIT 5;
+SELECT name, department_name FROM gold.dim_communes LIMIT 5;
 ```
 
 ### Example queries
@@ -662,7 +662,7 @@ SELECT name, department_name FROM gold.dim_communes_france LIMIT 5;
 ```sql
 -- Top 10 most populous communes in 2021
 SELECT c.name, c.department_name, p.population
-FROM gold.dim_communes_france c
+FROM gold.dim_communes c
 JOIN gold.fact_population p ON c.id = p.id
 WHERE p.year = 2021
 ORDER BY p.population DESC
@@ -674,14 +674,14 @@ SELECT c.region_name,
        ROUND(AVG(s.mean_salary_women)) AS avg_salary_women,
        ROUND(100.0 * (AVG(s.mean_salary_men) - AVG(s.mean_salary_women))
              / AVG(s.mean_salary_men), 1) AS gap_pct
-FROM gold.dim_communes_france c
+FROM gold.dim_communes c
 JOIN gold.fact_salaries s ON c.id = s.id
 WHERE c.flag_metropole = 1
 GROUP BY c.region_name
 ORDER BY gap_pct DESC;
 
 -- Time travel: commune names as they existed on 2025-01-01
-SELECT * FROM polaris.lakehouse.dim_communes_france
+SELECT * FROM polaris.lakehouse.dim_communes
     FOR SYSTEM_TIME AS OF TIMESTAMP '2025-01-01 00:00:00';
 ```
 

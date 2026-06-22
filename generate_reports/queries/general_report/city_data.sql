@@ -24,7 +24,7 @@ dept_avg AS (
     SELECT
         AVG(lp.population) AS dept_avg_population,
         AVG(ls.mean_salary) AS dept_avg_salary
-    FROM silver.dim_communes_france c
+    FROM silver.dim_communes c
     LEFT JOIN latest_pop lp ON c.id = lp.id
     LEFT JOIN latest_sal ls ON c.id = ls.id
     WHERE c.department_code = ?
@@ -43,7 +43,7 @@ SELECT
     ls.year AS latest_salary_year,
     da.dept_avg_salary,
     ls.mean_salary / NULLIF(da.dept_avg_salary, 0) AS salary_ratio
-FROM silver.dim_communes_france c
+FROM silver.dim_communes c
 LEFT JOIN latest_pop lp ON c.id = lp.id
 LEFT JOIN latest_sal ls ON c.id = ls.id
 CROSS JOIN dept_avg da

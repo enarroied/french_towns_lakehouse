@@ -12,7 +12,7 @@ models:
 
     columns:
       - name: commune_id
-        description: "INSEE commune code (FK to dim_communes_france)"
+        description: "INSEE commune code (FK to dim_communes)"
         data_type: CHAR(5)
         tests:
           - not_null:
@@ -20,7 +20,7 @@ models:
                 severity: error
           - relationships:
               arguments:
-                to: ref('dim_communes_france')
+                to: ref('dim_communes')
                 field: id
                 severity: error
 
