@@ -80,37 +80,50 @@ class TestCreateSlideHeroCombined:
             pop_year=2023,
             sal_year=2023,
         )
-        assert output.exists()
-        img = Image.open(output)
-        assert img.size == (1920, 1080)
+        html_out = output.with_suffix(".html")
+        assert html_out.exists()
+        content = html_out.read_text()
+        assert "Foxton" in content
+        assert "Test Dept" in content
+        assert "50,000" in content
+        assert "35,000" in content
+        assert "2023" in content
 
     def test_pop_none(self, tmp_path: Path) -> None:
 
         output = tmp_path / "hero.png"
         create_slide_hero_combined("Foxton", "Test Dept", None, 35000, output)
-        assert output.exists()
-        Image.open(output).verify()
+        html_out = output.with_suffix(".html")
+        assert html_out.exists()
+        content = html_out.read_text()
+        assert "35,000" in content
+        assert "Population" not in content
 
     def test_sal_none(self, tmp_path: Path) -> None:
 
         output = tmp_path / "hero.png"
         create_slide_hero_combined("Foxton", "Test Dept", 50000, None, output)
-        assert output.exists()
-        Image.open(output).verify()
+        html_out = output.with_suffix(".html")
+        assert html_out.exists()
+        content = html_out.read_text()
+        assert "50,000" in content
+        assert "Mean Salary" not in content
 
     def test_both_none(self, tmp_path: Path) -> None:
 
         output = tmp_path / "hero.png"
         create_slide_hero_combined("Foxton", "Test Dept", None, None, output)
-        assert output.exists()
-        Image.open(output).verify()
+        assert not output.with_suffix(".html").exists()
 
     def test_pop_nan(self, tmp_path: Path) -> None:
 
         output = tmp_path / "hero.png"
         create_slide_hero_combined("Foxton", "Test Dept", float("nan"), 35000, output)
-        assert output.exists()
-        Image.open(output).verify()
+        html_out = output.with_suffix(".html")
+        assert html_out.exists()
+        content = html_out.read_text()
+        assert "35,000" in content
+        assert "Population" not in content
 
     def test_pop_none_year(self, tmp_path: Path) -> None:
 
@@ -124,7 +137,8 @@ class TestCreateSlideHeroCombined:
             pop_year=None,
             sal_year=2023,
         )
-        assert output.exists()
+        html_out = output.with_suffix(".html")
+        assert html_out.exists()
 
 
 # ---------------------------------------------------------------------------
@@ -156,7 +170,6 @@ class TestCreateSlideTrend:
         output = tmp_path / "trend.png"
         result = create_slide_trend("Foxton", pd.DataFrame(), "population", output)
         assert result is None
-        assert output.exists()
 
     def test_all_nan_df(self, tmp_path: Path) -> None:
 
@@ -164,7 +177,6 @@ class TestCreateSlideTrend:
         output = tmp_path / "trend.png"
         result = create_slide_trend("Foxton", df, "population", output)
         assert result is None
-        assert output.exists()
 
 
 # ---------------------------------------------------------------------------
@@ -197,8 +209,7 @@ class TestCreateSlideTablePng:
         create_slide_table_png(
             pd.DataFrame(), "Foxton", "Test Dept", "99", "population", output
         )
-        assert output.exists()
-        Image.open(output).verify()
+        assert not output.exists()
 
 
 # ---------------------------------------------------------------------------
@@ -268,8 +279,7 @@ class TestCreateSlideComparisonCombined:
             None,
             output,
         )
-        assert output.exists()
-        Image.open(output).verify()
+        assert not output.exists()
 
     def test_below_avg_ratio(self, tmp_path: Path) -> None:
 
@@ -300,8 +310,7 @@ class TestCreateSlideComparisonCombined:
             None,
             output,
         )
-        assert output.exists()
-        Image.open(output).verify()
+        assert not output.exists()
 
 
 # ---------------------------------------------------------------------------
@@ -361,6 +370,7 @@ class TestGenerateDeptPdf:
 
         df = pd.DataFrame(
             {
+                "id": ["001"],
                 "name": ["Foxton"],
                 "population": [5000],
                 "population_growth_pct": [2.0],
@@ -378,6 +388,7 @@ class TestGenerateDeptPdf:
 
         df = pd.DataFrame(
             {
+                "id": ["001"],
                 "name": ["Foxton"],
                 "population": [5000],
                 "population_growth_pct": [2.0],
@@ -387,9 +398,9 @@ class TestGenerateDeptPdf:
             }
         )
         pdf_path = tmp_path / "dept.pdf"
-        # empty slide list → should still generate a PDF with just the summary table
+        # empty slide list → no content → PDF not created
         generate_dept_pdf([], df, "Test Dept", pdf_path)
-        assert pdf_path.exists()
+        assert not pdf_path.exists()
 
     def test_pdf_empty_df(self, tmp_path: Path) -> None:
 
