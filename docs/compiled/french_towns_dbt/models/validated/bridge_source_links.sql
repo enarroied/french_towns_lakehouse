@@ -49,13 +49,28 @@ UNION ALL
 
 SELECT
     ROW_NUMBER() OVER () AS source_link_id,
-    'dim_communes_france' AS target_table,
+    'dim_communes' AS target_table,
     id AS target_key,
     s.source_id
-FROM "french_towns"."main"."dim_communes_france" t
+FROM "french_towns"."main"."dim_communes" t
 CROSS JOIN (
     SELECT source_id FROM "french_towns"."main"."dim_source"
-    WHERE source_name IN ('french_communes', 'arrondissements', 'departements')
+    WHERE source_name IN ('cog_ensemble')
+) s
+
+
+UNION ALL
+
+
+SELECT
+    ROW_NUMBER() OVER () AS source_link_id,
+    'dim_geography' AS target_table,
+    commune_id AS target_key,
+    s.source_id
+FROM "french_towns"."main"."dim_geography" t
+CROSS JOIN (
+    SELECT source_id FROM "french_towns"."main"."dim_source"
+    WHERE source_name IN ('french_communes')
 ) s
 
 

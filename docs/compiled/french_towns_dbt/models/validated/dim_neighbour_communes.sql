@@ -2,13 +2,15 @@
 
 WITH prepare_join AS (
     SELECT
-        id,
-        geometry,
-        department_code,
-        flag_corsica,
-        flag_metropole,
-        ST_Envelope(geometry) AS bbox
-    FROM "french_towns"."main"."dim_communes_france"
+        g.commune_id AS id,
+        g.geometry,
+        c.department_code,
+        c.flag_corsica,
+        c.flag_metropole,
+        ST_Envelope(g.geometry) AS bbox
+    FROM "french_towns"."main"."dim_geography" g
+    JOIN "french_towns"."main"."dim_communes" c
+        ON g.commune_id = c.id
 ),
 suspected AS (
     SELECT
