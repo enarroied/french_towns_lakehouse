@@ -18,7 +18,7 @@ def main() -> None:
                 c.department_name,
                 p.year,
                 p.population
-            from gold.dim_communes_france c
+            from gold.dim_communes c
             join gold.fact_population p
                 on c.id = p.id
             where c.is_current = true

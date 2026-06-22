@@ -9,7 +9,8 @@ from prefect import flow
 
 
 DIM_TABLES = [
-    ("dim_communes_france", ["id"]),
+    ("dim_communes", ["id"]),
+    ("dim_geography", ["commune_id"]),
     ("dim_zip_codes", ["id"]),
     ("dim_neighbour_communes", ["parcel_id", "neighbor_id"]),
 ]
@@ -35,7 +36,7 @@ def integration_current_dim_geography() -> None:
             assert_validated_exists(conn, table_name)
             append_new_rows(conn, table_name, nk)
 
-        finalize_run(run_id=run_id, status="SUCCESS", number_files=4)
+        finalize_run(run_id=run_id, status="SUCCESS", number_files=5)
     except Exception:
         finalize_run(run_id=run_id, status="FAILED")
         raise

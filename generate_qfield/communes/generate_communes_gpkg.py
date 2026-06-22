@@ -37,21 +37,23 @@ def create_gpkg(department: str | None) -> int:
 
     conn.execute(f"""
         COPY (
-            SELECT id::VARCHAR(5) AS id,
-                   name::VARCHAR(255) AS name,
-                   department_code::VARCHAR(3) AS department_code,
-                   department_name::VARCHAR(255) AS department_name,
-                   centroid AS geom,
+            SELECT c.id::VARCHAR(5) AS id,
+                   c.name::VARCHAR(255) AS name,
+                   c.department_code::VARCHAR(3) AS department_code,
+                   c.department_name::VARCHAR(255) AS department_name,
+                   g.centroid AS geom,
                    FALSE AS visited,
                    NULL::DATE AS visit_date,
                    NULL::VARCHAR AS photo
-            FROM read_parquet('s3://validated/dim_communes_france.parquet')
+            FROM read_parquet('s3://validated/dim_communes.parquet') c
+            JOIN read_parquet('s3://validated/dim_geography.parquet') g
+                ON c.id = g.commune_id
             {where}
         ) TO '{GPKG_PATH}' (FORMAT GDAL, DRIVER 'GPKG')
     """)
 
     count = conn.execute(
-        f"SELECT count(*) FROM read_parquet('s3://validated/dim_communes_france.parquet') {where}"
+        f"SELECT count(*) FROM read_parquet('s3://validated/dim_communes.parquet') {where}"
     ).fetchone()[0]
     conn.close()
     return count

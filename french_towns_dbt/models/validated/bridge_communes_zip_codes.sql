@@ -18,5 +18,5 @@ SELECT DISTINCT
         Code_postal::CHAR(5) AS zip_code_char
 FROM {{ source('french_towns', 'zip_codes') }}
 WHERE commune_id IN ( /* Remove communes not present in master dimension*/
-    SELECT id FROM {{ ref('dim_communes_france') }}
+    SELECT id FROM {{ ref('dim_communes') }}
 )

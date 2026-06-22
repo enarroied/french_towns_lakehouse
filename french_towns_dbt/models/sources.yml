@@ -4,18 +4,29 @@ sources:
   - name: french_towns
     schema: main
     tables:
-      - name: communes_france
+      - name: communes_geojson
         meta:
-        # ST_Read Does not support glob * pattern...
-          external_location: "ST_Read('{{ var('input_dir') }}/geography/communes_france.geojson')"
+          external_location: "ST_Read('{{ var('input_dir') }}/geography/french_towns_*.geojson')"
 
-      - name: arrondissements
+      - name: cog_communes
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/arrondissements_*.csv')"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/v_commune_2026_*.csv')"
 
-      - name: departements
+      - name: cog_communes_comer
         meta:
-          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/departements_*.csv')"
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/v_commune_comer_2026_*.csv')"
+
+      - name: cog_departements
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/v_departement_2026_*.csv')"
+
+      - name: cog_arrondissements
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/v_arrondissement_2026_*.csv')"
+
+      - name: cog_regions
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/geography/v_region_2026_*.csv')"
 
       - name: populations_historiques
         meta:

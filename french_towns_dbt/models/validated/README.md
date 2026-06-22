@@ -23,7 +23,8 @@ validated/
 
 | Type | Name | Description |
 |------|------|-------------|
-| Dimension | `dim_communes_france` | All French communes with geometry and hierarchy |
+| Dimension | `dim_communes` | Administrative dimension of all French communes including COM territories |
+| Dimension | `dim_geography` | Spatial boundaries and geometry of all French communes |
 | Dimension | `dim_zip_codes` | ZIP code to commune mapping |
 | Dimension | `dim_source` | Data source provenance (19 tracked sources) |
 | Dimension | `dim_equipment` | Equipment type code-to-name mapping |
@@ -41,7 +42,7 @@ Every model links to `dim_source` via `bridge_source_links`, a row-level provena
 - `dim_source` is generated from YAML via `data_sources/dim_source/generate_sources.py`
 - A single `bridge_source_links` master view (UNION ALL of 9 branches using `bridge_source_links_simple` / `bridge_source_links_mapped` macros) links each row to its source(s)
 
-**Multi-source models:** `fact_population` (5 sources), `dim_communes_france` (3 sources), `dim_labels` (7 sources). All others have 1 source each.
+**Multi-source models:** `fact_population` (5 sources), `dim_communes` (2 sources), `dim_labels` (7 sources). All others have 1 source each.
 
 ### Usage
 

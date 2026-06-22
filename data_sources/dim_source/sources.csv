@@ -6,9 +6,7 @@ source_id,source_name,source_label,organization,domain,reference_url,license,des
 5,deaths,Décès — État Civil,INSEE,demographics,https://www.insee.fr/fr/statistiques/1893253,INSEE EC license,Deaths data from civil registry
 6,salaries,Base Recensement Tous Salaires,INSEE,demographics,https://www.insee.fr/fr/information/2407785,INSEE salary license,Mean salary by sex and socio-professional category
 7,bpe,Base permanente des équipements,INSEE,equipment,https://www.insee.fr/fr/metadonnees/source/operation/s2216/politique-diffusion,INSEE BPE license,Permanent database of local facilities and equipment
-8,french_communes,Communes France (GeoJSON),data.gouv.fr / INSEE COG,geography,https://www.data.gouv.fr/datasets/communes-france-1,Open License,Geographic boundaries of French communes from data.gouv.fr (original source INSEE COG)
-9,arrondissements,Arrondissements — Code Officiel Géographique,INSEE COG,geography,https://www.insee.fr/fr/information/6051727,INSEE COG license,Arrondissement codes and chef-lieu flags
-10,departements,Départements — Code Officiel Géographique,INSEE COG,geography,https://www.insee.fr/fr/information/6051727,INSEE COG license,Department codes and chef-lieu flags
+8,french_communes,Contours administratifs — Communes (GéoJSON),data.gouv.fr / IGN,geography,https://www.data.gouv.fr/datasets/contours-administratifs,Open Database License (ODbL),"Geographic boundaries of all French communes including COM territories (Polynésie, Nouvelle-Calédonie, etc.) from data.gouv.fr contours administratifs"
 11,zip_codes,Base officielle des codes postaux,LaPoste,geography,https://datanova.laposte.fr/datasets/laposte-hexasmal,Open License,Official French postal codes from La Poste
 12,dim_equipment,Équipements — code-to-name mapping,INSEE BPE,equipment,https://www.insee.fr/fr/metadonnees/source/operation/s2216/politique-diffusion,INSEE BPE license,Equipment type code-to-name mapping table (derived from BPE nomenclature)
 13,petites_cites,Petites Cités de Caractère,Petites Cités de Caractère,labels,https://www.petitescitesdecaractere.com/,Public (scraped),Label: Petites Cités de Caractère
@@ -18,3 +16,4 @@ source_id,source_name,source_label,organization,domain,reference_url,license,des
 17,village_etape,Village Étape,Village Étape,labels,https://village-etape.fr/,Public (scraped),Label: Village Étape
 18,famille_plus,Famille Plus,Famille Plus,labels,https://www.familleplus.fr/,Public (scraped),Label: Famille Plus
 19,ville_sportive,Ville Active et Sportive,Ville Active et Sportive,labels,https://www.ville-active-et-sportive.com/,Public (PDF parsed),Label: Ville Active et Sportive
+20,cog_ensemble,Code Officiel Géographique — ensemble 2026,INSEE COG,geography,https://www.insee.fr/fr/information/8740222,INSEE COG license,"Complete COG administrative geography (communes, arrondissements, départements, régions) including COM territories"

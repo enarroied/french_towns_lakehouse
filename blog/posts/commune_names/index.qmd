@@ -38,7 +38,7 @@ Let's start looking at how long French commune names tend to be
 ```{python}
 query_length_distribution = """
     SELECT LENGTH(name) AS "Name lenght", COUNT(*) AS "Number of Communes"
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     GROUP BY "Name lenght"
     ORDER BY "Name lenght"
 """
@@ -55,7 +55,7 @@ But characters include spaces and dashes. what if we only look for letters?
 query_letter_distribution = """
     SELECT LENGTH(REGEXP_REPLACE(name, '\P{L}', '', 'g')) AS "Letter count",
     COUNT(*) AS "Number of Communes"
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     GROUP BY "Letter count"
     ORDER BY "Letter count"
 """
@@ -74,7 +74,7 @@ query_length_stats = """
         CAST(AVG(LENGTH(name)) AS DECIMAL(5,1)) AS avg_len,
         CAST(MEDIAN(LENGTH(name)) AS INTEGER)    AS med_len,
         MAX(LENGTH(name))          AS max_len
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
 """
 df_length_stats = sql_to_df(query_length_stats, dataframe_type="pandas")
 df_length_stats
@@ -85,7 +85,7 @@ On average, we have a length (including spaces and dashes) of 11.8 characters, a
 ```{python}
 query_shortest_names = """
     SELECT name, LENGTH(name) AS len
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     ORDER BY len
     LIMIT 5
 """
@@ -110,7 +110,7 @@ df_shortest_names = sql_to_df(query_shortest_names, dataframe_type="pandas")
         columns="len",
         palette=["#e8f5e9", "#4caf50", "#2e7d32"]
     )
-    .tab_source_note("Source: gold.dim_communes_france")
+    .tab_source_note("Source: gold.dim_communes")
 )
 
 ```
@@ -118,7 +118,7 @@ df_shortest_names = sql_to_df(query_shortest_names, dataframe_type="pandas")
 ```{python}
 query_longest_names = """
     SELECT name, LENGTH(name) AS len
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     ORDER BY len DESC
     LIMIT 5
 """
@@ -143,7 +143,7 @@ df_longest_names = sql_to_df(query_longest_names, dataframe_type="pandas")
         columns="len",
         palette=["#FFD700", "#FF8C00", "#FF0000"]
     )
-    .tab_source_note("Source: gold.dim_communes_france")
+    .tab_source_note("Source: gold.dim_communes")
 )
 ```
 
@@ -182,7 +182,7 @@ Let's explore which commune names appear most frequently across France. Many tow
 ```{python}
 query_most_common_names = """
     SELECT name, COUNT(*) AS occurrences
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     GROUP BY name
     HAVING occurrences > 8
     ORDER BY occurrences DESC
@@ -212,7 +212,7 @@ df_most_common_names = sql_to_df(query_most_common_names, dataframe_type="pandas
         style=style.text(weight="bold"),
         locations=loc.body(rows=[0], columns="occurrences")
     )
-    .tab_source_note("Source: gold.dim_communes_france")
+    .tab_source_note("Source: gold.dim_communes")
 )
 ```
 
@@ -236,7 +236,7 @@ french_stopwords = {
 
 query_all_names = """
     SELECT name
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
 """
 df_names = sql_to_df(query_all_names, dataframe_type="polars")
 
@@ -299,7 +299,7 @@ query_saint_names = """
     SELECT
         name,
         REGEXP_EXTRACT(name, '^Saint[- ](.+?)(?:$|[- ])', 1) AS saint_name
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     WHERE name LIKE 'Saint-%' OR name LIKE 'Saint %'
 """
 df_saints = sql_to_df(query_saint_names, dataframe_type="polars")
@@ -350,7 +350,7 @@ Finally, let's look at common geographic qualifiers that appear in commune names
 ```{python}
 query_geo_terms = """
     SELECT name
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
 """
 df_geo = sql_to_df(query_geo_terms, dataframe_type="polars")
 
@@ -413,7 +413,7 @@ query_first_letters = """
         UPPER(LEFT(name, 1)) AS letter,
         COUNT(*) AS communes,
         ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 1) AS percentage
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     GROUP BY letter
     ORDER BY communes DESC
 """
@@ -449,7 +449,7 @@ df_first_letters = sql_to_df(query_first_letters, dataframe_type="pandas")
         style=style.text(weight="bold"),
         locations=loc.body(rows=[0, 1, 2], columns="letter")
     )
-    .tab_source_note("Source: gold.dim_communes_france")
+    .tab_source_note("Source: gold.dim_communes")
 )
 ```
 
@@ -478,7 +478,7 @@ query_missing_letters = """
     ),
     used_letters AS (
         SELECT DISTINCT UPPER(LEFT(name, 1)) AS letter
-        FROM gold.dim_communes_france
+        FROM gold.dim_communes
     )
     SELECT letter
     FROM all_letters
@@ -510,7 +510,7 @@ query_dept_avg_length = """
         COUNT(*) AS communes,
         MIN(LENGTH(name)) AS min_length,
         MAX(LENGTH(name)) AS max_length
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     GROUP BY department_name
     ORDER BY avg_length DESC
     LIMIT 15
@@ -543,7 +543,7 @@ df_dept_avg_length = sql_to_df(query_dept_avg_length, dataframe_type="pandas")
         columns="avg_length",
         palette=["#FFD700", "#FF8C00", "#FF0000"]
     )
-    .tab_source_note("Source: gold.dim_communes_france")
+    .tab_source_note("Source: gold.dim_communes")
 )
 ```
 
@@ -557,7 +557,7 @@ top12 = df_dept_avg_length["department_name"].head(12).tolist()
 dept_data = []
 for d in top12:
     rows_df = sql_to_df(
-        "SELECT LENGTH(name) AS len FROM gold.dim_communes_france "
+        "SELECT LENGTH(name) AS len FROM gold.dim_communes "
         "WHERE department_name = ? ORDER BY len",
         [d],
         dataframe_type="pandas",
@@ -590,7 +590,7 @@ query_dept_shortest = """
         department_name,
         ROUND(AVG(LENGTH(name)), 1) AS avg_length,
         COUNT(*) AS communes
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     GROUP BY department_name
     ORDER BY avg_length ASC
     LIMIT 10
@@ -621,7 +621,7 @@ df_dept_shortest = sql_to_df(query_dept_shortest, dataframe_type="pandas")
         columns="avg_length",
         palette=["#e8f5e9", "#4caf50", "#2e7d32"]
     )
-    .tab_source_note("Source: gold.dim_communes_france")
+    .tab_source_note("Source: gold.dim_communes")
 )
 ```
 
@@ -639,7 +639,7 @@ query_most_communes_dept = """
         COUNT(*) AS communes,
         ROUND(AVG(LENGTH(name)), 1) AS avg_name_length,
         ROUND(STDDEV(LENGTH(name)), 1) AS stddev_length
-    FROM gold.dim_communes_france
+    FROM gold.dim_communes
     GROUP BY department_name
     ORDER BY communes DESC
     LIMIT 10
@@ -675,7 +675,7 @@ df_most_communes_dept = sql_to_df(query_most_communes_dept, dataframe_type="pand
         style=style.text(weight="bold"),
         locations=loc.body(rows=[0], columns="communes")
     )
-    .tab_source_note("Source: gold.dim_communes_france")
+    .tab_source_note("Source: gold.dim_communes")
 )
 ```
 

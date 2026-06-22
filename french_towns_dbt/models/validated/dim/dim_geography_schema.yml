@@ -1,0 +1,96 @@
+version: 2
+
+models:
+  - name: dim_geography
+    description: "Spatial dimension with geographic boundaries of all French communes — built from Contours administratifs GeoJSON"
+    columns:
+      - name: commune_id
+        description: "INSEE commune code (5-character identifier, foreign key to dim_communes.id)"
+        data_type: CHAR(5)
+        tests:
+          - unique:
+              arguments:
+                severity: error
+          - not_null:
+              arguments:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('dim_communes')
+                field: id
+                severity: warn
+
+      - name: name
+        description: "Commune name from the GeoJSON"
+        data_type: VARCHAR(255)
+
+      - name: department_code
+        description: "Department code from the GeoJSON"
+        data_type: VARCHAR(3)
+
+      - name: region_code
+        description: "Region code from the GeoJSON"
+        data_type: VARCHAR(2)
+
+      - name: epci
+        description: "EPCI (intercommunality) code, NULL for COM territories without EPCI"
+        data_type: VARCHAR(9)
+
+      - name: geometry
+        description: "Geospatial geometry (multipolygon) of commune boundaries"
+        data_type: GEOMETRY
+
+      - name: centroid
+        description: "Geometric centroid point of the commune"
+        data_type: GEOMETRY
+
+      - name: area_km2
+        description: "Commune area in square kilometers, NULL for territories without a defined projection"
+        data_type: DOUBLE
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 10000000
+                where: "area_km2 IS NOT NULL"
+                severity: warn
+
+      - name: bbox_xmin
+        description: "Minimum X coordinate of bounding box (longitude)"
+        data_type: DOUBLE
+
+      - name: bbox_xmax
+        description: "Maximum X coordinate of bounding box (longitude)"
+        data_type: DOUBLE
+
+      - name: bbox_ymin
+        description: "Minimum Y coordinate of bounding box (latitude)"
+        data_type: DOUBLE
+
+      - name: bbox_ymax
+        description: "Maximum Y coordinate of bounding box (latitude)"
+        data_type: DOUBLE
+
+      - name: perimeter
+        description: "Perimeter length of commune boundary"
+        data_type: DOUBLE
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1000000000
+                severity: error
+
+      - name: is_multipolygon
+        description: "Whether the commune geometry consists of multiple disjoint polygons (e.g., island communes)"
+        data_type: BOOLEAN
+
+      - name: number_enclaves
+        description: "Number of enclaves (interior rings / holes) within the commune polygon(s)"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: error

@@ -21,7 +21,7 @@ SELECT
     eq.equipment_type_id,
     e.count
 FROM equipment_base e
-LEFT JOIN {{ ref('dim_communes_france') }} c
+LEFT JOIN {{ ref('dim_communes') }} c
     ON e.id = c.id
 LEFT JOIN {{ ref('dim_equipment') }} eq
     ON e.equipment_code = eq.equipment_code

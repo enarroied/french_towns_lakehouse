@@ -17,7 +17,8 @@ from dotenv import load_dotenv
 load_dotenv(find_dotenv())
 
 TABLES = [
-    "dim_communes_france",
+    "dim_communes",
+    "dim_geography",
     "dim_zip_codes",
     "bridge_communes_zip_codes",
     "fact_population",
