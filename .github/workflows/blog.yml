@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - 'blog/**'
+      - 'blog/_site/**'
   workflow_dispatch:
 
 jobs:
@@ -15,12 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Render blog
-        run: quarto render blog/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
