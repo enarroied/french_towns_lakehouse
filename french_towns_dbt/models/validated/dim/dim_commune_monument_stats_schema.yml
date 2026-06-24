@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: dim_commune_monument_stats
+    description: "Commune-level aggregation of monument counts by category and protection level"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['commune_id']
+            severity: error
+
+    columns:
+      - name: commune_id
+        description: "INSEE commune code (FK → dim_communes)"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: total_monuments
+        description: "Total number of distinct monuments in the commune"
+        data_type: INTEGER
+
+      - name: religious_count
+        description: "Monuments in religious architecture domain"
+        data_type: INTEGER
+
+      - name: domestic_count
+        description: "Monuments in domestic architecture domain"
+        data_type: INTEGER
+
+      - name: administrative_count
+        description: "Monuments in administrative architecture domain"
+        data_type: INTEGER
+
+      - name: military_count
+        description: "Monuments in military architecture domain"
+        data_type: INTEGER
+
+      - name: funerary_count
+        description: "Monuments in funerary architecture domain"
+        data_type: INTEGER
+
+      - name: civil_engineering_count
+        description: "Monuments in civil engineering domain"
+        data_type: INTEGER
+
+      - name: industrial_count
+        description: "Monuments in industrial domain"
+        data_type: INTEGER
+
+      - name: agricultural_count
+        description: "Monuments in agricultural architecture domain"
+        data_type: INTEGER
+
+      - name: educational_count
+        description: "Monuments in educational architecture domain"
+        data_type: INTEGER
+
+      - name: other_count
+        description: "Monuments in other/unclassified domains"
+        data_type: INTEGER
+
+      - name: classified_count
+        description: "Monuments classified as 'classé MH'"
+        data_type: INTEGER
+
+      - name: inscribed_count
+        description: "Monuments classified as 'inscrit MH'"
+        data_type: INTEGER
+
+      - name: partial_protection_count
+        description: "Monuments with partial protection"
+        data_type: INTEGER

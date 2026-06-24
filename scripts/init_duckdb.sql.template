@@ -66,6 +66,18 @@ CREATE OR REPLACE VIEW gold.bridge_source_links AS
 CREATE OR REPLACE VIEW gold.fact_unemployment AS
     SELECT * FROM polaris.lakehouse.fact_unemployment;
 
+CREATE OR REPLACE VIEW gold.dim_monument AS
+    SELECT * FROM polaris.lakehouse.dim_monument;
+
+CREATE OR REPLACE VIEW gold.bridge_monument_communes AS
+    SELECT * FROM polaris.lakehouse.bridge_monument_communes;
+
+CREATE OR REPLACE VIEW gold.dim_commune_monument_stats AS
+    SELECT * FROM polaris.lakehouse.dim_commune_monument_stats;
+
+CREATE OR REPLACE VIEW gold.fact_classification_history AS
+    SELECT * FROM polaris.lakehouse.fact_classification_history;
+
 
 -- ---------- Silver layer (validated parquet via MinIO) ----------
 
@@ -126,3 +138,15 @@ CREATE OR REPLACE VIEW silver.bridge_source_links AS
 
 CREATE OR REPLACE VIEW silver.fact_unemployment AS
     SELECT * FROM read_parquet('s3://validated/fact_unemployment.parquet');
+
+CREATE OR REPLACE VIEW silver.dim_monument AS
+    SELECT * FROM read_parquet('s3://validated/dim_monument.parquet');
+
+CREATE OR REPLACE VIEW silver.bridge_monument_communes AS
+    SELECT * FROM read_parquet('s3://validated/bridge_monument_communes.parquet');
+
+CREATE OR REPLACE VIEW silver.dim_commune_monument_stats AS
+    SELECT * FROM read_parquet('s3://validated/dim_commune_monument_stats.parquet');
+
+CREATE OR REPLACE VIEW silver.fact_classification_history AS
+    SELECT * FROM read_parquet('s3://validated/fact_classification_history.parquet');

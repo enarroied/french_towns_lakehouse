@@ -1,4 +1,7 @@
 from flows.shared import log
+from flows_transformation.transformation.transformation_current_cultural_heritage import (
+    transformation_current_cultural_heritage,
+)
 from flows_transformation.transformation.transformation_current_dim_geography import (
     transformation_current_dim_geography,
 )
@@ -28,6 +31,9 @@ def transformation_pipeline() -> None:
 
     log("=== LABELS ===")
     transformation_current_labels()
+
+    log("=== CULTURAL HERITAGE ===")
+    transformation_current_cultural_heritage()
 
     log("Transformation Pipeline complete")
 

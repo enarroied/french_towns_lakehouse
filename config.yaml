@@ -331,6 +331,14 @@ sources:
     reference_url: "https://www.insee.fr/fr/metadonnees/source/operation/s2125"
     license: "INSEE RP license"
     description: "Employment and unemployment data from INSEE base-cc-emploi-pop-active (2006-2022)"
+  - source_id: 22
+    source_name: monuments_historiques
+    source_label: "Immeubles protégés — Monuments Historiques"
+    organization: "Ministère de la Culture"
+    domain: cultural_heritage
+    reference_url: "https://www.data.gouv.fr/datasets/immeubles-proteges-au-titre-des-monuments-historiques-2"
+    license: "Open License (etalab)"
+    description: "Protected historical buildings in France (Mérimée database)"
 
 source_links:
   - model: fact_population
@@ -355,3 +363,11 @@ source_links:
     sources: [8]
   - model: fact_unemployment
     sources: [21]
+  - model: dim_monument
+    sources: [22]
+  - model: bridge_monument_communes
+    sources: [22]
+  - model: dim_commune_monument_stats
+    sources: [22]
+  - model: fact_classification_history
+    sources: [22]

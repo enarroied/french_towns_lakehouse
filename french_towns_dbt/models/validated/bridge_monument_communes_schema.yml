@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: bridge_monument_communes
+    description: "Many-to-many bridge between monuments and communes — one row per (monument, commune) pair"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['monument_reference', 'commune_code']
+            severity: error
+
+    columns:
+      - name: monument_reference
+        description: "Monument reference (FK → dim_monument)"
+        data_type: VARCHAR(10)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: commune_code
+        description: "INSEE commune code (FK → dim_communes)"
+        data_type: VARCHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: is_primary
+        description: "True for the first commune code listed in the source"
+        data_type: BOOLEAN
+
+      - name: commune_exists
+        description: "True if the commune code exists in dim_communes"
+        data_type: BOOLEAN
