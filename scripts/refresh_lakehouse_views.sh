@@ -25,7 +25,7 @@ sed \
   -e "s/{{MINIO_ROOT_USER}}/$MINIO_ROOT_USER/g" \
   -e "s/{{MINIO_ROOT_PASSWORD}}/$MINIO_ROOT_PASSWORD/g" \
   "$PROJECT_ROOT/scripts/init_duckdb.sql.template" \
-  | duckdb "$LAKEHOUSE_DB"
+  | duckdb "$LAKEHOUSE_DB" || echo "⚠️  Some views could not be created (missing tables — run the pipeline first)"
 
 echo ""
 echo "✓ Done. Re-open the file in DBeaver (right-click → Refresh)."

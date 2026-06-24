@@ -6,6 +6,7 @@ from flows_staging.staging.staging_historical_population import (
     staging_historical_population,
 )
 from flows_staging.staging.staging_salaries import staging_salaries
+from flows_staging.staging.staging_unemployment import staging_unemployment
 from flows_staging.staging.staging_zip_codes import staging_zip_codes
 from prefect import flow
 
@@ -18,6 +19,7 @@ def staging_pipeline() -> None:
     log("=== DEMOGRAPHICS ===")
     staging_historical_population()
     staging_salaries()
+    staging_unemployment()
 
     log("=== GEOGRAPHY ===")
     staging_french_communes()

@@ -1,0 +1,428 @@
+version: 2
+
+models:
+  - name: fact_unemployment
+    description: "Unemployment and labor force statistics by commune and year from INSEE base-cc-emploi-pop-active (2006-2022), including year-over-year evolutions and data reliability flags based on labor force sample size"
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['commune_code', 'year']
+            severity: error
+
+    columns:
+      - name: commune_code
+        description: "INSEE commune code (5-character identifier)"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('dim_communes')
+                field: id
+                severity: error
+
+      - name: year
+        description: "Reference year for the employment data"
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      # --- labor force counts (24 columns) ---
+      - name: labor_force_count_total_15_64
+        description: "Estimated labor force (employed + unemployed), ages 15-64, both sexes"
+        data_type: DECIMAL
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 2000000
+                severity: warn
+
+      - name: labor_force_count_men_15_64
+        description: "Estimated male labor force, ages 15-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 500000
+                severity: warn
+
+      - name: labor_force_count_women_15_64
+        description: "Estimated female labor force, ages 15-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 500000
+                severity: warn
+
+      - name: labor_force_count_total_15_24
+        description: "Estimated labor force, ages 15-24, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 200000
+                severity: warn
+
+      - name: labor_force_count_men_15_24
+        description: "Estimated male labor force, ages 15-24"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: labor_force_count_women_15_24
+        description: "Estimated female labor force, ages 15-24"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: labor_force_count_total_25_54
+        description: "Estimated labor force, ages 25-54, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 800000
+                severity: warn
+
+      - name: labor_force_count_men_25_54
+        description: "Estimated male labor force, ages 25-54"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 400000
+                severity: warn
+
+      - name: labor_force_count_women_25_54
+        description: "Estimated female labor force, ages 25-54"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 400000
+                severity: warn
+
+      - name: labor_force_count_total_55_64
+        description: "Estimated labor force, ages 55-64, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 300000
+                severity: warn
+
+      - name: labor_force_count_men_55_64
+        description: "Estimated male labor force, ages 55-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                severity: warn
+
+      - name: labor_force_count_women_55_64
+        description: "Estimated female labor force, ages 55-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                severity: warn
+
+      - name: unemployed_count_total_15_64
+        description: "Estimated unemployed persons, ages 15-64, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 200000
+                severity: error
+
+      - name: unemployed_count_men_15_64
+        description: "Estimated unemployed men, ages 15-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: unemployed_count_women_15_64
+        description: "Estimated unemployed women, ages 15-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: unemployed_count_total_15_24
+        description: "Estimated unemployed persons, ages 15-24, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100000
+                severity: warn
+
+      - name: unemployed_count_men_15_24
+        description: "Estimated unemployed men, ages 15-24"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 50000
+                severity: warn
+
+      - name: unemployed_count_women_15_24
+        description: "Estimated unemployed women, ages 15-24"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 50000
+                severity: warn
+
+      - name: unemployed_count_total_25_54
+        description: "Estimated unemployed persons, ages 25-54, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 150000
+                severity: warn
+
+      - name: unemployed_count_men_25_54
+        description: "Estimated unemployed men, ages 25-54"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 75000
+                severity: warn
+
+      - name: unemployed_count_women_25_54
+        description: "Estimated unemployed women, ages 25-54"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 75000
+                severity: warn
+
+      - name: unemployed_count_total_55_64
+        description: "Estimated unemployed persons, ages 55-64, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 50000
+                severity: warn
+
+      - name: unemployed_count_men_55_64
+        description: "Estimated unemployed men, ages 55-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 25000
+                severity: warn
+
+      - name: unemployed_count_women_55_64
+        description: "Estimated unemployed women, ages 55-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 25000
+                severity: warn
+
+      # --- computed unemployment rates (12 columns) ---
+      - name: unemployment_rate_total_15_64
+        description: "Unemployment rate, ages 15-64, both sexes (unemployed / labor force * 100)"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_men_15_64
+        description: "Male unemployment rate, ages 15-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_women_15_64
+        description: "Female unemployment rate, ages 15-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_total_15_24
+        description: "Unemployment rate, ages 15-24, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_men_15_24
+        description: "Male unemployment rate, ages 15-24"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_women_15_24
+        description: "Female unemployment rate, ages 15-24"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_total_25_54
+        description: "Unemployment rate, ages 25-54, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_men_25_54
+        description: "Male unemployment rate, ages 25-54"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_women_25_54
+        description: "Female unemployment rate, ages 25-54"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_total_55_64
+        description: "Unemployment rate, ages 55-64, both sexes"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_men_55_64
+        description: "Male unemployment rate, ages 55-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: unemployment_rate_women_55_64
+        description: "Female unemployment rate, ages 55-64"
+        data_type: DECIMAL
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      # --- reliability flag ---
+      - name: reliability_flag
+        description: "Data reliability based on total labor force sample size (reliable: >=500, caution: >=200, unreliable: <200)"
+        data_type: VARCHAR
+
+      # --- year-over-year columns ---
+      - name: prev_labor_force_count_total_15_64
+        description: "Previous year's labor force count, ages 15-64, both sexes"
+        data_type: DECIMAL
+
+      - name: prev_unemployed_count_total_15_64
+        description: "Previous year's unemployed count, ages 15-64, both sexes"
+        data_type: DECIMAL
+
+      - name: prev_unemployment_rate_total_15_64
+        description: "Previous year's unemployment rate, ages 15-64, both sexes"
+        data_type: DECIMAL
+
+      - name: labor_force_evolution_total_15_64
+        description: "Year-over-year change in labor force count (current - previous)"
+        data_type: DECIMAL
+
+      - name: unemployed_evolution_total_15_64
+        description: "Year-over-year change in unemployed count (current - previous)"
+        data_type: DECIMAL
+
+      - name: unemployment_rate_evolution_total_15_64
+        description: "Year-over-year change in unemployment rate (current - previous, percentage points)"
+        data_type: DECIMAL

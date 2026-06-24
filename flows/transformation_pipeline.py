@@ -5,6 +5,9 @@ from flows_transformation.transformation.transformation_current_dim_geography im
 from flows_transformation.transformation.transformation_current_fact_demographics import (
     transformation_current_fact_demographics,
 )
+from flows_transformation.transformation.transformation_current_fact_unemployment import (
+    transformation_current_fact_unemployment,
+)
 from flows_transformation.transformation.transformation_current_labels import (
     transformation_current_labels,
 )
@@ -21,6 +24,7 @@ def transformation_pipeline() -> None:
 
     log("=== DEMOGRAPHICS ===")
     transformation_current_fact_demographics()
+    transformation_current_fact_unemployment()
 
     log("=== LABELS ===")
     transformation_current_labels()

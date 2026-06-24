@@ -85,4 +85,4 @@ class TestGoldTables:
         assert isinstance(GOLD_TABLES, list)
         assert all(isinstance(t, str) for t in GOLD_TABLES)
         assert "dim_communes" in GOLD_TABLES
-        assert len(GOLD_TABLES) == 12
+        assert len(GOLD_TABLES) == 13
