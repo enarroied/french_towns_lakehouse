@@ -27,6 +27,7 @@ SOURCE_FOLDERS: dict[str, str] = {
     "lunar_phases": "dim_calendar",
     "sources": "dim_source",
     "bridge_model_sources": "dim_source",
+    "unemployment": "demographics",
 }
 
 SOURCE_PREFIXES: dict[str, str] = {
@@ -52,6 +53,7 @@ SOURCE_PREFIXES: dict[str, str] = {
     "lunar_phases": "lunar_phases",
     "sources": "sources",
     "bridge_model_sources": "bridge_model_sources",
+    "unemployment": "unemployment",
 }
 
 SOURCE_EXPECTED_COUNTS: dict[str, int] = {

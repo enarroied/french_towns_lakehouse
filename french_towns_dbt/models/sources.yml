@@ -99,3 +99,7 @@ sources:
       - name: bridge_model_sources
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/dim_source/bridge_model_sources_*.csv')"
+
+      - name: unemployment
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/unemployment_*.csv', sample_size=-1)"

@@ -5,6 +5,9 @@ from flows_integration.integration.integration_current_dim_geography import (
 from flows_integration.integration.integration_current_fact_demographics import (
     integration_current_fact_demographics,
 )
+from flows_integration.integration.integration_current_fact_unemployment import (
+    integration_current_fact_unemployment,
+)
 from flows_integration.integration.integration_current_labels import (
     integration_current_labels,
 )
@@ -21,6 +24,7 @@ def integration_pipeline() -> None:
 
     log("=== DEMOGRAPHICS ===")
     integration_current_fact_demographics()
+    integration_current_fact_unemployment()
 
     log("=== LABELS ===")
     integration_current_labels()

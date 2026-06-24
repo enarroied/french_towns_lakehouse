@@ -63,6 +63,9 @@ CREATE OR REPLACE VIEW gold.dim_calendar AS
 CREATE OR REPLACE VIEW gold.bridge_source_links AS
     SELECT * FROM polaris.lakehouse.bridge_source_links;
 
+CREATE OR REPLACE VIEW gold.fact_unemployment AS
+    SELECT * FROM polaris.lakehouse.fact_unemployment;
+
 
 -- ---------- Silver layer (validated parquet via MinIO) ----------
 
@@ -120,3 +123,6 @@ CREATE OR REPLACE VIEW silver.bridge_communes_zip_codes AS
 
 CREATE OR REPLACE VIEW silver.bridge_source_links AS
     SELECT * FROM read_parquet('s3://validated/bridge_source_links.parquet');
+
+CREATE OR REPLACE VIEW silver.fact_unemployment AS
+    SELECT * FROM read_parquet('s3://validated/fact_unemployment.parquet');

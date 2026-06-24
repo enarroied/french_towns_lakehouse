@@ -323,6 +323,14 @@ sources:
     reference_url: "https://www.insee.fr/fr/metadonnees/source/operation/s2216/politique-diffusion"
     license: "INSEE BPE license"
     description: "Equipment type code-to-name mapping table (derived from BPE nomenclature)"
+  - source_id: 21
+    source_name: unemployment
+    source_label: "Base CC Emploi — Population Active"
+    organization: INSEE
+    domain: demographics
+    reference_url: "https://www.insee.fr/fr/metadonnees/source/operation/s2125"
+    license: "INSEE RP license"
+    description: "Employment and unemployment data from INSEE base-cc-emploi-pop-active (2006-2022)"
 
 source_links:
   - model: fact_population
@@ -345,3 +353,5 @@ source_links:
     sources: [13, 14, 15, 16, 17, 18, 19]
   - model: dim_neighbour_communes
     sources: [8]
+  - model: fact_unemployment
+    sources: [21]
