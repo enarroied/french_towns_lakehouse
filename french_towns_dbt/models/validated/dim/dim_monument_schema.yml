@@ -1,0 +1,135 @@
+version: 2
+
+models:
+  - name: dim_monument
+    description: "Monument-level dimension — one row per French historical monument (Mérimée database)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['reference']
+            severity: error
+
+    columns:
+      - name: reference
+        description: "Unique monument identifier (PAXXXXXXXX format)"
+        data_type: VARCHAR(10)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: name
+        description: "Monument name (denomination de l'édifice)"
+        data_type: VARCHAR(255)
+        tests:
+          - not_null:
+              arguments:
+                severity: warn
+
+      - name: alternative_name
+        description: "Alternative name (autre appellation)"
+        data_type: VARCHAR(255)
+
+      - name: domain
+        description: "Category domain (architecture domestique, religieuse, militaire, etc.)"
+        data_type: VARCHAR(100)
+
+      - name: denomination
+        description: "Specific monument type (église, château, maison, etc.)"
+        data_type: VARCHAR(255)
+
+      - name: nature
+        description: "Legal instrument type (arrêté, liste, décret)"
+        data_type: VARCHAR(50)
+
+      - name: protection_level
+        description: "Current protection level (classé, inscrit)"
+        data_type: VARCHAR(10)
+
+      - name: protection_scope
+        description: "Protection scope (partiellement or NULL for full)"
+        data_type: VARCHAR(20)
+
+      - name: first_protection_date
+        description: "Earliest protection date from the history string"
+        data_type: DATE
+
+      - name: last_protection_date
+        description: "Latest protection date from the history string"
+        data_type: DATE
+
+      - name: legal_status
+        description: "Legal status of the building (propriété publique, privée, etc.)"
+        data_type: VARCHAR(255)
+
+      - name: current_use
+        description: "Current use of the monument"
+        data_type: VARCHAR(255)
+
+      - name: century
+        description: "Main construction century"
+        data_type: VARCHAR(255)
+
+      - name: author
+        description: "Architect or builder"
+        data_type: VARCHAR(255)
+
+      - name: conservation_state
+        description: "State of conservation"
+        data_type: VARCHAR(100)
+
+      - name: cadastre
+        description: "Cadastral reference"
+        data_type: VARCHAR(255)
+
+      - name: lieu_dit
+        description: "Hamlet or locality name"
+        data_type: VARCHAR(255)
+
+      - name: vocable
+        description: "Dedication for religious buildings"
+        data_type: VARCHAR(255)
+
+      - name: description
+        description: "Free-text description of the monument"
+        data_type: TEXT
+
+      - name: historical
+        description: "Historical background text"
+        data_type: TEXT
+
+      - name: source_url
+        description: "Link to the monument's archive page (Archives MH)"
+        data_type: VARCHAR(255)
+
+      - name: palissy_url
+        description: "Link to the furnishings database"
+        data_type: VARCHAR(255)
+
+      - name: primary_commune_code
+        description: "First INSEE commune code listed (may be the main commune)"
+        data_type: VARCHAR(5)
+
+      - name: longitude
+        description: "Longitude (WGS84)"
+        data_type: DOUBLE
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -5.5
+                max_value: 10
+                severity: warn
+
+      - name: latitude
+        description: "Latitude (WGS84)"
+        data_type: DOUBLE
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 41
+                max_value: 52
+                severity: warn
+
+      - name: geometry
+        description: "Point geometry (WGS84)"
+        data_type: GEOMETRY

@@ -1,4 +1,7 @@
 from flows.shared import log
+from flows_integration.integration.integration_current_cultural_heritage import (
+    integration_current_cultural_heritage,
+)
 from flows_integration.integration.integration_current_dim_geography import (
     integration_current_dim_geography,
 )
@@ -28,6 +31,9 @@ def integration_pipeline() -> None:
 
     log("=== LABELS ===")
     integration_current_labels()
+
+    log("=== CULTURAL HERITAGE ===")
+    integration_current_cultural_heritage()
 
     log("Integration Pipeline complete")
 

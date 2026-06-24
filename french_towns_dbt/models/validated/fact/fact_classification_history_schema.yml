@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: fact_classification_history
+    description: "Historical classification events for each monument — one row per dated event"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['monument_reference', 'event_date', 'new_protection_level']
+            severity: warn
+
+    columns:
+      - name: monument_reference
+        description: "Monument reference (FK → dim_monument)"
+        data_type: VARCHAR(10)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: event_date
+        description: "Date of the classification event"
+        data_type: DATE
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: new_protection_level
+        description: "Protection level after the event (classé, inscrit)"
+        data_type: VARCHAR(10)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: new_protection_scope
+        description: "Protection scope (partiellement or NULL)"
+        data_type: VARCHAR(20)
+
+      - name: previous_protection_level
+        description: "Protection level before the event (computed via LAG)"
+        data_type: VARCHAR(10)
+
+      - name: previous_protection_scope
+        description: "Protection scope before the event"
+        data_type: VARCHAR(20)
+
+      - name: event_type
+        description: "Type of event: initial, upgrade, downgrade, update, change"
+        data_type: VARCHAR(10)
