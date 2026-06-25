@@ -32,6 +32,17 @@ littoral AS (
         's3://staging-current/geography/littoral_*.csv',
         header=true
     )
+),
+altitude AS (
+    SELECT DISTINCT
+        commune_id::CHAR(5)  AS commune_id,
+        altitude_min::INTEGER AS altitude_min,
+        altitude_max::INTEGER AS altitude_max,
+        altitude_moyenne::DOUBLE AS altitude_moyenne
+    FROM read_csv_auto(
+        's3://staging-current/geography/altitude_*.csv',
+        header=true
+    )
 )
 SELECT
     source.commune_id,
@@ -44,6 +55,9 @@ SELECT
     COALESCE(l.is_coast, false)        AS is_coast,
     COALESCE(l.has_estuary, false)     AS has_estuary,
     COALESCE(l.has_lake, false)        AS has_lake,
+    a.altitude_min,
+    a.altitude_max,
+    a.altitude_moyenne,
     ST_Centroid(source.geometry)       AS centroid,
     CASE
         WHEN LENGTH(source.department_code) = 2 AND source.department_code NOT IN ('2A', '2B')
@@ -83,3 +97,4 @@ SELECT
 FROM source
 LEFT JOIN mountain_zones mz ON source.commune_id = mz.commune_id
 LEFT JOIN littoral l ON source.commune_id = l.commune_id
+LEFT JOIN altitude a ON source.commune_id = a.commune_id

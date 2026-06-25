@@ -391,6 +391,15 @@ sources:
     license: "Open License (etalab)"
     description: "French communes covered by the Littoral Law of 1986"
 
+  - source_id: 25
+    source_name: altitude
+    source_label: "Altitude stats from BD ALTI® 25m"
+    organization: IGN
+    domain: geography
+    reference_url: "https://geoservices.ign.fr/bdalti"
+    license: "Open License (etalab)"
+    description: "Minimum, maximum, and mean altitude per commune computed from BD ALTI® 25m COG raster"
+
 source_links:
   - model: fact_population
     sources: [1, 2, 3, 4, 5]
@@ -401,7 +410,7 @@ source_links:
   - model: dim_communes
     sources: [8, 20]
   - model: dim_geography
-    sources: [8, 23, 24]
+    sources: [8, 23, 24, 25]
   - model: dim_zip_codes
     sources: [11]
   - model: dim_equipment
