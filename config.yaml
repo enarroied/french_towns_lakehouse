@@ -209,6 +209,40 @@ downloads:
     domain: "equipment"
     target_folder: "equipment"
 
+  - name: "mountain_zones"
+    source_id: 23
+    source_label: "Communes de la Loi Montagne (COG 2022)"
+    organization: DGALN - SIDAUH
+    reference_url: "https://www.data.gouv.fr/datasets/communes-de-la-loi-montagne-au-code-officiel-geographique-cog-2020-2022"
+    license: "Open License (etalab)"
+    description: "French communes covered by the Mountain Law of 1985 (Loi Montagne)"
+    url: "https://www.data.gouv.fr/api/1/datasets/r/87bc6d48-f1ed-4924-be55-0142660033de"
+    filename: "mountain_zones"
+    source_file_patterns: []
+    file_targets:
+      - mountain_zones
+    extensions:
+      - .csv
+    domain: "geography"
+    target_folder: "geography"
+
+  - name: "littoral"
+    source_id: 24
+    source_label: "Communes de la Loi Littoral (COG 2022)"
+    organization: DGALN - SIDAUH
+    reference_url: "https://www.data.gouv.fr/datasets/communes-de-la-loi-littoral-au-code-officiel-geographique-cog-2020-2022"
+    license: "Open License (etalab)"
+    description: "French communes covered by the Littoral Law of 1986 (Loi Littoral)"
+    url: "https://www.data.gouv.fr/api/1/datasets/r/5da30edb-2854-47c6-9537-192ee9ca2a70"
+    filename: "littoral"
+    source_file_patterns: []
+    file_targets:
+      - littoral
+    extensions:
+      - .csv
+    domain: "geography"
+    target_folder: "geography"
+
 scrapers:
   - name: "petites_cites"
     source_id: 13
@@ -339,6 +373,41 @@ sources:
     reference_url: "https://www.data.gouv.fr/datasets/immeubles-proteges-au-titre-des-monuments-historiques-2"
     license: "Open License (etalab)"
     description: "Protected historical buildings in France (Mérimée database)"
+  - source_id: 23
+    source_name: mountain_zones
+    source_label: "Communes de la Loi Montagne (COG 2022)"
+    organization: DGALN - SIDAUH
+    domain: geography
+    reference_url: "https://www.data.gouv.fr/datasets/communes-de-la-loi-montagne-au-code-officiel-geographique-cog-2020-2022"
+    license: "Open License (etalab)"
+    description: "French communes covered by the Mountain Law of 1985"
+
+  - source_id: 24
+    source_name: littoral
+    source_label: "Communes de la Loi Littoral (COG 2022)"
+    organization: DGALN - SIDAUH
+    domain: geography
+    reference_url: "https://www.data.gouv.fr/datasets/communes-de-la-loi-littoral-au-code-officiel-geographique-cog-2020-2022"
+    license: "Open License (etalab)"
+    description: "French communes covered by the Littoral Law of 1986"
+
+  - source_id: 25
+    source_name: altitude
+    source_label: "Altitude stats from BD ALTI® 25m"
+    organization: IGN
+    domain: geography
+    reference_url: "https://geoservices.ign.fr/bdalti"
+    license: "Open License (etalab)"
+    description: "Minimum, maximum, and mean altitude per commune computed from BD ALTI® 25m COG raster"
+
+  - source_id: 26
+    source_name: island_communes
+    source_label: "Island commune classification"
+    organization: "Wikipedia — Îles du Ponant et communes insulaires"
+    domain: geography
+    reference_url: "https://fr.wikipedia.org/wiki/Liste_des_%C3%AEles_de_France"
+    license: "Wikipedia CC-BY-SA"
+    description: "Hand-curated classification of communes on islands: is_insular for whole-department islands, is_island_commune for mainland island communes"
 
 source_links:
   - model: fact_population
@@ -350,7 +419,7 @@ source_links:
   - model: dim_communes
     sources: [8, 20]
   - model: dim_geography
-    sources: [8]
+    sources: [8, 23, 24, 25, 26]
   - model: dim_zip_codes
     sources: [11]
   - model: dim_equipment

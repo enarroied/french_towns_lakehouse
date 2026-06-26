@@ -1,6 +1,9 @@
 # Opencode
 .opencode/*
 
+# Generated altitude stats (computed from BD ALTI COG)
+altitude_stats.csv
+
 # Runtime data directories
 data/
 input/
