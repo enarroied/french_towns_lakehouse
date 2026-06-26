@@ -37,6 +37,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 import duckdb
+import folium
 from IPython.display import display, HTML, Markdown
 
 import matplotlib.pyplot as plt
@@ -440,6 +441,62 @@ Monuments shown are those listed in the French national registry of historical m
 **No commune exceeds 1 day** (480 min) — even the biggest cities.
 
 All data comes from the lakehouse: population (2023), monument counts, mountain/coast/island flags, commune centroids, and administrative boundaries.
+
+## Map
+
+Every commune as a dot — sized by visit time, coloured by region, hover for the name.
+
+```{python}
+#| label: folium-map
+#| output: asis
+
+region_colors = {
+    "Auvergne-Rhône-Alpes": "#E74C3C",
+    "Bourgogne-Franche-Comté": "#8E44AD",
+    "Bretagne": "#2E86C1",
+    "Centre-Val de Loire": "#17A589",
+    "Corse": "#F39C12",
+    "Grand Est": "#D35400",
+    "Hauts-de-France": "#C0392B",
+    "Île-de-France": "#2471A3",
+    "Normandie": "#1ABC9C",
+    "Nouvelle-Aquitaine": "#27AE60",
+    "Occitanie": "#E67E22",
+    "Pays de la Loire": "#2980B9",
+    "Provence-Alpes-Côte d'Azur": "#A93226",
+    "Guadeloupe": "#7D3C98",
+    "Martinique": "#7D3C98",
+    "Guyane": "#7D3C98",
+    "La Réunion": "#7D3C98",
+    "Mayotte": "#7D3C98",
+}
+
+m = folium.Map(location=[46.6, 2.4], zoom_start=6, tiles="CartoDB positron", control_scale=True)
+
+for row in df.iter_rows(named=True):
+    if row["longitude"] is None or row["latitude"] is None:
+        continue
+    if row["flag_metropole"] != 1:
+        continue
+    color = region_colors.get(row["region_name"], "#666")
+    radius = max(3, min(row["visit_hours"], 10))
+    folium.CircleMarker(
+        location=[row["latitude"], row["longitude"]],
+        radius=radius,
+        color=color,
+        fill=True,
+        fill_opacity=0.4,
+        tooltip=row["name"],
+    ).add_to(m)
+
+map_path = "_site/posts/visit-all-towns-france/map_mainland.html"
+os.makedirs(os.path.dirname(map_path), exist_ok=True)
+m.save(map_path)
+```
+
+<iframe src="map_mainland.html" width="100%" height="600px" style="border:none;"></iframe>
+
+Mainland France + Corsica only. See the Overseas Territories table for DOM/TOM.
 
 ## Top 10 Most Monument-Rich Towns
 
