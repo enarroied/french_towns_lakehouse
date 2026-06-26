@@ -43,6 +43,16 @@ altitude AS (
         's3://staging-current/geography/altitude_*.csv',
         header=true
     )
+),
+island_communes AS (
+    SELECT DISTINCT
+        id::CHAR(5)            AS commune_id,
+        is_insular::BOOLEAN    AS is_insular,
+        is_island_commune::BOOLEAN AS is_island_commune
+    FROM read_csv_auto(
+        's3://staging-current/geography/island_communes_*.csv',
+        header=true
+    )
 )
 SELECT
     source.commune_id,
@@ -58,6 +68,8 @@ SELECT
     a.altitude_min,
     a.altitude_max,
     a.altitude_moyenne,
+    COALESCE(ic.is_insular, false)             AS is_insular,
+    COALESCE(ic.is_island_commune, false)      AS is_island_commune,
     ST_Centroid(source.geometry)       AS centroid,
     CASE
         WHEN LENGTH(source.department_code) = 2 AND source.department_code NOT IN ('2A', '2B')
@@ -98,3 +110,4 @@ FROM source
 LEFT JOIN mountain_zones mz ON source.commune_id = mz.commune_id
 LEFT JOIN littoral l ON source.commune_id = l.commune_id
 LEFT JOIN altitude a ON source.commune_id = a.commune_id
+LEFT JOIN island_communes ic ON source.commune_id = ic.commune_id

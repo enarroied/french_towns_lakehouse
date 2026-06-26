@@ -1,0 +1,685 @@
+---
+title: "How Many Days Would it Take to Visit Every Town in France?"
+date: today
+description: "A rough guestimate: driving through all 35,000 French towns, counting visit time, monuments, mountains, and island logistics."
+image: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dj4pyzo-8503ea46-2d89-47ba-a1ea-0ea7b9c5cafa.jpg/v1/fill/w_1031,h_775,q_70,strp/camon_houses_by_ericnarro_dj4pyzo-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kajRweXpvLTg1MDNlYTQ2LTJkODktNDdiYS1hMWVhLTBlYTdiOWM1Y2FmYS5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.Nebfcsheroj1CRCvqnbH2gguHczkqldSx6NusAGojdE"
+categories: [insights, analysis]
+lang: en
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    self-contained: false
+---
+
+
+```{python}
+#| echo: false
+import warnings
+warnings.filterwarnings("ignore")
+```
+
+
+```{python}
+#| label: setup
+#| output: false
+
+"""
+French Towns Visit-Time Calculator
+───────────────────────────────────
+Estimates how long it would take to visit every French commune, accounting
+for population-driven dwell time, monument density, terrain difficulty,
+island/ferry access, and intra/inter-department travel.
+"""
+
+import os
+from dataclasses import dataclass
+from datetime import datetime
+
+import duckdb
+from IPython.display import display, HTML, Markdown
+
+import matplotlib.pyplot as plt
+import polars as pl
+from dotenv import find_dotenv, load_dotenv
+from great_tables import GT, loc, style
+
+# ── Constants ────────────────────────────────────────────────────────
+
+MONUMENT_PENALTY_FLOOR = 5       # first N monuments get no penalty
+MONUMENT_PENALTY_BONUS = 3       # flat bonus if > floor
+MONUMENT_PENALTY_PER_EXTRA = 1   # per monument after floor
+MONUMENT_PENALTY_CAP = 60
+
+MOUNTAIN_MULT = 1.3
+COAST_MULT = 1.15
+ISLAND_COMMUNE_MULT = 1.5
+MAX_MIN_PER_COMMUNE = 480  # 1 day cap
+
+DRIVE_MIN_RURAL = 15
+DRIVE_MIN_DENSE = 8
+INTER_DEPT_DRIVE_H = 1.5
+MAX_H_PER_DAY = 10
+
+DENSE_DEPTS = {"75", "92", "93", "94", "69", "13", "59"}
+
+# Overseas travel days per department: all groups 4 days, Corsica 1 day ferry
+OVERSEAS_TRIPS: list[tuple[str, int, str]] = [
+    ("971", 4, "Antilles"),
+    ("972", 4, "Antilles"),
+    ("977", 4, "Antilles"),
+    ("978", 4, "Antilles"),
+    ("973", 4, "Guyane"),
+    ("974", 4, "Océan Indien"),
+    ("976", 4, "Océan Indien"),
+    ("975", 4, "Saint-Pierre-et-Miquelon"),
+    ("987", 4, "Polynésie française"),
+    ("988", 4, "Nouvelle-Calédonie"),
+    ("986", 4, "Wallis-et-Futuna"),
+    ("2A", 1, "Corse"),
+    ("2B", 1, "Corse"),
+]
+
+# Single-commune islands (Îles du Ponant) → 0.5 extra day each
+SINGLE_ISLAND_COMMUNES: set[str] = {
+    "17004", "56088", "29082", "22016", "56069", "56085",
+    "56086", "56087", "29084", "29155", "29083", "85113",
+}
+
+# Belle-Île → 0.5 extra day split across 4 communes
+BELLE_ILE_COMMUNES: set[str] = {"56009", "56114", "56152", "56241"}
+
+GOLD_TABLES = ["dim_communes", "dim_geography", "fact_population", "dim_commune_monument_stats"]
+
+COMMUNE_QUERY = """
+    SELECT
+        c.id                              AS commune_id,
+        c.name                            AS name,
+        c.department_code                 AS department_code,
+        c.department_name                 AS department_name,
+        c.region_code                     AS region_code,
+        c.region_name                     AS region_name,
+        c.flag_metropole                  AS flag_metropole,
+        g.is_mountain                     AS is_mountain,
+        g.is_coast                        AS is_coast,
+        g.is_insular                      AS is_insular,
+        g.is_island_commune               AS is_island_commune,
+        COALESCE(s.total_monuments, 0)    AS total_monuments,
+        p.population                      AS population,
+        ST_X(ST_GeomFromWKB(g.centroid_wkb)) AS longitude,
+        ST_Y(ST_GeomFromWKB(g.centroid_wkb)) AS latitude
+    FROM gold.dim_communes c
+    LEFT JOIN gold.dim_geography g ON c.id = g.commune_id AND g.is_current
+    LEFT JOIN gold.dim_commune_monument_stats s ON c.id = s.commune_id
+    LEFT JOIN (SELECT id, population FROM gold.fact_population WHERE year = 2023) p
+        ON c.id = p.id
+    WHERE c.is_current
+    ORDER BY c.department_code, c.name
+"""
+
+
+@dataclass
+class TripTotals:
+    """Final day-count breakdown for the whole tour."""
+    mainland_days: float
+    overseas_metro_days: float
+    overseas_trip_days: int
+    grand_total_days: float
+
+
+# ── Environment & lakehouse connection ───────────────────────────────
+
+def load_environment() -> None:
+    """Load POLARIS_CLIENT_ID / POLARIS_CLIENT_SECRET from .env."""
+    load_dotenv(find_dotenv())
+
+
+def connect_to_lakehouse() -> duckdb.DuckDBPyConnection:
+    """Open a DuckDB connection wired up to the Polaris/Iceberg catalog."""
+    conn = duckdb.connect()
+    conn.execute("LOAD iceberg;")
+    conn.execute("LOAD spatial;")
+    _create_polaris_secret(conn)
+    _attach_polaris_catalog(conn)
+    _create_gold_views(conn)
+    return conn
+
+
+def _create_polaris_secret(conn: duckdb.DuckDBPyConnection) -> None:
+    conn.execute(f"""
+        CREATE SECRET polaris_secret (
+            TYPE iceberg,
+            CLIENT_ID '{os.environ['POLARIS_CLIENT_ID']}',
+            CLIENT_SECRET '{os.environ['POLARIS_CLIENT_SECRET']}',
+            ENDPOINT 'http://localhost:8181/api/catalog'
+        )
+    """)
+
+
+def _attach_polaris_catalog(conn: duckdb.DuckDBPyConnection) -> None:
+    conn.execute("""
+        ATTACH 'french_towns' AS polaris (
+            TYPE iceberg,
+            ENDPOINT 'http://localhost:8181/api/catalog',
+            SECRET 'polaris_secret'
+        )
+    """)
+
+
+def _create_gold_views(conn: duckdb.DuckDBPyConnection) -> None:
+    """Expose each lakehouse table as a `gold.<table>` view."""
+    conn.execute("CREATE SCHEMA IF NOT EXISTS gold;")
+    for table in GOLD_TABLES:
+        conn.execute(f"CREATE OR REPLACE VIEW gold.{table} AS SELECT * FROM polaris.lakehouse.{table}")
+
+
+def fetch_commune_data(conn: duckdb.DuckDBPyConnection) -> pl.DataFrame:
+    """Pull one row per commune with geography, population, and monument stats."""
+    return conn.execute(COMMUNE_QUERY).pl()
+
+
+# ── Per-commune visit-time pipeline ──────────────────────────────────
+
+def compute_base_visit_minutes(df: pl.DataFrame) -> pl.DataFrame:
+    """Assign a baseline visit duration (minutes) from the population tier."""
+    return df.with_columns(
+        pl.when(pl.col("population").is_null()).then(10)
+        .when(pl.col("population") < 500).then(10)
+        .when(pl.col("population") < 2_000).then(20)
+        .when(pl.col("population") < 10_000).then(45)
+        .when(pl.col("population") < 50_000).then(120)
+        .when(pl.col("population") < 100_000).then(240)
+        .otherwise(480)
+        .alias("_base_minutes")
+    )
+
+
+def compute_monument_penalty(df: pl.DataFrame) -> pl.DataFrame:
+    """Flat bonus + extra minute per monument beyond the floor, capped."""
+    return df.with_columns(
+        pl.min_horizontal(
+            pl.when(pl.col("total_monuments") > MONUMENT_PENALTY_FLOOR)
+            .then(MONUMENT_PENALTY_BONUS + (pl.col("total_monuments") - MONUMENT_PENALTY_FLOOR) * MONUMENT_PENALTY_PER_EXTRA)
+            .otherwise(0),
+            MONUMENT_PENALTY_CAP,
+        ).alias("_monument_penalty")
+    )
+
+
+def _terrain_multiplier_for_row(row: dict) -> float:
+    """Combine one commune's terrain-difficulty factors into a single multiplier."""
+    multiplier = 1.0
+    if row["is_mountain"]:
+        multiplier *= MOUNTAIN_MULT
+    if row["is_coast"]:
+        multiplier *= COAST_MULT
+    if row["is_island_commune"]:
+        multiplier *= ISLAND_COMMUNE_MULT
+    return multiplier
+
+
+def compute_terrain_multiplier(df: pl.DataFrame) -> pl.DataFrame:
+    """Attach the combined terrain-difficulty multiplier for each commune."""
+    return df.with_columns(
+        pl.struct(["is_mountain", "is_coast", "is_island_commune"])
+        .map_elements(_terrain_multiplier_for_row, return_dtype=pl.Float64)
+        .alias("_multiplier")
+    )
+
+
+def compute_island_extra_minutes(df: pl.DataFrame) -> pl.DataFrame:
+    """Add fixed extra time for ferry-only single-commune islands and Belle-Île."""
+    return df.with_columns(
+        pl.when(pl.col("commune_id").is_in(SINGLE_ISLAND_COMMUNES)).then(300)
+        .when(pl.col("commune_id").is_in(BELLE_ILE_COMMUNES)).then(75)
+        .otherwise(0)
+        .alias("_island_extra_min")
+    )
+
+
+def finalize_visit_minutes(df: pl.DataFrame) -> pl.DataFrame:
+    """Combine base time, monument penalty, terrain multiplier and island extras
+    into `visit_minutes` / `visit_hours`, then drop the intermediate columns."""
+    df = df.with_columns(
+        pl.min_horizontal(
+            ((pl.col("_base_minutes") + pl.col("_monument_penalty"))
+             * pl.col("_multiplier") + pl.col("_island_extra_min"))
+            .cast(pl.Int64),
+            MAX_MIN_PER_COMMUNE,
+        ).alias("visit_minutes")
+    )
+    df = df.with_columns(
+        (pl.col("visit_minutes") / 60).round(2).alias("visit_hours")
+    )
+    return df.drop(["_base_minutes", "_monument_penalty", "_multiplier", "_island_extra_min"])
+
+
+def compute_visit_minutes(df: pl.DataFrame) -> pl.DataFrame:
+    """Run the full per-commune visit-time pipeline end to end."""
+    df = compute_base_visit_minutes(df)
+    df = compute_monument_penalty(df)
+    df = compute_terrain_multiplier(df)
+    df = compute_island_extra_minutes(df)
+    return finalize_visit_minutes(df)
+
+
+# ── Overseas travel & filtering ──────────────────────────────────────
+
+def build_overseas_lookup() -> pl.DataFrame:
+    """Build a department → (travel days, trip group) lookup table."""
+    return pl.DataFrame(
+        [{"dept": dept, "days": days, "group": group} for dept, days, group in OVERSEAS_TRIPS],
+        schema={"dept": pl.Utf8, "days": pl.Int64, "group": pl.Utf8},
+    )
+
+
+def attach_overseas_travel_days(df: pl.DataFrame) -> pl.DataFrame:
+    """Join overseas trip metadata onto each commune by department code."""
+    overseas_lookup = build_overseas_lookup()
+    return (
+        df.join(overseas_lookup, left_on="department_code", right_on="dept", how="left")
+        .with_columns([
+            pl.col("days").fill_null(0).alias("overseas_travel_days"),
+            pl.col("group").fill_null("").alias("overseas_group"),
+        ])
+        .drop(["days", "group"])
+    )
+
+
+# ── Department-level aggregation ─────────────────────────────────────
+
+def aggregate_by_department(df: pl.DataFrame) -> pl.DataFrame:
+    """Roll up commune-level visit hours into one row per department."""
+    return (
+        df.group_by("department_code")
+        .agg([
+            pl.first("department_name").alias("department_name"),
+            pl.first("region_name").alias("region_name"),
+            pl.first("flag_metropole").alias("flag_metropole"),
+            pl.len().alias("n_towns"),
+            pl.sum("visit_hours").alias("total_visit_hours"),
+            pl.max("overseas_travel_days").alias("overseas_travel_days"),
+        ])
+        .sort("department_code")
+    )
+
+
+def compute_intra_department_travel_hours(dept_df: pl.DataFrame) -> pl.DataFrame:
+    """Estimate driving time between towns within the same department."""
+    return (
+        dept_df.with_columns(
+            pl.when(pl.col("department_code").is_in(DENSE_DEPTS))
+            .then(DRIVE_MIN_DENSE)
+            .otherwise(DRIVE_MIN_RURAL)
+            .alias("_drive_min")
+        )
+        .with_columns(
+            ((pl.col("n_towns") - 1) * pl.col("_drive_min") / 60)
+            .round(1)
+            .alias("intra_travel_hours")
+        )
+        .drop("_drive_min")
+    )
+
+
+def compute_department_totals(dept_df: pl.DataFrame) -> pl.DataFrame:
+    """Sum visit + intra-department travel time into total hours/days per department."""
+    return dept_df.with_columns([
+        (pl.col("total_visit_hours") + pl.col("intra_travel_hours"))
+        .round(1).alias("total_hours"),
+        ((pl.col("total_visit_hours") + pl.col("intra_travel_hours")) / MAX_H_PER_DAY)
+        .round(1).alias("total_days"),
+    ])
+
+
+def build_department_summary(df: pl.DataFrame) -> pl.DataFrame:
+    """Full department-level aggregation pipeline: group, then add travel/totals."""
+    dept_df = aggregate_by_department(df)
+    dept_df = compute_intra_department_travel_hours(dept_df)
+    return compute_department_totals(dept_df)
+
+
+# ── Trip-wide totals ──────────────────────────────────────────────────
+
+def split_mainland_and_overseas(dept_df: pl.DataFrame) -> tuple[pl.DataFrame, pl.DataFrame]:
+    """Split the department summary into metropolitan vs. overseas rows."""
+    mainland = dept_df.filter(pl.col("flag_metropole") == 1)
+    overseas = dept_df.filter(pl.col("flag_metropole") == 0)
+    return mainland, overseas
+
+
+def compute_overseas_trip_days() -> int:
+    """Count each overseas trip group once (e.g. the 4 Antilles depts share one trip)."""
+    unique_groups = {(group, days) for _, days, group in OVERSEAS_TRIPS}
+    return sum(days for _, days in unique_groups)
+
+
+def compute_inter_department_travel_hours(dept_df: pl.DataFrame) -> float:
+    """Estimate driving time between departments within the same region."""
+    return sum(
+        max(0, len(group) - 1) * INTER_DEPT_DRIVE_H
+        for _, group in dept_df.group_by("region_name")
+    )
+
+
+def compute_grand_totals(
+    dept_df: pl.DataFrame,
+    mainland: pl.DataFrame,
+    overseas: pl.DataFrame,
+) -> TripTotals:
+    """Combine mainland touring, overseas-department touring, and overseas flight days."""
+    inter_dept_h = compute_inter_department_travel_hours(dept_df)
+    overseas_trip_days = compute_overseas_trip_days()
+
+    mainland_total_h = mainland["total_hours"].sum() + inter_dept_h
+    mainland_days = mainland_total_h / MAX_H_PER_DAY
+
+    overseas_total_h = overseas["total_hours"].sum()
+    overseas_metro_days = overseas_total_h / MAX_H_PER_DAY
+
+    grand_total_days = mainland_days + overseas_metro_days + overseas_trip_days
+
+    return TripTotals(
+        mainland_days=mainland_days,
+        overseas_metro_days=overseas_metro_days,
+        overseas_trip_days=overseas_trip_days,
+        grand_total_days=grand_total_days,
+    )
+
+
+# ── Orchestration ─────────────────────────────────────────────────────
+
+load_environment()
+conn = connect_to_lakehouse()
+
+df = fetch_commune_data(conn)
+df = compute_visit_minutes(df)
+df = attach_overseas_travel_days(df)
+
+dept_df = build_department_summary(df)
+mainland, overseas = split_mainland_and_overseas(dept_df)
+
+totals = compute_grand_totals(dept_df, mainland, overseas)
+mainland_total_days = totals.mainland_days
+overseas_total_days = totals.overseas_metro_days
+overseas_travel_total_days = totals.overseas_trip_days
+grand_total_days = totals.grand_total_days
+```
+
+![A photo of Camon, a village in Ariège](https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dj4pyzo-8503ea46-2d89-47ba-a1ea-0ea7b9c5cafa.jpg/v1/fill/w_1031,h_775,q_70,strp/camon_houses_by_ericnarro_dj4pyzo-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kajRweXpvLTg1MDNlYTQ2LTJkODktNDdiYS1hMWVhLTBlYTdiOWM1Y2FmYS5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.Nebfcsheroj1CRCvqnbH2gguHczkqldSx6NusAGojdE)
+
+Have you ever wondered what it would take to visit **every single town in France**, all 35,000 of them?
+
+Not just the big cities (Paris, Marseille, Lyon). Not just the _Plus Beaux Villages de France_. **All** of them. The tiny hamlets in the Massif Central, the remote Corsican mountain villages, and all the overseas territoise, such as the atolls of French Polynesia.
+
+This is a rough, fun estimation. Let's see how many days it would take.
+
+## Methodology
+
+**Per-town visit time** is based on population, weighted by monuments, mountains, coast, and island logistics:
+
+| Population tier | Base visit time | + Monument penalty |
+|---|---|---|
+| Unknown / < 500 hab. | 10 min | +3 min if >5 monuments, +1 per extra (cap 60 min) |
+| 500 – 2 000 hab. | 20 min | same |
+| 2 000 – 10 000 hab. | 45 min | same |
+| 10 000 – 50 000 hab. | 2 h | same |
+| 50 000 – 100 000 hab. | 4 h | same |
+| \> 100 000 hab. | 8 h | same |
+
+Monuments shown are those listed in the French national registry of historical monuments (base Mérimée). Many communes have additional sites of interest not counted here, like churches, châteaux, archaeological sites. So the real "things worth seeing" is higher. The reason we include monumenrt count is because, why would you go to a french town and not visit its heritage (at least some of it)?
+
+**Multipliers**: mountain towns × 1.3, coastal towns × 1.15, island communes × 1.5. This is because these territoris are usually less accessible and require more time for the visits.
+
+**Island logistics**: single-commune islands (Île d'Yeu, Ouessant, etc.) get +0.5 days each; Belle-Île-en-Mer gets +0.5 days across its 4 communes. Larger islands with bridge/causeway connections (Ré, Oléron, Noirmoutier) have no extra penalty.
+
+**Travel time**: 8–15 min drive between nearby towns within a department (denser = shorter), plus 1.5 h between department centres.
+
+**Overseas**: each territory group gets 4 fixed travel days for flights + logistics. Corsica gets 1 ferry day. Per-town visit time is still fully counted.
+
+**No commune exceeds 1 day** (480 min) — even the biggest cities.
+
+All data comes from the lakehouse: population (2023), monument counts, mountain/coast/island flags, commune centroids, and administrative boundaries.
+
+## Top 10 Most Monument-Rich Towns
+
+These are the communes with the most historical monuments — a major driver of visit time:
+
+```{python}
+#| label: top10-table
+#| output: asis
+
+top10 = (df
+    .sort("total_monuments", descending=True)
+    .head(10)
+    .select(["name", "department_name", "population", "total_monuments", "visit_hours"])
+)
+
+top10_display = top10.with_columns([
+    pl.col("population").fill_null(0).cast(pl.Int64).alias("population"),
+    pl.col("visit_hours").round(1).alias("visit_hours"),
+])
+top10_display.columns = ["Commune", "Département", "Population", "Monuments", "Heures"]
+
+(
+    GT(top10_display)
+    .tab_header("Top 10 — most monuments per commune")
+    .fmt_number(columns=["Population"], decimals=0)
+    .fmt_number(columns=["Heures"], decimals=1)
+    .tab_style(locations=loc.body(), style=style.text(weight="bold"))
+    .cols_align("left", columns=["Commune", "Département"])
+    .cols_align("center", columns=["Population", "Monuments", "Heures"])
+)
+```
+
+## By Region
+
+How the total days break down by region:
+
+```{python}
+#| label: region-table
+#| output: asis
+
+region_agg = (df
+    .group_by("region_name")
+    .agg([
+        pl.len().alias("n_towns"),
+        pl.sum("visit_hours").alias("total_visit_h"),
+    ])
+)
+
+region_rows = []
+for r in region_agg.iter_rows(named=True):
+    region = r["region_name"]
+    depts_in_region = dept_df.filter(pl.col("region_name") == region)
+    region_visit_h = r["total_visit_h"]
+    region_travel_h = depts_in_region["intra_travel_hours"].sum()
+    inter = max(0, len(depts_in_region) - 1) * 1.5
+    total_h = region_visit_h + region_travel_h + inter
+    region_rows.append({
+        "region": region,
+        "towns": r["n_towns"],
+        "visit_h": round(region_visit_h, 0),
+        "travel_h": round(region_travel_h + inter, 0),
+        "total_days": round(total_h / 10, 1),
+    })
+
+region_df = pl.DataFrame(region_rows).sort("total_days", descending=True)
+reg_tbl = region_df.rename({
+    "region": "Région", "towns": "Communes",
+    "visit_h": "Visite (h)", "travel_h": "Trajet (h)",
+    "total_days": "Jours",
+})
+
+(
+    GT(reg_tbl)
+    .tab_header("Days required by region")
+    .fmt_number(columns=["Communes", "Visite (h)", "Trajet (h)"], decimals=0)
+    .fmt_number(columns=["Jours"], decimals=1)
+    .cols_align("center")
+)
+```
+
+## By Department
+
+Breakdown of visit time and travel days for every French department:
+
+```{python}
+#| label: dept-table
+#| output: asis
+
+dept_tbl = (dept_df
+    .with_columns([
+        pl.col("n_towns").alias("Towns"),
+        pl.col("total_visit_hours").round(0).cast(pl.Int64).alias("Visit (h)"),
+        pl.col("intra_travel_hours").round(0).cast(pl.Int64).alias("Travel (h)"),
+        pl.col("total_days").round(1).alias("Days"),
+    ])
+    .sort("total_days", descending=True)
+    .select(["department_name", "region_name", "Towns", "Visit (h)", "Travel (h)", "Days"])
+)
+
+dept_tbl.columns = ["Department", "Region", "Towns", "Visit (h)", "Travel (h)", "Days"]
+
+(
+    GT(dept_tbl)
+    .tab_header("Total days required by department")
+    .fmt_number(columns=["Towns", "Visit (h)", "Travel (h)"], decimals=0)
+    .fmt_number(columns=["Days"], decimals=1)
+    .cols_align("center")
+    .opt_row_striping()
+    .opt_stylize(style=6)
+)
+```
+
+## Overseas Territories
+
+```{python}
+#| label: overseas-intro
+#| output: asis
+
+n_overseas_communes = df.filter(pl.col("flag_metropole") == 0).height
+display(Markdown(f"The {n_overseas_communes} overseas communes add extra visit + travel days."))
+```
+
+```{python}
+#| label: overseas-table
+#| output: asis
+
+overseas_groups = (
+    df.filter((pl.col("flag_metropole") == 0) & (pl.col("overseas_group") != ""))
+    .group_by("overseas_group")
+    .agg([
+        pl.len().alias("n_towns"),
+        pl.sum("visit_hours").alias("total_visit_h"),
+        pl.max("overseas_travel_days").alias("travel_days"),
+    ])
+    .with_columns([
+        (pl.col("total_visit_h") / 10 + pl.col("travel_days")).round(1).alias("total_days"),
+    ])
+    .sort("total_days", descending=True)
+)
+
+overseas_tbl = overseas_groups.rename({
+    "overseas_group": "Territory",
+    "n_towns": "Communes",
+    "total_visit_h": "Visit (h)",
+    "travel_days": "Travel (days)",
+    "total_days": "Total days",
+})
+
+(
+    GT(overseas_tbl)
+    .tab_header("Overseas territories — visit time, travel, and total days")
+    .fmt_number(columns=["Communes", "Visit (h)", "Travel (days)"], decimals=0)
+    .fmt_number(columns=["Total days"], decimals=1)
+    .cols_align("center")
+    .opt_row_striping()
+    .opt_stylize(style=6)
+)
+```
+
+## The Bottom Line
+
+```{python}
+#| label: bottom-line
+#| output: asis
+
+n_towns = len(df)
+n_monuments = int(df["total_monuments"].sum())
+n_mountain = int(df["is_mountain"].sum())
+n_coast = int(df["is_coast"].sum())
+n_insular = int(df["is_insular"].sum())
+n_island_commune = int(df["is_island_commune"].sum())
+n_overseas_groups = df["overseas_group"].n_unique()
+n_full_day = (df["visit_minutes"] >= 480).sum()
+years = grand_total_days / 365.25
+
+
+hero_html = f"""
+<div style="
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 32px 40px;
+    text-align: center;
+    color: white;
+    margin: 24px 0;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+">
+    <div style="font-size: 72px; font-weight: 800; line-height: 1; margin-bottom: 8px;">
+        {grand_total_days:.0f}
+    </div>
+    <div style="font-size: 20px; font-weight: 300; opacity: 0.9;">
+        total days to visit every French commune
+    </div>
+    <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">
+        {years:.1f} years &middot; 7 days a week &middot; 10 hours a day
+    </div>
+</div>
+"""
+display(HTML(hero_html))
+
+md = f"""
+**By the numbers:**
+
+- {n_towns:,} communes visited
+- {n_monuments:,} historical monuments admired
+- {n_mountain:,} mountain towns conquered
+- {n_coast:,} coastal towns strolled
+- {n_insular:,} communes in island departments/territories
+- {n_island_commune:,} mainland island communes
+- {n_overseas_groups} overseas territory groups navigated
+- {n_full_day:,} communes require a full day (≥ 480 min)
+
+**Fun comparisons:**
+
+- That's roughly **{grand_total_days / 80:.0f}×** the Tour de France (80 days)
+- Equivalent to driving **{grand_total_days * 200 / 40075:.0f}×** around the Earth (200 km/day average, 40,075 km circumference)
+- **{grand_total_days / 365.25:.1f} years** — could start today and finish in {datetime.now().year + int(years)} at the earliest
+
+**Caveats:**
+
+- Population data is from 2023 — some towns have missing data (visits default to 10 min)
+- Travel times are rough estimates (no real routing engine)
+- Island commune data is hand-curated from Wikipedia (Îles du Ponant, Belle-Île, Ré, Oléron, Noirmoutier)
+- We assumed 7-day weeks and 10-hour days — no rest days, no weekends
+- Realistically, you'd need to add 30-50% for meal breaks, wrong turns, and weather
+- But hey — it's a fun number!
+
+**What we didn't include:** natural parks and reserves, UNESCO World Heritage sites, sport events (Tour de France stages, marathons, etc.), cultural festivals (Fête de la Musique, film festivals), gastronomic routes, and local markets — all of which would add significant time to any real visit.
+"""
+display(Markdown(md))
+```
+
+## Conclusion
+
+```{python}
+#| label: conclusion
+#| output: asis
+
+
+conclusion = f"""
+Visiting every French commune is a monumental undertaking: **{grand_total_days:.0f} days ({years:.1f} years)** of non-stop travel, with 10-hour days and no rest. The biggest drivers are the sheer number of towns ({n_towns:,}), mountain terrain adding 30% more time, and overseas logistics requiring dedicated trips. While the estimate is rough, it gives a concrete sense of scale. This does't account for anything else than visiting towns, which isnt reaalistic. Sounds like a project for a lifetime!
+"""
+display(Markdown(conclusion))
+```

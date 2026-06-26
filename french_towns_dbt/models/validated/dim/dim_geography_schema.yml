@@ -81,6 +81,14 @@ models:
                 max_value: 1000000000
                 severity: error
 
+      - name: is_insular
+        description: "True when the commune belongs to an entirely island department/territory (Corsica, DROM/COM, etc.)"
+        data_type: BOOLEAN
+
+      - name: is_island_commune
+        description: "True for specific mainland communes that are on an island (Ré, Oléron, Belle-Île, Noirmoutier, Îles du Ponant)"
+        data_type: BOOLEAN
+
       - name: is_multipolygon
         description: "Whether the commune geometry consists of multiple disjoint polygons (e.g., island communes)"
         data_type: BOOLEAN

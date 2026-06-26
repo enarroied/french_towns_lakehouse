@@ -400,6 +400,15 @@ sources:
     license: "Open License (etalab)"
     description: "Minimum, maximum, and mean altitude per commune computed from BD ALTI® 25m COG raster"
 
+  - source_id: 26
+    source_name: island_communes
+    source_label: "Island commune classification"
+    organization: "Wikipedia — Îles du Ponant et communes insulaires"
+    domain: geography
+    reference_url: "https://fr.wikipedia.org/wiki/Liste_des_%C3%AEles_de_France"
+    license: "Wikipedia CC-BY-SA"
+    description: "Hand-curated classification of communes on islands: is_insular for whole-department islands, is_island_commune for mainland island communes"
+
 source_links:
   - model: fact_population
     sources: [1, 2, 3, 4, 5]
@@ -410,7 +419,7 @@ source_links:
   - model: dim_communes
     sources: [8, 20]
   - model: dim_geography
-    sources: [8, 23, 24, 25]
+    sources: [8, 23, 24, 25, 26]
   - model: dim_zip_codes
     sources: [11]
   - model: dim_equipment
