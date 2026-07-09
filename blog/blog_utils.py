@@ -26,6 +26,8 @@ GOLD_TABLES = [
     "dim_calendar",
     "bridge_source_links",
     "fact_unemployment",
+    "dim_criminality_indicateur",
+    "fact_criminality",
 ]
 
 

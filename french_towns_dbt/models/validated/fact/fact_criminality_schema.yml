@@ -1,0 +1,96 @@
+version: 2
+
+models:
+  - name: fact_criminality
+    description: "Crime statistics per commune per year per offense type (2016-2025): counts and rates per 1,000 inhabitants from police and gendarmerie records"
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['commune_id', 'annee', 'indicateur_id']
+            severity: error
+
+    columns:
+      - name: commune_id
+        description: "INSEE commune code (5-character identifier)"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: annee
+        description: "Year of the crime statistics (2016-2025)"
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 2016
+                max_value: 2025
+                severity: error
+
+      - name: indicateur_id
+        description: "Foreign key to dim_criminality_indicateur"
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('dim_criminality_indicateur')
+                field: indicateur_id
+                severity: error
+
+      - name: nombre
+        description: "Number of recorded offenses (null when suppressed for statistical secrecy)"
+        data_type: INTEGER
+
+      - name: taux_pour_mille
+        description: "Rate per 1,000 inhabitants (null when suppressed or when population is 0)"
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1000
+                severity: warn
+
+      - name: est_diffuse
+        description: "Publication status: 'diff' (published) or 'ndiff' (suppressed for confidentiality)"
+        data_type: VARCHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: complement_info_nombre
+        description: "Imputed count (department-level average) used when actual count is suppressed. Null when est_diffuse = 'diff'."
+        data_type: FLOAT
+
+      - name: complement_info_taux
+        description: "Imputed rate per 1,000 (department-level average) used when actual rate is suppressed. Null when est_diffuse = 'diff'."
+        data_type: FLOAT
+
+      - name: insee_pop
+        description: "INSEE population estimate for the commune-year (denominator for taux_pour_mille)"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 3000000
+                severity: warn
+
+      - name: insee_log
+        description: "INSEE number of dwellings (logements) for the commune-year"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1500000
+                severity: warn

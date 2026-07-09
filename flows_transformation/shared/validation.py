@@ -29,6 +29,8 @@ SOURCE_FOLDERS: dict[str, str] = {
     "bridge_model_sources": "dim_source",
     "unemployment": "demographics",
     "monuments_historiques": "cultural_heritage",
+    "criminality": "criminality",
+    "dim_criminality_indicateur": "dim_criminality_indicateur",
 }
 
 SOURCE_PREFIXES: dict[str, str] = {
@@ -56,6 +58,8 @@ SOURCE_PREFIXES: dict[str, str] = {
     "bridge_model_sources": "bridge_model_sources",
     "unemployment": "unemployment",
     "monuments_historiques": "monuments_historiques",
+    "criminality": "delinquance",
+    "dim_criminality_indicateur": "dim_criminality_indicateur",
 }
 
 SOURCE_EXPECTED_COUNTS: dict[str, int] = {

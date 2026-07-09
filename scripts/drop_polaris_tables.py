@@ -30,6 +30,8 @@ TABLES = [
     "dim_calendar",
     "bridge_source_links",
     "fact_unemployment",
+    "dim_criminality_indicateur",
+    "fact_criminality",
 ]
 
 API_BASE = "http://localhost:8181/api/catalog/v1"

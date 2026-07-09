@@ -107,3 +107,11 @@ sources:
       - name: monuments_historiques
         meta:
           external_location: "ST_Read('{{ var('input_dir') }}/cultural_heritage/monuments_historiques_*.geojson')"
+
+      - name: criminality
+        meta:
+          external_location: "read_parquet('{{ var('input_dir') }}/criminality/delinquance_*.parquet')"
+
+      - name: dim_criminality_indicateur
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/dim_criminality_indicateur/dim_criminality_indicateur_*.csv')"

@@ -1,0 +1,16 @@
+indicateur_id,name_fr,name_en,unite_de_compte_fr,unite_de_compte_en
+1,Cambriolages de logement,Residential burglary,Infraction,Offence
+2,Destructions et dégradations volontaires,Willful destruction,Infraction,Offence
+3,Escroqueries et fraudes aux moyens de paiement,Fraud and payment scams,Victime,Victim
+4,Trafic de stupéfiants,Drug trafficking,Mis en cause,Suspect
+5,Usage de stupéfiants,Drug use,Mis en cause,Suspect
+6,Usage de stupéfiants (AFD),Drug use (administrative fine),Mis en cause,Suspect
+7,Violences physiques hors cadre familial,Physical violence outside family,Victime,Victim
+8,Violences physiques intrafamiliales,Domestic physical violence,Victime,Victim
+9,Violences sexuelles,Sexual violence,Victime,Victim
+10,Vols avec armes,Armed robbery,Infraction,Offence
+11,Vols d'accessoires sur véhicules,Vehicle accessory theft,Véhicule,Vehicle
+12,Vols dans les véhicules,Theft from vehicles,Véhicule,Vehicle
+13,Vols de véhicule,Vehicle theft,Véhicule,Vehicle
+14,Vols sans violence contre des personnes,Non-violent theft,Victime entendue,Victim heard
+15,Vols violents sans arme,Violent theft without weapon,Infraction,Offence

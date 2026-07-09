@@ -232,7 +232,7 @@ downloads:
     organization: DGALN - SIDAUH
     reference_url: "https://www.data.gouv.fr/datasets/communes-de-la-loi-littoral-au-code-officiel-geographique-cog-2020-2022"
     license: "Open License (etalab)"
-    description: "French communes covered by the Littoral Law of 1986 (Loi Littoral)"
+    description: "French communes covered by the Littoral Law of 1986"
     url: "https://www.data.gouv.fr/api/1/datasets/r/5da30edb-2854-47c6-9537-192ee9ca2a70"
     filename: "littoral"
     source_file_patterns: []
@@ -242,6 +242,23 @@ downloads:
       - .csv
     domain: "geography"
     target_folder: "geography"
+
+  - name: "criminality"
+    source_id: 27
+    source_label: "Délinquance enregistrée par la police et la gendarmerie nationales"
+    organization: "Ministère de l'Intérieur — SSMSI"
+    reference_url: "https://www.data.gouv.fr/datasets/bases-statistiques-communale-departementale-et-regionale-de-la-delinquance-enregistree-par-la-police-et-la-gendarmerie-nationales"
+    license: "Open License (etalab)"
+    description: "Communes-level crime statistics (2016-2025): 15 offense types, counts and rates per 1,000 inhabitants, with statistical secrecy handling"
+    url: "https://www.data.gouv.fr/api/1/datasets/r/604d71b8-337d-4869-9226-49e01bae87df"
+    filename: "delinquance"
+    source_file_patterns: []
+    file_targets:
+      - delinquance
+    extensions:
+      - .parquet
+    domain: "public_safety"
+    target_folder: "criminality"
 
 scrapers:
   - name: "petites_cites"
@@ -409,6 +426,15 @@ sources:
     license: "Wikipedia CC-BY-SA"
     description: "Hand-curated classification of communes on islands: is_insular for whole-department islands, is_island_commune for mainland island communes"
 
+  - source_id: 27
+    source_name: criminality
+    source_label: "Délinquance enregistrée par la police et la gendarmerie nationales"
+    organization: "Ministère de l'Intérieur — SSMSI"
+    domain: public_safety
+    reference_url: "https://www.data.gouv.fr/datasets/bases-statistiques-communale-departementale-et-regionale-de-la-delinquance-enregistree-par-la-police-et-la-gendarmerie-nationales"
+    license: "Open License (etalab)"
+    description: "Communes-level crime statistics (2016-2025): 15 offense types, counts and rates per 1,000 inhabitants, with statistical secrecy handling"
+
 source_links:
   - model: fact_population
     sources: [1, 2, 3, 4, 5]
@@ -440,3 +466,7 @@ source_links:
     sources: [22]
   - model: fact_classification_history
     sources: [22]
+  - model: dim_criminality_indicateur
+    sources: [27]
+  - model: fact_criminality
+    sources: [27]

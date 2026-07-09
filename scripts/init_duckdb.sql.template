@@ -78,6 +78,34 @@ CREATE OR REPLACE VIEW gold.dim_commune_monument_stats AS
 CREATE OR REPLACE VIEW gold.fact_classification_history AS
     SELECT * FROM polaris.lakehouse.fact_classification_history;
 
+CREATE OR REPLACE VIEW gold.dim_criminality_indicateur AS
+    SELECT * FROM polaris.lakehouse.dim_criminality_indicateur;
+
+CREATE OR REPLACE VIEW gold.fact_criminality AS
+    SELECT * FROM polaris.lakehouse.fact_criminality;
+
+CREATE OR REPLACE VIEW gold.v_criminality_wide AS
+    SELECT
+      commune_id,
+      annee,
+      MAX(CASE WHEN indicateur_id = 1 THEN nombre END) AS cambriolages_logement,
+      MAX(CASE WHEN indicateur_id = 2 THEN nombre END) AS vols_vehicules,
+      MAX(CASE WHEN indicateur_id = 3 THEN nombre END) AS vols_accessoires_vehicules,
+      MAX(CASE WHEN indicateur_id = 4 THEN nombre END) AS vols_cambriolages_dependances,
+      MAX(CASE WHEN indicateur_id = 5 THEN nombre END) AS destructions_degradations,
+      MAX(CASE WHEN indicateur_id = 6 THEN nombre END) AS violences_physiques_chantage,
+      MAX(CASE WHEN indicateur_id = 7 THEN nombre END) AS violences_sexuelles,
+      MAX(CASE WHEN indicateur_id = 8 THEN nombre END) AS menaces,
+      MAX(CASE WHEN indicateur_id = 9 THEN nombre END) AS violences_intrafamiliales,
+      MAX(CASE WHEN indicateur_id = 10 THEN nombre END) AS stup_usage_revente,
+      MAX(CASE WHEN indicateur_id = 11 THEN nombre END) AS atteintes_vehicules_vols_accessoires,
+      MAX(CASE WHEN indicateur_id = 12 THEN nombre END) AS escroqueries_infractions_economiques,
+      MAX(CASE WHEN indicateur_id = 13 THEN nombre END) AS destructions_degats_incendies_volontaires,
+      MAX(CASE WHEN indicateur_id = 14 THEN nombre END) AS coups_blessures_volontaires,
+      MAX(CASE WHEN indicateur_id = 15 THEN nombre END) AS homicides
+    FROM polaris.lakehouse.fact_criminality
+    GROUP BY commune_id, annee;
+
 
 -- ---------- Silver layer (validated parquet via MinIO) ----------
 
