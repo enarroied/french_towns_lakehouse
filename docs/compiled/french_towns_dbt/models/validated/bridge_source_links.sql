@@ -169,3 +169,33 @@ CROSS JOIN (
     WHERE source_name IN ('french_communes')
 ) s
 
+
+UNION ALL
+
+
+SELECT
+    ROW_NUMBER() OVER () AS source_link_id,
+    'dim_criminality_indicateur' AS target_table,
+    indicateur_id::VARCHAR AS target_key,
+    s.source_id
+FROM "french_towns"."main"."dim_criminality_indicateur" t
+CROSS JOIN (
+    SELECT source_id FROM "french_towns"."main"."dim_source"
+    WHERE source_name IN ('criminality')
+) s
+
+
+UNION ALL
+
+
+SELECT
+    ROW_NUMBER() OVER () AS source_link_id,
+    'fact_criminality' AS target_table,
+    commune_id || '|' || annee || '|' || indicateur_id AS target_key,
+    s.source_id
+FROM "french_towns"."main"."fact_criminality" t
+CROSS JOIN (
+    SELECT source_id FROM "french_towns"."main"."dim_source"
+    WHERE source_name IN ('criminality')
+) s
+
