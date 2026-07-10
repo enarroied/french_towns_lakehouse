@@ -1,0 +1,58 @@
+version: 2
+
+models:
+  - name: dim_criminality_indicateur
+    description: "Lookup table mapping criminal offense indicator codes (1-15) to French and English labels and counting units"
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['indicateur_id']
+            severity: error
+
+    columns:
+      - name: indicateur_id
+        description: "Surrogate key for the offense indicator type"
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: name_fr
+        description: "Offense indicator name in French (as in the source data)"
+        data_type: VARCHAR(100)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - unique:
+              arguments:
+                severity: error
+
+      - name: name_en
+        description: "Offense indicator name translated to English"
+        data_type: VARCHAR(100)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - unique:
+              arguments:
+                severity: error
+
+      - name: unite_de_compte_fr
+        description: "Counting unit in French (Victime, Infraction, Mis en cause, Véhicule, Victime entendue)"
+        data_type: VARCHAR(50)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+
+      - name: unite_de_compte_en
+        description: "Counting unit translated to English"
+        data_type: VARCHAR(50)
+        tests:
+          - not_null:
+              arguments:
+                severity: error

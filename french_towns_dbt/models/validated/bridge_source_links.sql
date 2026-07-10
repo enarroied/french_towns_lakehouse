@@ -30,3 +30,7 @@ UNION ALL
 {{ bridge_source_links_simple('bridge_communes_zip_codes', "commune_id || '|' || zip_code_id::VARCHAR", ['zip_codes']) }}
 UNION ALL
 {{ bridge_source_links_simple('dim_neighbour_communes', "parcel_id || '|' || neighbor_id", ['french_communes']) }}
+UNION ALL
+{{ bridge_source_links_simple('dim_criminality_indicateur', 'indicateur_id::VARCHAR', ['criminality']) }}
+UNION ALL
+{{ bridge_source_links_simple('fact_criminality', "commune_id || '|' || annee || '|' || indicateur_id", ['criminality']) }}
