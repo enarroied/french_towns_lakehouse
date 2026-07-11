@@ -11,6 +11,22 @@ WITH population_base AS (
     FROM {{ source('french_towns', 'populations_historiques') }}
     WHERE GEO_OBJECT = 'COM'
 ),
+overseas_base AS (
+    SELECT
+        commune_id::CHAR(5)     AS id,
+        year::INTEGER           AS year,
+        population::INTEGER     AS population
+    FROM {{ source('french_towns', 'overseas_population') }}
+),
+unified_population_base AS (
+    SELECT id, year, MAX(population) AS population
+    FROM (
+        SELECT id, year, population FROM population_base
+        UNION ALL
+        SELECT id, year, population FROM overseas_base
+    )
+    GROUP BY id, year
+),
 births_base AS (
     SELECT DISTINCT
         GEO::CHAR(5)            AS id,
@@ -64,7 +80,7 @@ migration_base AS (
 ),
 all_years AS (
     SELECT DISTINCT id, year FROM (
-        SELECT id, year FROM population_base
+        SELECT id, year FROM unified_population_base
         UNION
         SELECT id, year FROM births_base
         UNION
@@ -109,9 +125,9 @@ SELECT
     mg.number_female,
     mg.number_total
 FROM all_years a
-LEFT JOIN population_base p
+LEFT JOIN unified_population_base p
     ON a.id = p.id AND a.year = p.year
-LEFT JOIN population_base pp
+LEFT JOIN unified_population_base pp
     ON a.id = pp.id AND a.year = pp.year + 1
 LEFT JOIN births_base br
     ON a.id = br.id AND a.year = br.year

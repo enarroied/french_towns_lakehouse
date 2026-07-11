@@ -31,6 +31,7 @@ SOURCE_FOLDERS: dict[str, str] = {
     "monuments_historiques": "cultural_heritage",
     "criminality": "criminality",
     "dim_criminality_indicateur": "dim_criminality_indicateur",
+    "overseas_population": "demographics",
 }
 
 SOURCE_PREFIXES: dict[str, str] = {
@@ -60,6 +61,7 @@ SOURCE_PREFIXES: dict[str, str] = {
     "monuments_historiques": "monuments_historiques",
     "criminality": "delinquance",
     "dim_criminality_indicateur": "dim_criminality_indicateur",
+    "overseas_population": "overseas_population",
 }
 
 SOURCE_EXPECTED_COUNTS: dict[str, int] = {
