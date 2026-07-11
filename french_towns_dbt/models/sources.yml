@@ -115,3 +115,7 @@ sources:
       - name: dim_criminality_indicateur
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/dim_criminality_indicateur/dim_criminality_indicateur_*.csv')"
+
+      - name: overseas_population
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/overseas_population_*.csv')"
