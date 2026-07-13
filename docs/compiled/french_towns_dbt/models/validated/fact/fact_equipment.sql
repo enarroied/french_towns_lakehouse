@@ -16,6 +16,7 @@ SELECT
     e.year,
     e.year * 10000 + 101                    AS date_id,
     eq.equipment_type_id,
+    1                   AS source_id,
     e.count
 FROM equipment_base e
 LEFT JOIN "french_towns"."main"."dim_communes" c
