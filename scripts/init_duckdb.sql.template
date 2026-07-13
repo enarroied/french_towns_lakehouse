@@ -84,6 +84,9 @@ CREATE OR REPLACE VIEW gold.dim_criminality_indicateur AS
 CREATE OR REPLACE VIEW gold.fact_criminality AS
     SELECT * FROM polaris.lakehouse.fact_criminality;
 
+CREATE OR REPLACE VIEW gold.fact_income AS
+    SELECT * FROM polaris.lakehouse.fact_income;
+
 CREATE OR REPLACE VIEW gold.v_criminality_wide AS
     SELECT
       commune_id,
@@ -178,3 +181,6 @@ CREATE OR REPLACE VIEW silver.dim_commune_monument_stats AS
 
 CREATE OR REPLACE VIEW silver.fact_classification_history AS
     SELECT * FROM read_parquet('s3://validated/fact_classification_history.parquet');
+
+CREATE OR REPLACE VIEW silver.fact_income AS
+    SELECT * FROM read_parquet('s3://validated/fact_income.parquet');

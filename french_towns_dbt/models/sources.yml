@@ -119,3 +119,7 @@ sources:
       - name: overseas_population
         meta:
           external_location: "read_csv_auto('{{ var('input_dir') }}/demographics/overseas_population_*.csv')"
+
+      - name: filosofi_income
+        meta:
+          external_location: "read_csv_auto('{{ var('input_dir') }}/income/filosofi_income_*.csv', sample_size=-1)"

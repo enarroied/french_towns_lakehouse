@@ -1,0 +1,216 @@
+version: 2
+
+models:
+  - name: fact_income
+    description: "Income, poverty, inequality, and income composition data per French commune from the Filosofi series (2013–2023). Covers Filosofi 1 (2013–2021) and Filosofi 2 (2023) methodologies."
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['id', 'year']
+            severity: error
+
+    columns:
+      - name: id
+        description: "INSEE commune code (5-character identifier)"
+        data_type: CHAR(5)
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - relationships:
+              arguments:
+                to: ref('dim_communes')
+                field: id
+                severity: warn
+
+      - name: year
+        description: "Reference year for the income data"
+        data_type: INTEGER
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 2013
+                max_value: 2023
+                severity: error
+
+      - name: methodology_version
+        description: "Filosofi methodology version: 'filosofi_1' (2013–2021) or 'filosofi_2' (2023). The two methodologies are not directly comparable."
+        data_type: VARCHAR
+        tests:
+          - not_null:
+              arguments:
+                severity: error
+          - accepted_values:
+              arguments:
+                values: ['filosofi_1', 'filosofi_2']
+                severity: error
+
+      - name: nb_tax_households
+        description: "Number of tax households (ménages fiscaux)"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 2000000
+                severity: warn
+
+      - name: nb_persons
+        description: "Number of persons in tax households"
+        data_type: INTEGER
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 5000000
+                severity: warn
+
+      - name: median_income
+        description: "Median disposable income per consumption unit (€)"
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 200000
+                severity: warn
+
+      - name: poverty_rate
+        description: "Poverty rate at 60% of median income threshold (%). From DISP_Pauvres sources."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 100
+                severity: warn
+
+      - name: decile1
+        description: "First decile (D1) of disposable income per consumption unit (€)"
+        data_type: FLOAT
+
+      - name: decile9
+        description: "Ninth decile (D9) of disposable income per consumption unit (€)"
+        data_type: FLOAT
+
+      - name: gini
+        description: "Gini coefficient (0 = perfect equality, 1 = maximum inequality). Available from 2015 onward (not in 2014 or 2017)."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                severity: warn
+
+      - name: s80_s20
+        description: "S80/S20 ratio — ratio of total income of top 20% to bottom 20%. Available from 2015 onward (not in 2014 or 2017)."
+        data_type: FLOAT
+
+      - name: activity_income_share
+        description: "Share of disposable income from all activity income (salaries + non-salaried + unemployment). For 2013-2014 this is PTSAC (salaries + unemployment combined); from 2015 onward it is PACT."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: salary_share
+        description: "Share of disposable income from salaries. For 2013-2014, this reflects the combined salaries + unemployment share (PTSAC) as they cannot be separated. NULL for 2020–2021 (not published at commune level)."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: unemployment_share
+        description: "Share of disposable income from unemployment benefits. NULL for 2013–2014 (not separately published) and 2020–2021 (not published at commune level)."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: pension_share
+        description: "Share of disposable income from pensions, retirement, and annuities. NULL for 2020–2021 (not published at commune level) and 2023 (Filosofi 2, not available at commune level)."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: property_income_share
+        description: "Share of disposable income from property and other income. NULL for 2020–2021 and 2023."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: social_benefits_share
+        description: "Share of disposable income from all social benefits (family benefits + minimum social + housing benefits). NULL for 2020–2021 and 2023."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: family_benefits_share
+        description: "Share of disposable income from family benefits. NULL for 2020–2021 and 2023."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: minimum_social_share
+        description: "Share of disposable income from minimum social welfare (minima sociaux). NULL for 2020–2021 and 2023."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: housing_benefits_share
+        description: "Share of disposable income from housing benefits. NULL for 2020–2021 and 2023."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -50
+                max_value: 150
+                severity: warn
+
+      - name: tax_share
+        description: "Share of disposable income from taxes (negative value represents taxes paid). NULL for 2020–2021 and 2023."
+        data_type: FLOAT
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: -100
+                max_value: 0
+                severity: warn
+
+      - name: date_id
+        description: "Surrogate date key for joining to dim_calendar (format: YYYYMMDD with MM=01, DD=01)"
+        data_type: INTEGER
