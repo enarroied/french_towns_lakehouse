@@ -32,6 +32,7 @@ TABLES = [
     "fact_unemployment",
     "dim_criminality_indicateur",
     "fact_criminality",
+    "fact_income",
 ]
 
 API_BASE = "http://localhost:8181/api/catalog/v1"
