@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom"
+      xmlns:media="http://search.yahoo.com/mrss/"
+      xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:dc="http://purl.org/dc/elements/1.1/"
+      version="2.0">
+<channel>
+<title>French Towns Lakehouse</title>
+<link>https://enarroied.github.io/french_towns_lakehouse/</link>
+<atom:link href="https://enarroied.github.io/french_towns_lakehouse/index.xml" rel="self" type="application/rss+xml"/>
+<description>A data lakehouse for French municipal and administrative data</description>
+<generator>quarto-1.9.37</generator>
+<lastBuildDate>Sun, 12 Jul 2026 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>{B4F502887207:/posts/visit-all-towns-france/index.html}</title>
+  <link>https://enarroied.github.io/french_towns_lakehouse/posts/visit-all-towns-france/</link>
+  <description>{B4F502887207:/posts/visit-all-towns-france/index.html}</description>
+  <category>insights</category>
+  <category>analysis</category>
+  <guid>https://enarroied.github.io/french_towns_lakehouse/posts/visit-all-towns-france/</guid>
+  <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+  <media:content url="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dj4pyzo-8503ea46-2d89-47ba-a1ea-0ea7b9c5cafa.jpg/v1/fill/w_1031,h_775,q_70,strp/camon_houses_by_ericnarro_dj4pyzo-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kajRweXpvLTg1MDNlYTQ2LTJkODktNDdiYS1hMWVhLTBlYTdiOWM1Y2FmYS5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.Nebfcsheroj1CRCvqnbH2gguHczkqldSx6NusAGojdE" medium="image"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/commune_names/index.html}</title>
+  <link>https://enarroied.github.io/french_towns_lakehouse/posts/commune_names/</link>
+  <description>{B4F502887207:/posts/commune_names/index.html}</description>
+  <category>insights</category>
+  <category>data-exploration</category>
+  <guid>https://enarroied.github.io/french_towns_lakehouse/posts/commune_names/</guid>
+  <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+  <media:content url="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dfzsob0-71778f86-3697-4f59-a753-09d0d39ffb98.jpg/v1/fill/w_1031,h_775,q_70,strp/monbazillac_landscape_1_by_ericnarro_dfzsob0-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kZnpzb2IwLTcxNzc4Zjg2LTM2OTctNGY1OS1hNzUzLTA5ZDBkMzlmZmI5OC5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.EIkJ1NB_7ePo7FVGiBF7a77cRbkHRi-p3bR71QBBQsc" medium="image"/>
+</item>
+<item>
+  <title>{B4F502887207:/posts/hello-world/index.html}</title>
+  <link>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/</link>
+  <description>{B4F502887207:/posts/hello-world/index.html}</description>
+  <category>meta</category>
+  <guid>https://enarroied.github.io/french_towns_lakehouse/posts/hello-world/</guid>
+  <pubDate>Sat, 09 May 2026 22:00:00 GMT</pubDate>
+  <media:content url="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f38bd36f-bfc7-4fbf-931e-93a12b13a823/dhq7dpu-ea6b6660-0357-49db-a9f5-4845f2d29036.jpg/v1/fill/w_1031,h_775,q_70,strp/monsac_4_by_ericnarro_dhq7dpu-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTYyIiwicGF0aCI6Ii9mL2YzOGJkMzZmLWJmYzctNGZiZi05MzFlLTkzYTEyYjEzYTgyMy9kaHE3ZHB1LWVhNmI2NjYwLTAzNTctNDlkYi1hOWY1LTQ4NDVmMmQyOTAzNi5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.KAHXCTy8F8cDqxIJG4vkGPY92pXz9L0J2IavyFwl_iw" medium="image"/>
+</item>
+</channel>
+</rss>
