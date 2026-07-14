@@ -20,7 +20,7 @@ PARQUET_PATH = DATA_DIR / "visited_towns.parquet"
 GEOJSON_PATH = DATA_DIR / "departments.geojson"
 GITHUB_OWNER = "enarroied"
 GITHUB_REPO = "french_towns_lakehouse"
-GITHUB_BRANCH = "main"
+GITHUB_BRANCH = "master"
 THUMB_BASE = (
     f"https://raw.githubusercontent.com/{GITHUB_OWNER}/{GITHUB_REPO}/{GITHUB_BRANCH}"
     "/blog/data/img"
