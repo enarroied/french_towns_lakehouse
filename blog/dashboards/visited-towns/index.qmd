@@ -1,0 +1,384 @@
+---
+title: "Visited Towns"
+description: "Track French communes visited in the field"
+format:
+  html:
+    code-fold: true
+---
+
+> Field-collected via [QField](https://qfield.org), badges and maps generated with Python.
+
+```{python}
+#| include: false
+import polars as pl
+import folium
+from folium.plugins import FastMarkerCluster, Fullscreen, MarkerCluster
+from IPython.display import display, HTML
+
+df = pl.read_parquet("data/dashboard/visited_towns.parquet")
+visited = df.filter(pl.col("visited") == True)
+unvisited = df.filter(pl.col("visited").fill_null(False) != True)
+
+total = len(df)
+n_visited = len(visited)
+pct = round(n_visited / total * 100, 2)
+
+pop_visited = int(visited["population"].sum())
+area_visited = round(visited["area_km2"].sum(), 0)
+n_departments = visited["department_code"].n_unique()
+n_regions = visited["region_name"].n_unique()
+
+# ── Badge computation ──
+
+dept_complete = (
+    visited.group_by("department_code", "department_name")
+    .agg(pl.len().alias("visited_count"))
+    .join(
+        df.group_by("department_code").agg(pl.len().alias("total_count")),
+        on="department_code",
+    )
+    .filter(pl.col("visited_count") == pl.col("total_count"))
+)
+dept_full_count = len(dept_complete)
+
+region_complete = (
+    visited.group_by("region_name")
+    .agg(pl.len().alias("visited_count"))
+    .join(
+        df.group_by("region_name").agg(pl.len().alias("total_count")),
+        on="region_name",
+    )
+    .filter(pl.col("visited_count") == pl.col("total_count"))
+)
+region_full_count = len(region_complete)
+
+mountain_visited = visited.filter(pl.col("is_mountain") == True).height
+island_visited = visited.filter(pl.col("is_island_commune") == True).height
+
+overseas_codes = {"COM"}
+overseas_visited = visited.filter(pl.col("territory_type").is_in(overseas_codes)).height
+
+paris_visited = visited.filter(pl.col("id") == "75056").height
+
+badges = []
+if n_visited >= 10:
+    badges.append(("10 communes visited", "🥉", f"{n_visited} / 10"))
+if n_visited >= 100:
+    badges.append(("100 communes visited", "🥈", f"{n_visited} / 100"))
+if n_visited >= 1_000:
+    badges.append(("1 000 communes visited", "🥇", f"{n_visited} / 1 000"))
+if n_visited >= 10_000:
+    badges.append(("10 000 communes visited", "🏆", f"{n_visited} / 10 000"))
+if dept_full_count >= 1:
+    names = ", ".join(dept_complete["department_name"].to_list())[:50]
+    badges.append((f"{dept_full_count} department(s) completed", "📌", names))
+if region_full_count >= 1:
+    names = ", ".join(region_complete["region_name"].to_list())[:50]
+    badges.append((f"{region_full_count} region(s) completed", "📍", names))
+if n_departments >= 5:
+    badges.append(("5 departments visited", "🗺️", f"{n_departments} / 5"))
+if n_departments >= 10:
+    badges.append(("10 departments visited", "🗺️", f"{n_departments} / 10"))
+if n_departments >= 20:
+    badges.append(("20 departments visited", "🗺️", f"{n_departments} / 20"))
+if mountain_visited >= 1:
+    badges.append(("Mountain commune visited", "🏔️", f"{mountain_visited} commune(s)"))
+if island_visited >= 1:
+    badges.append(("Island commune visited", "🏝️", f"{island_visited} commune(s)"))
+if pop_visited >= 100_000:
+    badges.append(("100k population visited", "👥", f"{pop_visited:,}"))
+if pop_visited >= 1_000_000:
+    badges.append(("1M population visited", "👥", f"{pop_visited:,}"))
+if pop_visited >= 10_000_000:
+    badges.append(("10M population visited", "👥", f"{pop_visited:,}"))
+if overseas_visited >= 1:
+    badges.append(("Overseas commune visited", "🌍", f"{overseas_visited} commune(s)"))
+if paris_visited >= 1:
+    badges.append(("Paris visited", "🗼", ""))
+```
+
+## Progress
+
+```{python}
+kpi_html = f"""
+<div class="kpi-hero">
+  <div class="kpi-card kpi-blue">
+    <span class="kpi-value">{n_visited:,} / {total:,}</span>
+    <span class="kpi-label">Communes visited — {pct}%</span>
+  </div>
+</div>
+<div class="kpi-row">
+  <div class="kpi-card kpi-green">
+    <div class="kpi-icon">👥</div>
+    <span class="kpi-value">{pop_visited:,}</span>
+    <span class="kpi-label">Population covered</span>
+  </div>
+  <div class="kpi-card kpi-purple">
+    <div class="kpi-icon">📐</div>
+    <span class="kpi-value">{area_visited:,.0f} km²</span>
+    <span class="kpi-label">Area covered</span>
+  </div>
+  <div class="kpi-card kpi-gold">
+    <div class="kpi-icon">🗺️</div>
+    <span class="kpi-value">{n_departments}</span>
+    <span class="kpi-label">Departments visited</span>
+  </div>
+  <div class="kpi-card kpi-red">
+    <div class="kpi-icon">📍</div>
+    <span class="kpi-value">{n_regions}</span>
+    <span class="kpi-label">Regions visited</span>
+  </div>
+</div>
+"""
+display(HTML(kpi_html))
+```
+
+## Map
+
+```{python}
+if n_visited > 0:
+    map_center = [visited["latitude"].mean(), visited["longitude"].mean()]
+else:
+    map_center = [46.6, 2.4]
+
+m = folium.Map(location=map_center, zoom_start=6, tiles="OpenStreetMap")
+
+D = 5  # coordinate decimal places
+
+GA_CALLBACK = """\
+function (row) {
+    var marker = L.circleMarker([row[0], row[1]], {radius: 5, color: '%s', fill: true, fillOpacity: 0.7, weight: 0});
+    marker.bindPopup('<b>' + row[2] + '</b><br>Population: ' + (row[3] ? row[3].toLocaleString() : 'N/A'));
+    return marker;
+}
+"""
+
+# Unvisited communes — clustered red dots with name + population popup
+unvisited_data = [
+    [round(r["latitude"], D), round(r["longitude"], D),
+     r["name"], r["population"] or 0]
+    for r in unvisited.iter_rows(named=True)
+]
+uc = FastMarkerCluster(
+    data=unvisited_data,
+    callback=GA_CALLBACK % "#e74c3c",
+    name="Unvisited communes",
+)
+uc.add_to(m)
+
+# Visited communes — clustered green dots
+visited_data = [
+    [round(r["latitude"], D), round(r["longitude"], D),
+     r["name"], r["population"] or 0]
+    for r in visited.iter_rows(named=True)
+]
+vc = FastMarkerCluster(
+    data=visited_data,
+    callback=GA_CALLBACK % "green",
+    name="Visited communes",
+)
+vc.add_to(m)
+
+# Visited (details) — rich popups with photos, YouTube, Medium
+cluster = MarkerCluster(name="Visited (details)").add_to(m)
+
+for row in visited.iter_rows(named=True):
+    popup_html = f"""
+    <div style="min-width:220px">
+      <b>{row['name']}</b><br>
+      {row['department_name']} — <em>{row['visit_date']}</em><br>
+      Population: {row['population']:,}
+    """
+    if row["photo_thumbnail_url"]:
+        popup_html += f'<br><img src="{row["photo_thumbnail_url"]}" width="200" style="margin-top:6px;border-radius:4px">'
+    if row["youtube_url"]:
+        popup_html += f'<br><a href="{row["youtube_url"]}" target="_blank">▶ YouTube</a>'
+    if row["medium_url"]:
+        popup_html += f'<br><a href="{row["medium_url"]}" target="_blank">📝 Medium</a>'
+    popup_html += "</div>"
+    folium.CircleMarker(
+        location=[round(row["latitude"], D), round(row["longitude"], D)],
+        radius=8,
+        color="green",
+        fill=True,
+        fill_opacity=0.8,
+        popup=folium.Popup(popup_html, max_width=300),
+        tooltip=row["name"],
+    ).add_to(cluster)
+
+folium.TileLayer(
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attr="Esri",
+    name="Satellite",
+    show=False,
+).add_to(m)
+
+Fullscreen().add_to(m)
+folium.LayerControl().add_to(m)
+display(m)
+```
+
+## Badges
+
+```{python}
+if len(badges) > 0:
+    badge_cards = "".join(
+        f'<div class="badge-card"><div class="badge-icon">{icon}</div>'
+        f'<div class="badge-label">{label}</div>'
+        f'<div class="badge-detail">{detail}</div></div>'
+        for label, icon, detail in badges
+    )
+    display(HTML(f'<div class="badge-row">{badge_cards}</div>'))
+else:
+    display(HTML("<p>No badges earned yet. Start visiting communes!</p>"))
+```
+
+<details>
+<summary><strong>🏅 Badge details</strong></summary>
+
+| Badge | Criteria |
+|---|---|
+| 🥉 10 communes | Visit at least 10 communes |
+| 🥈 100 communes | Visit at least 100 communes |
+| 🥇 1 000 communes | Visit at least 1 000 communes |
+| 🏆 10 000 communes | Visit at least 10 000 communes |
+| 📌 Full department | Visit every commune in a department |
+| 📍 Full region | Visit every commune in a region |
+| 🗺️ Explorer | Visit 5 / 10 / 20 departments |
+| 🏔️ Mountain | Visit a mountain commune (altitude > 800m) |
+| 🏝️ Island | Visit an island commune |
+| 👥 Population | Visit communes totalling 100k / 1M / 10M inhabitants |
+| 🌍 Overseas | Visit an overseas commune (COM) |
+| 🗼 Paris | Visit Paris |
+
+</details>
+
+## Department stats
+
+```{python}
+from great_tables import GT
+
+dept_stats = (
+    visited.group_by("department_code", "department_name", "region_name")
+    .agg(pl.len().alias("visited_communes"))
+    .join(
+        df.group_by("department_code")
+        .agg(pl.len().alias("total_communes")),
+        on="department_code",
+    )
+    .with_columns(
+        (pl.col("visited_communes") / pl.col("total_communes") * 100)
+        .round(1)
+        .alias("pct_visited")
+    )
+    .sort("pct_visited", descending=True)
+)
+
+GT(dept_stats)
+```
+
+## Visited communes
+
+```{python}
+#| column: page
+
+import itables
+from itables import show
+
+vis_display = visited.select(
+    "name", "department_name", "region_name", "visit_date",
+    "population", "area_km2", "is_mountain", "is_island_commune",
+).sort("visit_date")
+
+itables.options.warn_on_undocumented_option = False
+show(
+    vis_display.to_pandas(),
+    caption="All visited communes — search, sort, paginate",
+    maxBytes="0",
+    layout={"bottomEnd": "paging", "bottomStart": "info", "topEnd": "search", "topStart": "pageLength"},
+)
+```
+
+<style>
+.kpi-row {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+.kpi-hero .kpi-card {
+  flex: 0 0 100%;
+  padding: 2.5rem;
+}
+.kpi-hero .kpi-value {
+  font-size: 2.4rem;
+}
+.kpi-card {
+  flex: 1;
+  min-width: 180px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.kpi-blue   { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.kpi-gold   { background: linear-gradient(135deg, #f6d365, #fda085); }
+.kpi-green  { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.kpi-purple { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+.kpi-red    { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.kpi-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+.kpi-value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+.kpi-label {
+  display: block;
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+}
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 10px;
+  background: var(--bs-body-bg, #fff);
+  min-width: 110px;
+  text-align: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.badge-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+.badge-icon {
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+.badge-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.badge-detail {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.2rem;
+}
+</style>
