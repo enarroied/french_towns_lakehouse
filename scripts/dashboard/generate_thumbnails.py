@@ -1,18 +1,38 @@
-"""Generate 200px-wide thumbnails for DCIM photos to use in map popups."""
+"""Generate 200px-wide thumbnails for DCIM photos referenced by visited communes."""
 
+import sqlite3
 from pathlib import Path
 
 from PIL import Image
 
 
 DCIM_DIR = Path("generate_qfield/communes/out/DCIM")
+GPKG_PATH = Path("generate_qfield/communes/out/communes.gpkg")
 THUMB_DIR = Path("blog/data/img")
 THUMB_WIDTH = 200
 EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
+def get_referenced_photos() -> set[str]:
+    """Return filenames (without 'DCIM/' prefix) referenced in the GeoPackage."""
+    if not GPKG_PATH.exists():
+        return set()
+    conn = sqlite3.connect(str(GPKG_PATH))
+    try:
+        rows = conn.execute(
+            "SELECT DISTINCT photo FROM communes WHERE visited IS TRUE AND photo IS NOT NULL"
+        ).fetchall()
+    finally:
+        conn.close()
+    return {row[0].replace("DCIM/", "", 1) for row in rows if row[0]}
+
+
 def main() -> None:
     THUMB_DIR.mkdir(parents=True, exist_ok=True)
+    referenced = get_referenced_photos()
+    if not referenced:
+        print("⚠️  No referenced photos found — skipping thumbnail generation")
+        return
 
     generated = 0
     skipped = 0
@@ -21,6 +41,8 @@ def main() -> None:
         if img_path.suffix.lower() not in EXTENSIONS:
             continue
         if img_path.name.startswith("."):
+            continue
+        if img_path.name not in referenced:
             continue
 
         thumb_path = THUMB_DIR / img_path.name

@@ -18,11 +18,12 @@ data/rejected/
 data/evidence-archive/
 data/lakehouse/
 
-# Dashboard thumbnail images (tracked — needed for map popups)
-!blog/data/img/**
-
 # Blog data (copied/generated for Quarto, not source)
 blog/data/*
+
+# Dashboard thumbnail images (tracked — needed for map popups)
+!blog/data/img/
+!blog/data/img/*
 
 
 
