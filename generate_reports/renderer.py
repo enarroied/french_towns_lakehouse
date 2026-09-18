@@ -6,10 +6,10 @@ import altair as alt
 import pandas as pd
 from generate_reports.config import HEIGHT
 from generate_reports.config import WIDTH
+from generate_reports.queries import get_income_history
+from generate_reports.queries import get_income_timeseries
 from generate_reports.queries import get_population_history
 from generate_reports.queries import get_population_timeseries
-from generate_reports.queries import get_salary_history
-from generate_reports.queries import get_salary_timeseries
 from great_tables import GT
 from pdf2image import convert_from_bytes
 from weasyprint import HTML
@@ -25,25 +25,25 @@ def create_slide_hero_combined(
     city_name: str,
     dept_name: str,
     pop_value: int | None,
-    sal_value: int | None,
+    inc_value: int | None,
     output_path: str | Path,
     pop_year: int | None = None,
-    sal_year: int | None = None,
+    inc_year: int | None = None,
 ) -> None:
     pop_is_null = pop_value is None or (
         isinstance(pop_value, float) and pd.isna(pop_value)
     )
-    sal_is_null = sal_value is None or (
-        isinstance(sal_value, float) and pd.isna(sal_value)
+    inc_is_null = inc_value is None or (
+        isinstance(inc_value, float) and pd.isna(inc_value)
     )
-    if pop_is_null and sal_is_null:
+    if pop_is_null and inc_is_null:
         logger.info(
-            "Skipping hero slide for %s: no population or salary data", city_name
+            "Skipping hero slide for %s: no population or income data", city_name
         )
         return
 
     pop_label = "Population" + (f" ({pop_year})" if pop_year else "")
-    sal_label = "Mean Salary (€)" + (f" ({sal_year})" if sal_year else "")
+    inc_label = "Median Income (€)" + (f" ({inc_year})" if inc_year else "")
 
     pop_html = ""
     if not pop_is_null:
@@ -53,12 +53,12 @@ def create_slide_hero_combined(
       <div style="font-size:28px;color:#4CAF50;margin-top:20px;">{pop_label}</div>
     </div>"""
 
-    sal_html = ""
-    if not sal_is_null:
-        sal_html = f"""
+    inc_html = ""
+    if not inc_is_null:
+        inc_html = f"""
     <div style="position:absolute;top:50%;left:75%;transform:translate(-50%,-60%);text-align:center;">
-      <div style="font-size:100px;font-weight:700;color:white;line-height:1.1;">{int(sal_value):,}</div>
-      <div style="font-size:28px;color:#42A5F5;margin-top:20px;">{sal_label}</div>
+      <div style="font-size:100px;font-weight:700;color:white;line-height:1.1;">{int(inc_value):,}</div>
+      <div style="font-size:28px;color:#FF9800;margin-top:20px;">{inc_label}</div>
     </div>"""
 
     html_content = f"""<div style="width:100%;height:100vh;background-color:#141923;color:white;font-family:Montserrat,'DejaVu Sans',sans-serif;position:relative;overflow:hidden;">
@@ -67,7 +67,7 @@ def create_slide_hero_combined(
     <div style="font-size:20px;font-weight:300;color:#c8c8c8;margin-top:6px;">{dept_name}</div>
   </div>
   {pop_html}
-  {sal_html}
+  {inc_html}
 </div>"""
 
     Path(output_path).with_suffix(".html").write_text(html_content)
@@ -83,10 +83,12 @@ def create_slide_trend(
         y_col = "population"
         title = f"{city_name} — Population Trend"
         y_title = "Population"
+    elif metric == "income":
+        y_col = "median_income"
+        title = f"{city_name} — Median Income Trend"
+        y_title = "Median Income (€)"
     else:
-        y_col = "mean_salary"
-        title = f"{city_name} — Mean Salary Trend"
-        y_title = "Mean Salary (€)"
+        return
 
     if timeseries_df.empty or y_col not in timeseries_df.columns:
         return
@@ -158,10 +160,10 @@ def create_slide_table_png(
         ]
         title = f"Population for {commune_name} ({department_name} - {department_code})"
     else:
-        table_df = df[["year", "mean_salary"]].copy()
-        table_df.columns = ["Year", "Mean Salary (€)"]
+        table_df = df[["year", "median_income"]].copy()
+        table_df.columns = ["Year", "Median Income (€)"]
         title = (
-            f"Salary History for {commune_name} ({department_name} - {department_code})"
+            f"Income History for {commune_name} ({department_name} - {department_code})"
         )
 
     max_year = int(table_df["Year"].iloc[0])
@@ -277,8 +279,8 @@ def _build_table(
         gt = (
             GT(tbl)
             .tab_header(title=title, subtitle=subtitle)
-            .fmt_integer(columns="Mean Salary (€)")
-            .cols_align(align="right", columns="Mean Salary (€)")
+            .fmt_integer(columns="Median Income (€)")
+            .cols_align(align="right", columns="Median Income (€)")
         )
 
     return gt
@@ -289,9 +291,9 @@ def create_slide_comparison_combined(
     pop_val: float | None,
     pop_dept_avg: float | None,
     pop_ratio: float | None,
-    sal_val: float | None,
-    sal_dept_avg: float | None,
-    sal_ratio: float | None,
+    inc_val: float | None,
+    inc_dept_avg: float | None,
+    inc_ratio: float | None,
     output_path: str | Path,
 ) -> None:
     metrics = []
@@ -314,19 +316,19 @@ def create_slide_comparison_combined(
         )
 
     if (
-        sal_val is not None
-        and not pd.isna(sal_val)
-        and sal_dept_avg is not None
-        and not pd.isna(sal_dept_avg)
+        inc_val is not None
+        and not pd.isna(inc_val)
+        and inc_dept_avg is not None
+        and not pd.isna(inc_dept_avg)
     ):
         metrics.append(
             {
-                "name": "Mean Salary (€)",
-                "city_val": float(sal_val),
-                "dept_val": float(sal_dept_avg),
-                "ratio": sal_ratio
-                if sal_ratio is not None and not pd.isna(sal_ratio)
-                else sal_val / sal_dept_avg,
+                "name": "Median Income (€)",
+                "city_val": float(inc_val),
+                "dept_val": float(inc_dept_avg),
+                "ratio": inc_ratio
+                if inc_ratio is not None and not pd.isna(inc_ratio)
+                else inc_val / inc_dept_avg,
             }
         )
 
@@ -504,40 +506,40 @@ def generate_city_slides(
     slide_dir.mkdir(parents=True, exist_ok=True)
 
     pop_ts = get_population_timeseries(conn, commune_id)
-    sal_ts = get_salary_timeseries(conn, commune_id)
+    inc_ts = get_income_timeseries(conn, commune_id)
     pop_hist = get_population_history(conn, commune_id)
-    sal_hist = get_salary_history(conn, commune_id)
+    inc_hist = get_income_history(conn, commune_id)
 
     pop_val = city_row.get("population")
     pop_year = city_row.get("latest_population_year")
     pop_ratio = city_row.get("population_ratio")
-    sal_val = city_row.get("mean_salary")
-    sal_year = city_row.get("latest_salary_year")
-    sal_ratio = city_row.get("salary_ratio")
+    inc_val = city_row.get("median_income")
+    inc_year = city_row.get("latest_income_year")
+    inc_ratio = city_row.get("income_ratio")
     pop_avg = city_row.get("dept_avg_population")
-    sal_avg = city_row.get("dept_avg_salary")
+    inc_avg = city_row.get("dept_avg_income")
 
     pop_hist_labeled = pop_hist.copy()
     pop_hist_labeled["name"] = name
     pop_hist_labeled["department_name"] = dept_name
     pop_hist_labeled["department_code"] = dept_code
 
-    sal_hist_labeled = sal_hist.copy()
-    sal_hist_labeled["name"] = name
-    sal_hist_labeled["department_name"] = dept_name
-    sal_hist_labeled["department_code"] = dept_code
+    inc_hist_labeled = inc_hist.copy()
+    inc_hist_labeled["name"] = name
+    inc_hist_labeled["department_name"] = dept_name
+    inc_hist_labeled["department_code"] = dept_code
 
     create_slide_hero_combined(
         name,
         dept_name,
         int(pop_val) if pop_val is not None and not pd.isna(pop_val) else None,
-        int(sal_val) if sal_val is not None and not pd.isna(sal_val) else None,
+        int(inc_val) if inc_val is not None and not pd.isna(inc_val) else None,
         slide_dir / f"{commune_id}_{name_slug}_slide1.png",
         pop_year=int(pop_year)
         if pop_year is not None and not pd.isna(pop_year)
         else None,
-        sal_year=int(sal_year)
-        if sal_year is not None and not pd.isna(sal_year)
+        inc_year=int(inc_year)
+        if inc_year is not None and not pd.isna(inc_year)
         else None,
     )
 
@@ -559,17 +561,17 @@ def generate_city_slides(
 
     create_slide_trend(
         name,
-        sal_ts,
-        "salary",
+        inc_ts,
+        "income",
         slide_dir / f"{commune_id}_{name_slug}_slide4.png",
     )
 
     create_slide_table_png(
-        sal_hist_labeled,
+        inc_hist_labeled,
         name,
         dept_name,
         dept_code,
-        "salary",
+        "income",
         slide_dir / f"{commune_id}_{name_slug}_slide5.png",
     )
 
@@ -578,9 +580,9 @@ def generate_city_slides(
         float(pop_val) if pop_val is not None and not pd.isna(pop_val) else None,
         float(pop_avg) if pop_avg is not None and not pd.isna(pop_avg) else None,
         pop_ratio,
-        float(sal_val) if sal_val is not None and not pd.isna(sal_val) else None,
-        float(sal_avg) if sal_avg is not None and not pd.isna(sal_avg) else None,
-        sal_ratio,
+        float(inc_val) if inc_val is not None and not pd.isna(inc_val) else None,
+        float(inc_avg) if inc_avg is not None and not pd.isna(inc_avg) else None,
+        inc_ratio,
         slide_dir / f"{commune_id}_{name_slug}_slide6.png",
     )
 

@@ -31,11 +31,11 @@ def pop_timeseries() -> pd.DataFrame:
 
 
 @pytest.fixture
-def sal_timeseries() -> pd.DataFrame:
+def inc_timeseries() -> pd.DataFrame:
     return pd.DataFrame(
         {
             "year": [2019, 2020, 2021, 2022, 2023],
-            "mean_salary": [25000, 26000, 27000, 28000, 29000],
+            "median_income": [25000, 26000, 27000, 28000, 29000],
         }
     )
 
@@ -53,11 +53,11 @@ def pop_history() -> pd.DataFrame:
 
 
 @pytest.fixture
-def sal_history() -> pd.DataFrame:
+def inc_history() -> pd.DataFrame:
     return pd.DataFrame(
         {
             "year": [2023, 2022, 2021, 2020, 2019],
-            "mean_salary": [29000, 28000, 27000, 26000, 25000],
+            "median_income": [29000, 28000, 27000, 26000, 25000],
         }
     )
 
@@ -78,7 +78,7 @@ class TestCreateSlideHeroCombined:
             35000,
             output,
             pop_year=2023,
-            sal_year=2023,
+            inc_year=2023,
         )
         html_out = output.with_suffix(".html")
         assert html_out.exists()
@@ -99,7 +99,7 @@ class TestCreateSlideHeroCombined:
         assert "35,000" in content
         assert "Population" not in content
 
-    def test_sal_none(self, tmp_path: Path) -> None:
+    def test_inc_none(self, tmp_path: Path) -> None:
 
         output = tmp_path / "hero.png"
         create_slide_hero_combined("Foxton", "Test Dept", 50000, None, output)
@@ -107,7 +107,7 @@ class TestCreateSlideHeroCombined:
         assert html_out.exists()
         content = html_out.read_text()
         assert "50,000" in content
-        assert "Mean Salary" not in content
+        assert "Median Income" not in content
 
     def test_both_none(self, tmp_path: Path) -> None:
 
@@ -135,7 +135,7 @@ class TestCreateSlideHeroCombined:
             35000,
             output,
             pop_year=None,
-            sal_year=2023,
+            inc_year=2023,
         )
         html_out = output.with_suffix(".html")
         assert html_out.exists()
@@ -158,10 +158,10 @@ class TestCreateSlideTrend:
         img = Image.open(output)
         assert img.size[0] > 0 and img.size[1] > 0
 
-    def test_salary_metric(self, tmp_path: Path, sal_timeseries: pd.DataFrame) -> None:
+    def test_income_metric(self, tmp_path: Path, inc_timeseries: pd.DataFrame) -> None:
 
         output = tmp_path / "trend.png"
-        result = create_slide_trend("Foxton", sal_timeseries, "salary", output)
+        result = create_slide_trend("Foxton", inc_timeseries, "income", output)
         assert result is None
         assert output.exists()
 
@@ -194,11 +194,11 @@ class TestCreateSlideTablePng:
         assert output.exists()
         Image.open(output).verify()
 
-    def test_salary_table(self, tmp_path: Path, sal_history: pd.DataFrame) -> None:
+    def test_income_table(self, tmp_path: Path, inc_history: pd.DataFrame) -> None:
 
         output = tmp_path / "table.png"
         create_slide_table_png(
-            sal_history, "Foxton", "Test Dept", "99", "salary", output
+            inc_history, "Foxton", "Test Dept", "99", "income", output
         )
         assert output.exists()
         Image.open(output).verify()
@@ -250,7 +250,7 @@ class TestCreateSlideComparisonCombined:
         assert output.exists()
         Image.open(output).verify()
 
-    def test_sal_only(self, tmp_path: Path) -> None:
+    def test_inc_only(self, tmp_path: Path) -> None:
 
         output = tmp_path / "comparison.png"
         create_slide_comparison_combined(
@@ -335,15 +335,15 @@ class TestBuildTable:
         assert "2020" in html
         assert "5,000" in html
 
-    def test_salary_type(self) -> None:
+    def test_income_type(self) -> None:
 
         df = pd.DataFrame(
             {
                 "Year": [2023, 2022],
-                "Mean Salary (€)": [35000, 34000],
+                "Median Income (€)": [35000, 34000],
             }
         )
-        gt = _build_table(df, "Title", "Subtitle", "salary")
+        gt = _build_table(df, "Title", "Subtitle", "income")
         assert gt is not None
         html = gt.as_raw_html()
         assert "35,000" in html
@@ -375,8 +375,8 @@ class TestGenerateDeptPdf:
                 "population": [5000],
                 "population_growth_pct": [2.0],
                 "population_ratio": [1.2],
-                "mean_salary": [35000],
-                "salary_ratio": [1.1],
+                "median_income": [35000],
+                "income_ratio": [1.1],
             }
         )
         pdf_path = tmp_path / "dept.pdf"
@@ -393,8 +393,8 @@ class TestGenerateDeptPdf:
                 "population": [5000],
                 "population_growth_pct": [2.0],
                 "population_ratio": [1.2],
-                "mean_salary": [35000],
-                "salary_ratio": [1.1],
+                "median_income": [35000],
+                "income_ratio": [1.1],
             }
         )
         pdf_path = tmp_path / "dept.pdf"
