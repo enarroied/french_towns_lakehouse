@@ -22,9 +22,9 @@ def get_population_history(conn, commune_id):
     return execute_sql(conn, "population_history", [commune_id])
 
 
-def get_salary_timeseries(conn, commune_id):
-    return execute_sql(conn, "salary_timeseries", [commune_id])
+def get_income_timeseries(conn, commune_id):
+    return execute_sql(conn, "income_timeseries", [commune_id])
 
 
-def get_salary_history(conn, commune_id):
-    return execute_sql(conn, "salary_history", [commune_id])
+def get_income_history(conn, commune_id):
+    return execute_sql(conn, "income_history", [commune_id])

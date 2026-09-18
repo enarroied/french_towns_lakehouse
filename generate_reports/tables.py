@@ -24,8 +24,8 @@ def create_department_summary_table(
             "population",
             "population_growth_pct",
             "population_ratio",
-            "mean_salary",
-            "salary_ratio",
+            "median_income",
+            "income_ratio",
         ]
     ].copy()
 
@@ -35,7 +35,7 @@ def create_department_summary_table(
     table_df["population_ratio"] = table_df["population_ratio"].apply(
         lambda v: f"{v:.1f}" if not pd.isna(v) else "—"
     )
-    table_df["salary_ratio"] = table_df["salary_ratio"].apply(
+    table_df["income_ratio"] = table_df["income_ratio"].apply(
         lambda v: f"{v:.1f}" if not pd.isna(v) else "—"
     )
 
@@ -54,11 +54,11 @@ def create_department_summary_table(
             population="Population",
             population_growth_pct="Population Growth",
             population_ratio="Ratio to Dept Avg",
-            mean_salary="Mean Salary (€)",
-            salary_ratio="Salary Ratio to Dept Avg",
+            median_income="Median Income (€)",
+            income_ratio="Income Ratio to Dept Avg",
         )
         .fmt_integer(columns="population")
-        .fmt_integer(columns="mean_salary")
+        .fmt_integer(columns="median_income")
         .fmt_markdown(columns="population_growth_pct")
         .cols_align(
             align="right",
@@ -66,8 +66,8 @@ def create_department_summary_table(
                 "population",
                 "population_growth_pct",
                 "population_ratio",
-                "mean_salary",
-                "salary_ratio",
+                "median_income",
+                "income_ratio",
             ],
         )
         .cols_align(align="left", columns="name")
@@ -123,7 +123,7 @@ def create_population_table(df: pd.DataFrame) -> GT | None:
     )
 
 
-def create_salary_table(df: pd.DataFrame) -> GT | None:
+def create_income_table(df: pd.DataFrame) -> GT | None:
     if df.empty:
         return None
 
@@ -133,15 +133,15 @@ def create_salary_table(df: pd.DataFrame) -> GT | None:
     max_year = int(df["year"].iloc[0])
     min_year = int(df["year"].iloc[-1])
 
-    table_df = df[["year", "mean_salary"]].copy()
-    table_df.columns = ["Year", "Mean Salary (€)"]
+    table_df = df[["year", "median_income"]].copy()
+    table_df.columns = ["Year", "Median Income (€)"]
 
     return (
         GT(table_df)
         .tab_header(
-            title=f"Salary History for {commune_name} ({department_name} - {department_code})",
+            title=f"Income History for {commune_name} ({department_name} - {department_code})",
             subtitle=f"Data for Years {min_year} - {max_year}",
         )
-        .fmt_integer(columns="Mean Salary (€)")
-        .cols_align(align="right", columns="Mean Salary (€)")
+        .fmt_integer(columns="Median Income (€)")
+        .cols_align(align="right", columns="Median Income (€)")
     )

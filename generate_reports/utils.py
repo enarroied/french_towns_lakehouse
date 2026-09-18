@@ -30,7 +30,7 @@ def setup_duckdb_connection() -> duckdb.DuckDBPyConnection:
         "dim_communes": "s3://validated/dim_communes.parquet",
         "dim_geography": "s3://validated/dim_geography.parquet",
         "fact_population": "s3://validated/fact_population.parquet",
-        "fact_salaries": "s3://validated/fact_salaries.parquet",
+        "fact_income": "s3://validated/fact_income.parquet",
     }
 
     for name, path in parquet_files.items():
