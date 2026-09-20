@@ -7,6 +7,7 @@ Produces:
 
 from __future__ import annotations
 
+import argparse
 import os
 from pathlib import Path
 
@@ -15,9 +16,6 @@ from dotenv import find_dotenv
 from dotenv import load_dotenv
 
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "dashboard"
-PARQUET_PATH = DATA_DIR / "visited_towns.parquet"
-GEOJSON_PATH = DATA_DIR / "departments.geojson"
 GITHUB_OWNER = "enarroied"
 GITHUB_REPO = "french_towns_lakehouse"
 GITHUB_BRANCH = "master"
@@ -25,12 +23,26 @@ THUMB_BASE = (
     f"https://raw.githubusercontent.com/{GITHUB_OWNER}/{GITHUB_REPO}/{GITHUB_BRANCH}"
     "/blog/data/img"
 )
-GPKG_PATH = "generate_qfield/communes/out/communes.gpkg"
+DEFAULT_GPKG = Path.home() / "qgis_projects" / "communes" / "communes.gpkg"
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Merge QField GeoPackage visited data with lakehouse gold"
+    )
+    parser.add_argument(
+        "--gpkg",
+        type=Path,
+        default=DEFAULT_GPKG,
+        help=f"Path to the QField GeoPackage (default: {DEFAULT_GPKG})",
+    )
+    args = parser.parse_args()
+
     load_dotenv(find_dotenv())
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    data_dir = Path(__file__).resolve().parents[2] / "data" / "dashboard"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    parquet_path = data_dir / "visited_towns.parquet"
+    gpkg_path = args.gpkg
 
     conn = duckdb.connect()
     conn.execute("LOAD iceberg;")
@@ -60,7 +72,7 @@ def main() -> None:
             photo,
             "YouTube URL" AS youtube_url,
             "Medium URL" AS medium_url
-        FROM ST_READ('{GPKG_PATH}')
+        FROM ST_READ('{gpkg_path}')
         WHERE visited IS TRUE
     """)
 
@@ -93,24 +105,27 @@ def main() -> None:
             v.photo,
             v.youtube_url,
             v.medium_url,
-            CASE WHEN v.photo IS NOT NULL THEN
-                '{THUMB_BASE}/' || regexp_replace(v.photo, '^DCIM/', '')
-            ELSE NULL END AS photo_thumbnail_url
+            CASE
+                WHEN v.photo IS NOT NULL AND starts_with(v.photo, 'DCIM/') THEN
+                    '{THUMB_BASE}/' || regexp_replace(v.photo, '^DCIM/', '')
+                WHEN v.photo IS NOT NULL THEN v.photo
+                ELSE NULL
+            END AS photo_thumbnail_url
         FROM communes c
         LEFT JOIN visited v ON c.id = v.id
         ORDER BY c.department_code, c.name
     """)
 
-    conn.execute(f"COPY commune_data TO '{PARQUET_PATH}' (FORMAT PARQUET)")
+    conn.execute(f"COPY commune_data TO '{parquet_path}' (FORMAT PARQUET)")
 
     total = conn.execute(
-        f"SELECT COUNT(*) FROM read_parquet('{PARQUET_PATH}')"
+        f"SELECT COUNT(*) FROM read_parquet('{parquet_path}')"
     ).fetchone()[0]
     visited = conn.execute(
-        f"SELECT COUNT(*) FROM read_parquet('{PARQUET_PATH}') WHERE visited IS TRUE"
+        f"SELECT COUNT(*) FROM read_parquet('{parquet_path}') WHERE visited IS TRUE"
     ).fetchone()[0]
 
-    print(f"✅ {PARQUET_PATH} — {total:,} communes ({visited:,} visited)")
+    print(f"✅ {parquet_path} — {total:,} communes ({visited:,} visited)")
     print(
         "ℹ️  Department GeoJSON skipped — run scripts/dashboard/generate_departments_geojson.py separately"
     )
