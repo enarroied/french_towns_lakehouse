@@ -6,7 +6,8 @@ The gpkg `photo` column can hold a mix of values:
 
 A photo is only promoted once its copy exists in <repo>/blog/data/img/ (i.e. after
 the dashboard refresh and a git push). Promoted photos are MOVED (not deleted) from
-the project's DCIM folder into an archive, keeping the QField project light.
+the project's DCIM folder into an archive OUTSIDE the packaged project
+(~/QField_photo_archive/communes/DCIM_archive), keeping the QField project light.
 
 As a second pass, any local original that corresponds to an already-promoted (URL)
 photo — or to no commune at all — is stale residue of a previous sync and gets
@@ -38,7 +39,7 @@ THUMB_BASE = (
 DEFAULT_PROJECT_DIR = Path.home() / "QField" / "cloud" / "communes_qfield"
 DEFAULT_GPKG = DEFAULT_PROJECT_DIR / "communes.gpkg"
 DEFAULT_DCIM_DIR = DEFAULT_PROJECT_DIR / "DCIM"
-DEFAULT_ARCHIVE_DIR = DEFAULT_PROJECT_DIR / "DCIM_archive"
+DEFAULT_ARCHIVE_DIR = Path.home() / "QField_photo_archive" / "communes" / "DCIM_archive"
 DEFAULT_THUMB_DIR = Path(__file__).resolve().parents[2] / "blog" / "data" / "img"
 EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
@@ -218,7 +219,7 @@ def main() -> None:
     print(
         f"  missing local: {len(summary.missing_local)} (URL set, original already gone)"
     )
-    print(f"  stale purged  : {len(summary.stale)} (residue moved to DCIM_archive)")
+    print(f"  stale purged  : {len(summary.stale)} (residue moved out of the project)")
     print(
         f"  freed bytes  : {summary.freed_bytes:,} ({summary.freed_bytes / 1024:.0f} KiB)"
     )
