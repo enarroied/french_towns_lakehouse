@@ -69,6 +69,9 @@ def project(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
     (dcim / "a.jpg").write_bytes(b"aaa-fullsize")
     (dcim / "b.jpg").write_bytes(b"bbb-unshipped")
     (dcim / "other.jpg").write_bytes(b"sss-extra")
+    thumbs = dcim / "thumbs"
+    thumbs.mkdir(parents=True)
+    (thumbs / "a.jpg").write_bytes(b"aaa-thumbcache")
     (blog_img / "a.jpg").write_bytes(b"aaa-thumb")
 
     return proj, dcim, blog_img, tmp_path / "DCIM_archive"
@@ -84,10 +87,12 @@ def test_dry_run_changes_nothing(promote_mod, project) -> None:
     assert result.pending == ["Barbâtre"]
     assert result.missing_local == []
     assert result.stale == ["a.jpg", "other.jpg"]
+    assert result.cache_removed == ["a.jpg"]
     assert result.freed_bytes > 0
     assert _photo_values(gpkg)[0] == "DCIM/a.jpg"
     assert (dcim / "a.jpg").exists()
     assert (dcim / "other.jpg").exists()
+    assert (dcim / "thumbs" / "a.jpg").exists()
     assert not archive.exists()
 
 
@@ -112,6 +117,8 @@ def test_apply_promotes_only_shipped_photos(promote_mod, project) -> None:
     assert not (dcim / "other.jpg").exists()
     assert (archive / "other.jpg").exists()
     assert result.stale == ["other.jpg"]
+    assert result.cache_removed == ["a.jpg"]
+    assert not (dcim / "thumbs" / "a.jpg").exists()
 
 
 def test_apply_with_missing_local_source(promote_mod, tmp_path: Path) -> None:

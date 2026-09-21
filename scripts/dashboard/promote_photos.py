@@ -12,6 +12,7 @@ the project's DCIM folder into an archive OUTSIDE the packaged project
 As a second pass, any local original that corresponds to an already-promoted (URL)
 photo — or to no commune at all — is stale residue of a previous sync and gets
 moved to the same archive, so re-runs keep the packaged folder empty of dead weight.
+QField's regenerable preview cache (DCIM/thumbs) is deleted rather than archived.
 
 Usage:
   uv run python scripts/dashboard/promote_photos.py            # dry-run report
@@ -50,6 +51,7 @@ class Summary:
     pending: list[str]
     missing_local: list[str]
     stale: list[str] = field(default_factory=list)
+    cache_removed: list[str] = field(default_factory=list)
     freed_bytes: int = 0
 
 
@@ -82,14 +84,25 @@ def _archive_residue(
     referenced: set[str],
     already_url: set[str],
     dry_run: bool,
-) -> tuple[list[str], int]:
-    """Archive local originals that are no longer used by the packaged project."""
+) -> tuple[list[str], list[str], int]:
+    """Move unused originals into the archive and drop regenerable thumb cache."""
     stale: list[str] = []
+    cache_removed: list[str] = []
     freed = 0
     if not dcim_dir.is_dir():
-        return stale, freed
+        return stale, cache_removed, freed
 
     for img_path in sorted(dcim_dir.iterdir()):
+        if img_path.is_dir():
+            if img_path.name == "thumbs":
+                for thumb in sorted(img_path.iterdir()):
+                    if thumb.suffix.lower() not in EXTENSIONS:
+                        continue
+                    freed += thumb.stat().st_size
+                    if not dry_run:
+                        thumb.unlink()
+                    cache_removed.append(thumb.name)
+            continue
         if img_path.suffix.lower() not in EXTENSIONS:
             continue
         if img_path.name in referenced and img_path.name not in already_url:
@@ -99,7 +112,7 @@ def _archive_residue(
             archive_dir.mkdir(parents=True, exist_ok=True)
             shutil.move(str(img_path), str(archive_dir / img_path.name))
         stale.append(img_path.name)
-    return stale, freed
+    return stale, cache_removed, freed
 
 
 def promote(
@@ -158,10 +171,11 @@ def promote(
             up_conn.close()
 
     if dcim_dir.is_dir():
-        stale, freed = _archive_residue(
+        stale, cache_removed, freed = _archive_residue(
             dcim_dir, archive_dir, referenced, already_url, dry_run
         )
         summary.stale = stale
+        summary.cache_removed = cache_removed
         summary.freed_bytes += freed
 
     return summary
@@ -220,6 +234,9 @@ def main() -> None:
         f"  missing local: {len(summary.missing_local)} (URL set, original already gone)"
     )
     print(f"  stale purged  : {len(summary.stale)} (residue moved out of the project)")
+    print(
+        f"  cache purged  : {len(summary.cache_removed)} (regenerable DCIM/thumbs removed)"
+    )
     print(
         f"  freed bytes  : {summary.freed_bytes:,} ({summary.freed_bytes / 1024:.0f} KiB)"
     )
