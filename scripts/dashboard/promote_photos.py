@@ -8,6 +8,10 @@ A photo is only promoted once its copy exists in <repo>/blog/data/img/ (i.e. aft
 the dashboard refresh and a git push). Promoted photos are MOVED (not deleted) from
 the project's DCIM folder into an archive, keeping the QField project light.
 
+As a second pass, any local original that corresponds to an already-promoted (URL)
+photo — or to no commune at all — is stale residue of a previous sync and gets
+moved to the same archive, so re-runs keep the packaged folder empty of dead weight.
+
 Usage:
   uv run python scripts/dashboard/promote_photos.py            # dry-run report
   uv run python scripts/dashboard/promote_photos.py --apply    # promote confirmed
@@ -19,6 +23,7 @@ import argparse
 import shutil
 import sqlite3
 from dataclasses import dataclass
+from dataclasses import field
 from pathlib import Path
 
 
@@ -30,11 +35,12 @@ THUMB_BASE = (
     "/blog/data/img"
 )
 
-DEFAULT_PROJECT_DIR = Path.home() / "qgis_projects" / "communes"
+DEFAULT_PROJECT_DIR = Path.home() / "QField" / "cloud" / "communes_qfield"
 DEFAULT_GPKG = DEFAULT_PROJECT_DIR / "communes.gpkg"
 DEFAULT_DCIM_DIR = DEFAULT_PROJECT_DIR / "DCIM"
 DEFAULT_ARCHIVE_DIR = DEFAULT_PROJECT_DIR / "DCIM_archive"
 DEFAULT_THUMB_DIR = Path(__file__).resolve().parents[2] / "blog" / "data" / "img"
+EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
 @dataclass
@@ -42,11 +48,12 @@ class Summary:
     promoted: list[str]
     pending: list[str]
     missing_local: list[str]
+    stale: list[str] = field(default_factory=list)
     freed_bytes: int = 0
 
 
 def _photo_filename(photo: str) -> str:
-    return photo.removeprefix("DCIM/")
+    return photo.removeprefix("DCIM/").rsplit("/", 1)[-1]
 
 
 def _connect_gpkg(path: Path) -> sqlite3.Connection:
@@ -68,6 +75,32 @@ def _connect_gpkg(path: Path) -> sqlite3.Connection:
     return conn
 
 
+def _archive_residue(
+    dcim_dir: Path,
+    archive_dir: Path,
+    referenced: set[str],
+    already_url: set[str],
+    dry_run: bool,
+) -> tuple[list[str], int]:
+    """Archive local originals that are no longer used by the packaged project."""
+    stale: list[str] = []
+    freed = 0
+    if not dcim_dir.is_dir():
+        return stale, freed
+
+    for img_path in sorted(dcim_dir.iterdir()):
+        if img_path.suffix.lower() not in EXTENSIONS:
+            continue
+        if img_path.name in referenced and img_path.name not in already_url:
+            continue
+        freed += img_path.stat().st_size
+        if not dry_run:
+            archive_dir.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(img_path), str(archive_dir / img_path.name))
+        stale.append(img_path.name)
+    return stale, freed
+
+
 def promote(
     gpkg_path: Path,
     dcim_dir: Path,
@@ -80,11 +113,18 @@ def promote(
 
     conn = _connect_gpkg(gpkg_path)
     try:
+        all_photos = [
+            r[0]
+            for r in conn.execute("SELECT photo FROM communes WHERE photo IS NOT NULL")
+        ]
         rows = conn.execute(
             "SELECT fid, id, name, photo FROM communes WHERE photo LIKE 'DCIM/%'"
         ).fetchall()
     finally:
         conn.close()
+
+    referenced = {_photo_filename(p) for p in all_photos}
+    already_url = {_photo_filename(p) for p in all_photos if p.startswith("https://")}
 
     updates: list[tuple[str, int]] = []
     for fid, _, name, photo in rows:
@@ -115,6 +155,13 @@ def promote(
             up_conn.commit()
         finally:
             up_conn.close()
+
+    if dcim_dir.is_dir():
+        stale, freed = _archive_residue(
+            dcim_dir, archive_dir, referenced, already_url, dry_run
+        )
+        summary.stale = stale
+        summary.freed_bytes += freed
 
     return summary
 
@@ -171,6 +218,7 @@ def main() -> None:
     print(
         f"  missing local: {len(summary.missing_local)} (URL set, original already gone)"
     )
+    print(f"  stale purged  : {len(summary.stale)} (residue moved to DCIM_archive)")
     print(
         f"  freed bytes  : {summary.freed_bytes:,} ({summary.freed_bytes / 1024:.0f} KiB)"
     )

@@ -1,6 +1,6 @@
 """Generate 200px-wide thumbnails for DCIM photos referenced by visited communes.
 
-Sources from the QField project in ~/qgis_projects/communes by default.
+Sources from the QFieldCloud-managed project folder by default.
 """
 
 import argparse
@@ -12,7 +12,7 @@ from PIL import Image
 
 THUMB_WIDTH = 200
 EXTENSIONS = {".jpg", ".jpeg", ".png"}
-DEFAULT_PROJECT_DIR = Path.home() / "qgis_projects" / "communes"
+DEFAULT_PROJECT_DIR = Path.home() / "QField" / "cloud" / "communes_qfield"
 DEFAULT_DCIM_DIR = DEFAULT_PROJECT_DIR / "DCIM"
 DEFAULT_GPKG = DEFAULT_PROJECT_DIR / "communes.gpkg"
 DEFAULT_THUMB_DIR = Path(__file__).resolve().parents[2] / "blog" / "data" / "img"

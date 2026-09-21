@@ -83,9 +83,11 @@ def test_dry_run_changes_nothing(promote_mod, project) -> None:
     assert result.promoted == ["Épine"]
     assert result.pending == ["Barbâtre"]
     assert result.missing_local == []
+    assert result.stale == ["a.jpg", "other.jpg"]
     assert result.freed_bytes > 0
     assert _photo_values(gpkg)[0] == "DCIM/a.jpg"
     assert (dcim / "a.jpg").exists()
+    assert (dcim / "other.jpg").exists()
     assert not archive.exists()
 
 
@@ -107,7 +109,9 @@ def test_apply_promotes_only_shipped_photos(promote_mod, project) -> None:
     assert not (dcim / "a.jpg").exists()
     assert (archive / "a.jpg").exists()
     assert (dcim / "b.jpg").exists()
-    assert (dcim / "other.jpg").exists()
+    assert not (dcim / "other.jpg").exists()
+    assert (archive / "other.jpg").exists()
+    assert result.stale == ["other.jpg"]
 
 
 def test_apply_with_missing_local_source(promote_mod, tmp_path: Path) -> None:
@@ -132,6 +136,33 @@ def test_apply_with_missing_local_source(promote_mod, tmp_path: Path) -> None:
     photos = _photo_values(proj / "communes.gpkg")
     assert photos[0].startswith("https://raw.githubusercontent.com")
     assert not (archive / "a.jpg").exists()
+
+
+def test_apply_archives_stale_residue_from_previous_sync(promote_mod, tmp_path) -> None:
+    """Originals of already-URL photos (and strays) are archived, not deleted."""
+    proj = tmp_path / "project"
+    dcim = proj / "DCIM"
+    blog_img = proj / "blog_img"
+    blog_img.mkdir(parents=True)
+    dcim.mkdir(parents=True)
+
+    _make_gpkg(proj / "communes.gpkg")
+    (dcim / "a.jpg").write_bytes(b"aaa-stale-url-duplicate")
+    (dcim / "b.jpg").write_bytes(b"bbb-unshipped")
+    (dcim / "zzz.jpg").write_bytes(b"zzz-stray")
+
+    archive = tmp_path / "DCIM_archive"
+    result = promote_mod.promote(
+        proj / "communes.gpkg", dcim, blog_img, archive, dry_run=False
+    )
+
+    assert result.stale == ["a.jpg", "zzz.jpg"]
+    assert not (dcim / "a.jpg").exists()
+    assert not (dcim / "zzz.jpg").exists()
+    assert (archive / "a.jpg").exists()
+    assert (archive / "zzz.jpg").exists()
+    assert (dcim / "b.jpg").exists()
+    assert result.freed_bytes > 0
 
 
 def test_apply_survives_spatial_rtree_triggers(promote_mod, tmp_path: Path) -> None:

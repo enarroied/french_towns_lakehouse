@@ -23,7 +23,7 @@ THUMB_BASE = (
     f"https://raw.githubusercontent.com/{GITHUB_OWNER}/{GITHUB_REPO}/{GITHUB_BRANCH}"
     "/blog/data/img"
 )
-DEFAULT_GPKG = Path.home() / "qgis_projects" / "communes" / "communes.gpkg"
+DEFAULT_GPKG = Path.home() / "QField" / "cloud" / "communes_qfield" / "communes.gpkg"
 
 
 def main() -> None:
