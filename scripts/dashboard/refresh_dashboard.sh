@@ -28,3 +28,11 @@ QUARTO_PYTHON="$PROJECT_ROOT/.venv/bin/python" \
 
 echo ""
 echo "✅ Dashboard refreshed"
+echo ""
+echo "💡 Now commit & push the new thumbnails and dashboard data so the raw"
+echo "   GitHub image URLs resolve, then purge shipped photos from the QField"
+echo "   project (keeps the app light):"
+echo "     git add blog/data/img blog/data/dashboard data/dashboard"
+echo "     git commit -m \"Update visited-towns dashboard\""
+echo "     git push"
+echo "     uv run python scripts/dashboard/promote_photos.py"
