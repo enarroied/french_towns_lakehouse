@@ -47,5 +47,12 @@
     "title": "Visited Towns",
     "section": "Department stats",
     "text": "Department stats\n\n\nCode\nfrom great_tables import GT\n\ndept_stats = (\n    visited.group_by(\"department_code\", \"department_name\", \"region_name\")\n    .agg(pl.len().alias(\"visited_communes\"))\n    .join(\n        df.group_by(\"department_code\")\n        .agg(pl.len().alias(\"total_communes\")),\n        on=\"department_code\",\n    )\n    .with_columns(\n        (pl.col(\"visited_communes\") / pl.col(\"total_communes\") * 100)\n        .round(1)\n        .alias(\"pct_visited\")\n    )\n    .sort(\"pct_visited\", descending=True)\n)\n\nGT(dept_stats)\n\n\n\n\n\n\n\n\ndepartment_code\ndepartment_name\nregion_name\nvisited_communes\ntotal_communes\npct_visited\n\n\n\n\n85\nVendée\nPays de la Loire\n27\n253\n10.7\n\n\n09\nAriège\nOccitanie\n4\n325\n1.2\n\n\n56\nMorbihan\nBretagne\n1\n249\n0.4\n\n\n22\nCôtes-d'Armor\nBretagne\n1\n344\n0.3"
+  },
+  {
+    "objectID": "dashboards/visited-towns/index.html#france-overview",
+    "href": "dashboards/visited-towns/index.html#france-overview",
+    "title": "Visited Towns",
+    "section": "France overview",
+    "text": "France overview\nA lightweight sign-coloured overview: visited communes in green, the rest in red. DOM-TOM territories are shown as small inset boxes (TAAF and Clipperton, uninhabited, are omitted).\n\n\n\nVisited communes map"
   }
 ]

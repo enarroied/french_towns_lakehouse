@@ -218,6 +218,14 @@ folium.LayerControl().add_to(m)
 display(m)
 ```
 
+## France overview
+
+A lightweight sign-coloured overview: visited communes in green, the rest in
+red. DOM-TOM territories are shown as small inset boxes (TAAF and Clipperton,
+uninhabited, are omitted).
+
+![Visited communes map](images/france_visited.png)
+
 ## Badges
 
 ```{python}

@@ -36,4 +36,4 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
-        exclude: _site/.*(?:map_mainland|dashboards/visited-towns/index)\.html
+        exclude: (_site/.*(?:map_mainland|dashboards/visited-towns/index)\.html|dashboards/visited-towns/images/france_visited\.png)

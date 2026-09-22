@@ -22,7 +22,11 @@ mkdir -p "$PROJECT_ROOT/blog/data/dashboard"
 cp "$PROJECT_ROOT/data/dashboard/visited_towns.parquet" "$PROJECT_ROOT/blog/data/dashboard/"
 
 echo ""
-echo "=== Step 4: Render dashboard ==="
+echo "=== Step 4: Render France overview image ==="
+uv run python scripts/dashboard/generate_france_map.py
+
+echo ""
+echo "=== Step 5: Render dashboard ==="
 QUARTO_PYTHON="$PROJECT_ROOT/.venv/bin/python" \
   quarto render blog/dashboards/visited-towns/
 
