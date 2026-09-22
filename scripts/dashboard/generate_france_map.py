@@ -2,7 +2,9 @@
 
 Produces a static PNG (matplotlib) with all commune polygons from the
 lakehouse (Polaris ``dim_geography``): visited communes are green, the rest
-red. DOM-TOM territories are drawn as small inset boxes, classic-map style.
+red. The metropolitan mainland covers the centre; overseas territories are
+grouped into two thin-framed panels (DROM and COM) down the left, each
+territory in its own enlarged cell.
 
 Pure helpers (``inset_group``, ``render_figure``) are DB- and IO-free so they
 can be unit-tested without a Polaris catalog; ``main`` is a thin glue layer
@@ -16,6 +18,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import math
 import os
 from pathlib import Path
 
@@ -23,6 +26,7 @@ import duckdb
 import geopandas as gpd
 import matplotlib
 import matplotlib.axes
+import matplotlib.patches
 import matplotlib.pyplot as plt
 import polars as pl
 import shapely.wkb
@@ -41,53 +45,60 @@ PAD_FRACTION = 0.02
 DPI = 160
 FIG_SIZE = (12, 10)
 
-# DOM-TOM groupings with fixed (xmin, xmax, ymin, ymax) lon/lat windows so the
-# island communes remain visible instead of shrinking inside whole-ocean bounds.
-# 984 (TAAF) and 989 (Clipperton) are uninhabited and dropped to avoid distortion.
-# Position = inset box placement in figure coordinates.
-INSETS = {
-    "americas": (
-        {"971", "972", "973", "977", "978"},
-        (0.015, 0.06, 0.15, 0.16),
-        (-63.7, -50.9, 1.6, 18.9),
-    ),
-    "indian": (
-        {"974", "976"},
-        (0.015, 0.235, 0.15, 0.125),
-        (44.7, 56.1, -21.9, -12.1),
-    ),
-    "polynesia": (
-        {"987"},
-        (0.015, 0.375, 0.15, 0.14),
-        (-155.4, -133.6, -28.6, -7.0),
-    ),
-    "caledonia": (
-        {"988"},
-        (0.015, 0.53, 0.15, 0.12),
-        (163.1, 168.6, -23.4, -19.0),
-    ),
-    "wallis": (
-        {"986"},
-        (0.015, 0.66, 0.13, 0.10),
-        (-178.7, -175.8, -14.9, -12.8),
-    ),
-    "atl": (
-        {"975"},
-        (0.015, 0.78, 0.12, 0.085),
-        (-56.7, -55.8, 46.4, 47.4),
-    ),
+# ── DOM-TOM panels ─────────────────────────────────────────────
+# Two thin-framed panels along the left of the figure, classic-map style:
+# one for the five DROM (full departments), one for the other territories.
+# Each territory gets its own cell with a tight window around its measured
+# lon/lat extent so the islands render large and legible.
+# 984 (TAAF) and 989 (Clipperton) are uninhabited and omitted.
+DROM = "DROM"
+COM = "COM & territoires"
+
+# code -> (xmin, xmax, ymin, ymax) window around the territory's extent.
+OVERSEAS_WINDOWS = {
+    # DROM — départements et régions d'outre-mer
+    "971": (-61.9, -60.9, 15.7, 16.6),  # Guadeloupe
+    "972": (-61.3, -60.7, 14.3, 15.0),  # Martinique
+    "973": (-54.7, -51.5, 2.0, 5.8),  # Guyane
+    "974": (55.1, 55.9, -21.5, -20.8),  # La Réunion
+    "976": (44.9, 45.4, -13.1, -12.5),  # Mayotte
+    # COM & autres territoires
+    "975": (-56.5, -56.0, 46.6, 47.2),  # Saint-Pierre-et-Miquelon
+    "977": (-63.1, -62.7, 17.8, 18.1),  # Saint-Martin
+    "978": (-63.3, -62.9, 17.9, 18.2),  # Saint-Barthélemy
+    "986": (-178.3, -176.1, -14.5, -13.1),  # Wallis-et-Futuna
+    "987": (-154.8, -134.4, -28.0, -7.8),  # Polynésie française
+    "988": (163.5, 168.2, -23.0, -19.4),  # Nouvelle-Calédonie
 }
 
-UNINHABITED_OVERSEAS = {"984", "989"}  # TAAF and Clipperton: dropped, not inset-able
-GROUP_BY_CODE = {
-    code: group for group, (codes, _, _) in INSETS.items() for code in codes
-} | dict.fromkeys(UNINHABITED_OVERSEAS, "uninhabited")
-WINDOWS = {group: window for group, (_, _, window) in INSETS.items()}
+TERRITORY_GROUP = {
+    "971": DROM,
+    "972": DROM,
+    "973": DROM,
+    "974": DROM,
+    "976": DROM,
+    "975": COM,
+    "977": COM,
+    "978": COM,
+    "986": COM,
+    "987": COM,
+    "988": COM,
+}
+UNINHABITED_OVERSEAS = frozenset({"984", "989"})  # TAAF, Clipperton: dropped
+
+# Panel placement in figure coords (x, y, width, height). The left strip stays
+# clear of the mainland (France starts around x≈0.24 of the figure width).
+DROM_PANEL = (0.02, 0.52, 0.20, 0.30)
+COM_PANEL = (0.02, 0.13, 0.20, 0.37)
+CELL_COLS = 2
+CELL_GAP = 0.008
+CELL_PAD = 0.01
+PANEL_HEADER = 0.024
 
 
 def inset_group(department_code: str) -> str | None:
-    """Map a department code to the DOM-TOM inset it belongs to (or None)."""
-    return GROUP_BY_CODE.get(department_code)
+    """Map a department code to its DOM-TOM panel (``DROM``/``COM``), else None."""
+    return TERRITORY_GROUP.get(department_code)
 
 
 CATALOG_TABLE = "polaris.lakehouse.dim_geography"
@@ -136,13 +147,92 @@ def plot_layer(gdf: gpd.GeoDataFrame, ax: matplotlib.axes.Axes, color: str) -> N
     gdf.plot(ax=ax, color=color, edgecolor=BOUNDARY_COLOR, linewidth=BOUNDARY_WIDTH)
 
 
+def draw_territory_cell(
+    fig: plt.Figure,
+    gdf: gpd.GeoDataFrame,
+    visited_ids: set[str],
+    code: str,
+    rect: tuple[float, float, float, float],
+) -> None:
+    """Draw one overseas territory enlarged into its own small map cell."""
+    ax = fig.add_axes(rect)
+    subset = gdf[gdf["department_code"] == code]
+    if subset.empty:
+        return
+    xmin, xmax, ymin, ymax = OVERSEAS_WINDOWS[code]
+    ax.set_xlim(xmin, xmax)
+    ax.set_ylim(ymin, ymax)
+    ax.set_aspect("equal")
+    ax.set_axis_off()
+    plot_layer(subset, ax, UNVISITED_COLOR)
+    cell_visited = subset[subset["code"].isin(visited_ids)]
+    if not cell_visited.empty:
+        plot_layer(cell_visited, ax, VISITED_COLOR)
+    ax.set_frame_on(True)
+    for spine in ax.spines.values():
+        spine.set_color("0.6")
+        spine.set_linewidth(0.4)
+    fig.text(
+        rect[0] + 0.004,
+        rect[1] + rect[3] - 0.005,
+        code,
+        ha="left",
+        va="top",
+        fontsize=6,
+        color="0.3",
+    )
+
+
+def draw_panel(
+    fig: plt.Figure,
+    gdf: gpd.GeoDataFrame,
+    visited_ids: set[str],
+    title: str,
+    codes: list[str],
+    rect: tuple[float, float, float, float],
+) -> None:
+    """Draw a thin-framed panel of territory cells (``code`` per cell)."""
+    x, y, w, h = rect
+    rows = math.ceil(len(codes) / CELL_COLS)
+    cell_w = (w - 2 * CELL_PAD - (CELL_COLS - 1) * CELL_GAP) / CELL_COLS
+    cell_h = (h - PANEL_HEADER - 2 * CELL_PAD - (rows - 1) * CELL_GAP) / rows
+    for index, code in enumerate(codes):
+        col, row = divmod(index, CELL_COLS)
+        cx = x + CELL_PAD + col * (cell_w + CELL_GAP)
+        cy = y + CELL_PAD + (rows - 1 - row) * (cell_h + CELL_GAP)
+        draw_territory_cell(fig, gdf, visited_ids, code, (cx, cy, cell_w, cell_h))
+    fig.patches.append(
+        matplotlib.patches.Rectangle(
+            (x, y),
+            w,
+            h,
+            fill=False,
+            edgecolor="0.2",
+            linewidth=0.8,
+            transform=fig.transFigure,
+        )
+    )
+    fig.text(
+        x + w / 2,
+        y + h + 0.005,
+        title,
+        ha="center",
+        va="bottom",
+        fontsize=8,
+        fontweight="bold",
+    )
+
+
 def render_figure(
     gdf: gpd.GeoDataFrame,
     visited_ids: set[str],
     out_path: Path,
 ) -> Path:
     """Draw the choropleth and save it to ``out_path``."""
-    mainland = gdf[gdf["department_code"].map(inset_group).isna()]
+    mainland = gdf[
+        gdf["department_code"].map(inset_group).isna()
+        & ~gdf["department_code"].isin(UNINHABITED_OVERSEAS)
+    ]
     metro = mainland.to_crs(METRO_CRS)
     metro = metro.assign(visited=metro["code"].isin(visited_ids))
 
@@ -158,21 +248,22 @@ def render_figure(
     plot_layer(metro[~metro["visited"]], ax, UNVISITED_COLOR)
     plot_layer(metro[metro["visited"]], ax, VISITED_COLOR)
 
-    for group, (codes, position, _window) in INSETS.items():
-        subset = gdf[gdf["department_code"].isin(codes)]
-        if subset.empty:
-            continue
-        inset = fig.add_axes(position)
-        xmin, xmax, ymin, ymax = WINDOWS[group]
-        inset.set_xlim(xmin, xmax)
-        inset.set_ylim(ymin, ymax)
-        inset.set_aspect("equal")
-        inset.set_axis_off()
-        inset_visited = subset[subset["code"].isin(visited_ids)]
-        plot_layer(subset, inset, UNVISITED_COLOR)
-        if not inset_visited.empty:
-            plot_layer(inset_visited, inset, VISITED_COLOR)
-        inset.set_title(group, fontsize=7, pad=2)
+    draw_panel(
+        fig,
+        gdf,
+        visited_ids,
+        DROM,
+        ["971", "972", "973", "974", "976"],
+        DROM_PANEL,
+    )
+    draw_panel(
+        fig,
+        gdf,
+        visited_ids,
+        COM,
+        ["975", "977", "978", "986", "987", "988"],
+        COM_PANEL,
+    )
 
     fig.suptitle(
         f"Visited communes ({len(visited_ids)} / {len(gdf)})", y=0.97, fontsize=14
@@ -203,7 +294,13 @@ def render_figure(
     )
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, dpi=DPI, bbox_inches="tight", facecolor="white")
+    fig.savefig(
+        out_path,
+        dpi=DPI,
+        bbox_inches="tight",
+        pad_inches=0.2,
+        facecolor="white",
+    )
     plt.close(fig)
     return out_path
 

@@ -141,7 +141,14 @@ if n_visited > 0:
 else:
     map_center = [46.6, 2.4]
 
-m = folium.Map(location=map_center, zoom_start=6, tiles="OpenStreetMap")
+m = folium.Map(location=map_center, zoom_start=6, tiles=None)
+
+folium.TileLayer(
+    tiles="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attr="© OpenStreetMap contributors",
+    name="OpenStreetMap",
+    referrer_policy="no-referrer-when-downgrade",
+).add_to(m)
 
 D = 5  # coordinate decimal places
 
@@ -221,8 +228,9 @@ display(m)
 ## France overview
 
 A lightweight sign-coloured overview: visited communes in green, the rest in
-red. DOM-TOM territories are shown as small inset boxes (TAAF and Clipperton,
-uninhabited, are omitted).
+red. The metropolitan mainland sits centre-stage; overseas territories are
+grouped into two thin-framed panels — **DROM** (full departments) and
+**COM & territoires** — each territory enlarged in its own cell.
 
 ![Visited communes map](images/france_visited.png)
 
