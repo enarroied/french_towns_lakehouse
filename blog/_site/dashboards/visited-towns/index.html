@@ -383,7 +383,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 <section id="progress" class="level2">
 <h2 class="anchored" data-anchor-id="progress">Progress</h2>
-<div id="d1f169c3" class="cell" data-execution_count="2">
+<div id="0a822dfc" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>kpi_html <span class="op">=</span> <span class="ss">f"""</span></span>
@@ -453,7 +453,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="map" class="level2">
 <h2 class="anchored" data-anchor-id="map">Map</h2>
-<div id="f254ae52" class="cell" data-execution_count="3">
+<div id="2208d026" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> n_visited <span class="op">&gt;</span> <span class="dv">0</span>:</span>
@@ -564,7 +564,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <meta name=&quot;viewport&quot; content=&quot;width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; />
             <style>
-                #map_b5ecbf3cb2be8f2fdb36c22523bcc481 {
+                #map_a107ef50f4a3b368c84aaea9ca9dec00 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -606,14 +606,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <body>
 
 
-            <div class=&quot;folium-map&quot; id=&quot;map_b5ecbf3cb2be8f2fdb36c22523bcc481&quot; ></div>
+            <div class=&quot;folium-map&quot; id=&quot;map_a107ef50f4a3b368c84aaea9ca9dec00&quot; ></div>
 
 </body>
 <script>
 
 
-            var map_b5ecbf3cb2be8f2fdb36c22523bcc481 = L.map(
-                &quot;map_b5ecbf3cb2be8f2fdb36c22523bcc481&quot;,
+            var map_a107ef50f4a3b368c84aaea9ca9dec00 = L.map(
+                &quot;map_a107ef50f4a3b368c84aaea9ca9dec00&quot;,
                 {
                     center: [46.31734324697553, -1.4331038963473175],
                     crs: L.CRS.EPSG3857,
@@ -630,7 +630,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-            var tile_layer_30ec8bcb5571261d68d38c40ca373e24 = L.tileLayer(
+            var tile_layer_33e964deec97e4905b0515f86e97c408 = L.tileLayer(
                 &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
                 {
   &quot;minZoom&quot;: 0,
@@ -648,10 +648,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            tile_layer_30ec8bcb5571261d68d38c40ca373e24.addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+            tile_layer_33e964deec97e4905b0515f86e97c408.addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
 
 
-            var fast_marker_cluster_7cb2b8fe9e4b95e1fd033e44557de720 = (function(){
+            var fast_marker_cluster_6d74be66a9abd147061393a721d58914 = (function(){
                 var callback = function (row) {
     var marker = L.circleMarker([row[0], row[1]], {radius: 5, color: '#e74c3c', fill: true, fillOpacity: 0.7, weight: 0});
     marker.bindPopup('<b>' + row[2] + '</b><br>Population: ' + (row[3] ? row[3].toLocaleString() : 'N/A'));
@@ -669,15 +669,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                     marker.addTo(cluster);
                 }
 
-                cluster.addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+                cluster.addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
                 return cluster;
             })();
 
 
-            fast_marker_cluster_7cb2b8fe9e4b95e1fd033e44557de720.addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+            fast_marker_cluster_6d74be66a9abd147061393a721d58914.addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
 
 
-            var fast_marker_cluster_09fc8593bda84ef49e5b64ce796205b9 = (function(){
+            var fast_marker_cluster_abe360bba824883c50fef196d5a16a9f = (function(){
                 var callback = function (row) {
     var marker = L.circleMarker([row[0], row[1]], {radius: 5, color: 'green', fill: true, fillOpacity: 0.7, weight: 0});
     marker.bindPopup('<b>' + row[2] + '</b><br>Population: ' + (row[3] ? row[3].toLocaleString() : 'N/A'));
@@ -695,44 +695,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                     marker.addTo(cluster);
                 }
 
-                cluster.addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+                cluster.addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
                 return cluster;
             })();
 
 
-            fast_marker_cluster_09fc8593bda84ef49e5b64ce796205b9.addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+            fast_marker_cluster_abe360bba824883c50fef196d5a16a9f.addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
 
 
-            var marker_cluster_c552d7192e46e598f625d8458a75d9fb = L.markerClusterGroup(
+            var marker_cluster_604647f325390efa02f510366e2fc4b8 = L.markerClusterGroup(
                 {
 }
             );
 
 
-            var circle_marker_37ba47087cd19d0147d351a8e2c2c5c5 = L.circleMarker(
+            var circle_marker_6f09c99d1bdc0415e3f6bea107d863e4 = L.circleMarker(
                 [42.94402, 1.87063],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_bacbec8f5b1b4c8d548223e0efed8752 = L.popup({
+        var popup_5304250ffcc4e4a440aaf9560b9c2062 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_b94641f09199c83525124559027bb059 = $(`<div id=&quot;html_b94641f09199c83525124559027bb059&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Dreuilhe</b><br>       Ariège — <em>2026-06-21</em><br>       Population: 360     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/09106.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_bacbec8f5b1b4c8d548223e0efed8752.setContent(html_b94641f09199c83525124559027bb059);
+                var html_2d37434fb01c64f3daa03f6afbe6ba69 = $(`<div id=&quot;html_2d37434fb01c64f3daa03f6afbe6ba69&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Dreuilhe</b><br>       Ariège — <em>2026-06-21</em><br>       Population: 360     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/09106.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_5304250ffcc4e4a440aaf9560b9c2062.setContent(html_2d37434fb01c64f3daa03f6afbe6ba69);
 
 
 
-        circle_marker_37ba47087cd19d0147d351a8e2c2c5c5.bindPopup(popup_bacbec8f5b1b4c8d548223e0efed8752)
+        circle_marker_6f09c99d1bdc0415e3f6bea107d863e4.bindPopup(popup_5304250ffcc4e4a440aaf9560b9c2062)
         ;
 
 
 
 
-            circle_marker_37ba47087cd19d0147d351a8e2c2c5c5.bindTooltip(
+            circle_marker_6f09c99d1bdc0415e3f6bea107d863e4.bindTooltip(
                 `<div>
                      Dreuilhe
                  </div>`,
@@ -742,30 +742,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_f36bf07b2674a7df1ecc2bba00b0ad5b = L.circleMarker(
+            var circle_marker_6e0b5255a7318c25b380ea1d12191aae = L.circleMarker(
                 [42.96718, 1.8722],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_f96565170cab262159ec764dafb28244 = L.popup({
+        var popup_2c7410da002eb62fe770505cae3a3292 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_a6d08b89da1afd3eaa08a85540d299c3 = $(`<div id=&quot;html_a6d08b89da1afd3eaa08a85540d299c3&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Laroque-d'Olmes</b><br>       Ariège — <em>2026-06-21</em><br>       Population: 2,454     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/09157.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_f96565170cab262159ec764dafb28244.setContent(html_a6d08b89da1afd3eaa08a85540d299c3);
+                var html_153adf22f4710089b6aff401e9ea5bc6 = $(`<div id=&quot;html_153adf22f4710089b6aff401e9ea5bc6&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Laroque-d'Olmes</b><br>       Ariège — <em>2026-06-21</em><br>       Population: 2,454     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/09157.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_2c7410da002eb62fe770505cae3a3292.setContent(html_153adf22f4710089b6aff401e9ea5bc6);
 
 
 
-        circle_marker_f36bf07b2674a7df1ecc2bba00b0ad5b.bindPopup(popup_f96565170cab262159ec764dafb28244)
+        circle_marker_6e0b5255a7318c25b380ea1d12191aae.bindPopup(popup_2c7410da002eb62fe770505cae3a3292)
         ;
 
 
 
 
-            circle_marker_f36bf07b2674a7df1ecc2bba00b0ad5b.bindTooltip(
+            circle_marker_6e0b5255a7318c25b380ea1d12191aae.bindTooltip(
                 `<div>
                      Laroque-d'Olmes
                  </div>`,
@@ -775,30 +775,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_2e9a8b41ab6d981297cc7eca546ef225 = L.circleMarker(
+            var circle_marker_d0e3c69a5d8cc72e648996a75e47594d = L.circleMarker(
                 [42.93386, 1.84594],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_04e345f7ee7353b9f42aa1ffdb63a6d3 = L.popup({
+        var popup_3d045c8ce8024aae8b1b8e1d14d8493a = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_d26e2b4ad7f570911f3b52c24eed2f40 = $(`<div id=&quot;html_d26e2b4ad7f570911f3b52c24eed2f40&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Lavelanet</b><br>       Ariège — <em>2026-09-20</em><br>       Population: 5,987     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/09160.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;><br><a href=&quot;https://www.youtube.com/watch?v=yORA9ADT-jQ&quot; target=&quot;_blank&quot;>▶ YouTube</a></div></div>`)[0];
-                popup_04e345f7ee7353b9f42aa1ffdb63a6d3.setContent(html_d26e2b4ad7f570911f3b52c24eed2f40);
+                var html_ba050a0deea207305c93bbc6d52e5d17 = $(`<div id=&quot;html_ba050a0deea207305c93bbc6d52e5d17&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Lavelanet</b><br>       Ariège — <em>2026-09-20</em><br>       Population: 5,987     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/09160.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;><br><a href=&quot;https://www.youtube.com/watch?v=yORA9ADT-jQ&quot; target=&quot;_blank&quot;>▶ YouTube</a></div></div>`)[0];
+                popup_3d045c8ce8024aae8b1b8e1d14d8493a.setContent(html_ba050a0deea207305c93bbc6d52e5d17);
 
 
 
-        circle_marker_2e9a8b41ab6d981297cc7eca546ef225.bindPopup(popup_04e345f7ee7353b9f42aa1ffdb63a6d3)
+        circle_marker_d0e3c69a5d8cc72e648996a75e47594d.bindPopup(popup_3d045c8ce8024aae8b1b8e1d14d8493a)
         ;
 
 
 
 
-            circle_marker_2e9a8b41ab6d981297cc7eca546ef225.bindTooltip(
+            circle_marker_d0e3c69a5d8cc72e648996a75e47594d.bindTooltip(
                 `<div>
                      Lavelanet
                  </div>`,
@@ -808,30 +808,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_32cf9cb7c84e8678fde3cb0ef7d6515d = L.circleMarker(
+            var circle_marker_b76680d01d3ccf28cf2aaa470d392033 = L.circleMarker(
                 [42.91083, 1.82104],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_2a303148348455bdd41541756006e7c5 = L.popup({
+        var popup_785a3f304c6e1bc09ed26eeec8627912 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_b94b1ab9878a9d785ec65ba2cb1bf288 = $(`<div id=&quot;html_b94b1ab9878a9d785ec65ba2cb1bf288&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Villeneuve-d'Olmes</b><br>       Ariège — <em>2026-07-11</em><br>       Population: 965     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260711173428266.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_2a303148348455bdd41541756006e7c5.setContent(html_b94b1ab9878a9d785ec65ba2cb1bf288);
+                var html_610b654beb97aabe59015c211f92e6e0 = $(`<div id=&quot;html_610b654beb97aabe59015c211f92e6e0&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Villeneuve-d'Olmes</b><br>       Ariège — <em>2026-07-11</em><br>       Population: 965     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260711173428266.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_785a3f304c6e1bc09ed26eeec8627912.setContent(html_610b654beb97aabe59015c211f92e6e0);
 
 
 
-        circle_marker_32cf9cb7c84e8678fde3cb0ef7d6515d.bindPopup(popup_2a303148348455bdd41541756006e7c5)
+        circle_marker_b76680d01d3ccf28cf2aaa470d392033.bindPopup(popup_785a3f304c6e1bc09ed26eeec8627912)
         ;
 
 
 
 
-            circle_marker_32cf9cb7c84e8678fde3cb0ef7d6515d.bindTooltip(
+            circle_marker_b76680d01d3ccf28cf2aaa470d392033.bindTooltip(
                 `<div>
                      Villeneuve-d'Olmes
                  </div>`,
@@ -841,30 +841,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_32214c1decbd14240ee3e64d814b2297 = L.circleMarker(
+            var circle_marker_dda54dbe4d4db024025e0015520f9377 = L.circleMarker(
                 [48.224, -3.1236],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_8656b9773b3dfca6e3767eb75174d960 = L.popup({
+        var popup_184003ba1f79a8bef5fa051ff80483f7 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_5d4a8bef0cc0041781d1d84e97e3de89 = $(`<div id=&quot;html_5d4a8bef0cc0041781d1d84e97e3de89&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Bon Repos sur Blavet</b><br>       Côtes-d'Armor — <em>2026-07-02</em><br>       Population: 1,248     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260702174508848.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_8656b9773b3dfca6e3767eb75174d960.setContent(html_5d4a8bef0cc0041781d1d84e97e3de89);
+                var html_f331bfbe9277c4d9f9aaa5c0fb86464b = $(`<div id=&quot;html_f331bfbe9277c4d9f9aaa5c0fb86464b&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Bon Repos sur Blavet</b><br>       Côtes-d'Armor — <em>2026-07-02</em><br>       Population: 1,248     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260702174508848.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_184003ba1f79a8bef5fa051ff80483f7.setContent(html_f331bfbe9277c4d9f9aaa5c0fb86464b);
 
 
 
-        circle_marker_32214c1decbd14240ee3e64d814b2297.bindPopup(popup_8656b9773b3dfca6e3767eb75174d960)
+        circle_marker_dda54dbe4d4db024025e0015520f9377.bindPopup(popup_184003ba1f79a8bef5fa051ff80483f7)
         ;
 
 
 
 
-            circle_marker_32214c1decbd14240ee3e64d814b2297.bindTooltip(
+            circle_marker_dda54dbe4d4db024025e0015520f9377.bindTooltip(
                 `<div>
                      Bon Repos sur Blavet
                  </div>`,
@@ -874,30 +874,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_d034f9035f1b4be77a6ac68aca1b8ed3 = L.circleMarker(
+            var circle_marker_66fb8db1b63df0fa206c5d295c355160 = L.circleMarker(
                 [48.1281, -3.06365],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_610aeb7ece4fff1cfcf8f6e96f1a2dc2 = L.popup({
+        var popup_d8ba6b14f97adfd5e78db2a76462f55a = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_64a1b1f21ae6c7f2d59669a634f2f763 = $(`<div id=&quot;html_64a1b1f21ae6c7f2d59669a634f2f763&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Cléguérec</b><br>       Morbihan — <em>2026-07-03</em><br>       Population: 2,885     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260703160851398.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_610aeb7ece4fff1cfcf8f6e96f1a2dc2.setContent(html_64a1b1f21ae6c7f2d59669a634f2f763);
+                var html_e02475869334247cfa446f5f510576fe = $(`<div id=&quot;html_e02475869334247cfa446f5f510576fe&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Cléguérec</b><br>       Morbihan — <em>2026-07-03</em><br>       Population: 2,885     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260703160851398.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_d8ba6b14f97adfd5e78db2a76462f55a.setContent(html_e02475869334247cfa446f5f510576fe);
 
 
 
-        circle_marker_d034f9035f1b4be77a6ac68aca1b8ed3.bindPopup(popup_610aeb7ece4fff1cfcf8f6e96f1a2dc2)
+        circle_marker_66fb8db1b63df0fa206c5d295c355160.bindPopup(popup_d8ba6b14f97adfd5e78db2a76462f55a)
         ;
 
 
 
 
-            circle_marker_d034f9035f1b4be77a6ac68aca1b8ed3.bindTooltip(
+            circle_marker_66fb8db1b63df0fa206c5d295c355160.bindTooltip(
                 `<div>
                      Cléguérec
                  </div>`,
@@ -907,30 +907,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_50857dcb182d9dba38ffd1279db302d9 = L.circleMarker(
+            var circle_marker_b4a24c770a72989bbd85a6e22abd94f9 = L.circleMarker(
                 [46.59534, -1.65817],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_d951a17a22516fc78a9814b5f88c92e7 = L.popup({
+        var popup_f8bf638c6edc18054074efecc80bcc25 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_33147f67db052445a2222d0e4bf17637 = $(`<div id=&quot;html_33147f67db052445a2222d0e4bf17637&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Achards</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 5,518     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628170553885.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_d951a17a22516fc78a9814b5f88c92e7.setContent(html_33147f67db052445a2222d0e4bf17637);
+                var html_b15ab8de9c425cc623a759c5086b7667 = $(`<div id=&quot;html_b15ab8de9c425cc623a759c5086b7667&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Achards</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 5,518     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628170553885.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_f8bf638c6edc18054074efecc80bcc25.setContent(html_b15ab8de9c425cc623a759c5086b7667);
 
 
 
-        circle_marker_50857dcb182d9dba38ffd1279db302d9.bindPopup(popup_d951a17a22516fc78a9814b5f88c92e7)
+        circle_marker_b4a24c770a72989bbd85a6e22abd94f9.bindPopup(popup_f8bf638c6edc18054074efecc80bcc25)
         ;
 
 
 
 
-            circle_marker_50857dcb182d9dba38ffd1279db302d9.bindTooltip(
+            circle_marker_b4a24c770a72989bbd85a6e22abd94f9.bindTooltip(
                 `<div>
                      Achards
                  </div>`,
@@ -940,30 +940,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_ccc7f8cbc5cd7694c2b784a6d74b86a6 = L.circleMarker(
+            var circle_marker_c6550758b991ec94552868d8ec8f3ab5 = L.circleMarker(
                 [46.67082, -1.82542],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_3a3146fbb9c919249fd892b3ba64b71d = L.popup({
+        var popup_a7867525dafb06abb0d9303f2e2c1b78 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_2c1afb32188220d10a1d6ce14c27e73d = $(`<div id=&quot;html_2c1afb32188220d10a1d6ce14c27e73d&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Aiguillon-sur-Vie</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 2,277     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629153301297.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_3a3146fbb9c919249fd892b3ba64b71d.setContent(html_2c1afb32188220d10a1d6ce14c27e73d);
+                var html_d6f5f3dbb4d488075470afb826d809d0 = $(`<div id=&quot;html_d6f5f3dbb4d488075470afb826d809d0&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Aiguillon-sur-Vie</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 2,277     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629153301297.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_a7867525dafb06abb0d9303f2e2c1b78.setContent(html_d6f5f3dbb4d488075470afb826d809d0);
 
 
 
-        circle_marker_ccc7f8cbc5cd7694c2b784a6d74b86a6.bindPopup(popup_3a3146fbb9c919249fd892b3ba64b71d)
+        circle_marker_c6550758b991ec94552868d8ec8f3ab5.bindPopup(popup_a7867525dafb06abb0d9303f2e2c1b78)
         ;
 
 
 
 
-            circle_marker_ccc7f8cbc5cd7694c2b784a6d74b86a6.bindTooltip(
+            circle_marker_c6550758b991ec94552868d8ec8f3ab5.bindTooltip(
                 `<div>
                      Aiguillon-sur-Vie
                  </div>`,
@@ -973,30 +973,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_a925f346e2fbad5acbe778559c359499 = L.circleMarker(
+            var circle_marker_7f447aa780fe78df4894a080323e38e9 = L.circleMarker(
                 [46.61807, -1.48075],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_7c55ae7718b2391dd4e88c8003988224 = L.popup({
+        var popup_e1bdf00d6591c6d4af74a4a827d72d6d = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_224fc1aa306786388056ca02eb7f7b0d = $(`<div id=&quot;html_224fc1aa306786388056ca02eb7f7b0d&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Aubigny-Les Clouzeaux</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 7,191     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628134835522.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_7c55ae7718b2391dd4e88c8003988224.setContent(html_224fc1aa306786388056ca02eb7f7b0d);
+                var html_be4fb14997ab0c24a54e5fb5ebeac224 = $(`<div id=&quot;html_be4fb14997ab0c24a54e5fb5ebeac224&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Aubigny-Les Clouzeaux</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 7,191     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628134835522.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_e1bdf00d6591c6d4af74a4a827d72d6d.setContent(html_be4fb14997ab0c24a54e5fb5ebeac224);
 
 
 
-        circle_marker_a925f346e2fbad5acbe778559c359499.bindPopup(popup_7c55ae7718b2391dd4e88c8003988224)
+        circle_marker_7f447aa780fe78df4894a080323e38e9.bindPopup(popup_e1bdf00d6591c6d4af74a4a827d72d6d)
         ;
 
 
 
 
-            circle_marker_a925f346e2fbad5acbe778559c359499.bindTooltip(
+            circle_marker_7f447aa780fe78df4894a080323e38e9.bindTooltip(
                 `<div>
                      Aubigny-Les Clouzeaux
                  </div>`,
@@ -1006,30 +1006,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_25bad54420cf4ca2790d8e5d91d122df = L.circleMarker(
+            var circle_marker_1743ca38bace519558c542f26dd55f48 = L.circleMarker(
                 [46.93232, -2.16677],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_bc56353fd56f5633bd39bb52472eb5cb = L.popup({
+        var popup_a5e173c9259ff378046454d68b1f8bc8 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_eb01eb1a01db5f1b7cc4d8483889f347 = $(`<div id=&quot;html_eb01eb1a01db5f1b7cc4d8483889f347&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Barbâtre</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 1,824     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630134310979.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_bc56353fd56f5633bd39bb52472eb5cb.setContent(html_eb01eb1a01db5f1b7cc4d8483889f347);
+                var html_68b8d7b3e0f7fd4a9661771eec91b34d = $(`<div id=&quot;html_68b8d7b3e0f7fd4a9661771eec91b34d&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Barbâtre</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 1,824     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630134310979.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_a5e173c9259ff378046454d68b1f8bc8.setContent(html_68b8d7b3e0f7fd4a9661771eec91b34d);
 
 
 
-        circle_marker_25bad54420cf4ca2790d8e5d91d122df.bindPopup(popup_bc56353fd56f5633bd39bb52472eb5cb)
+        circle_marker_1743ca38bace519558c542f26dd55f48.bindPopup(popup_a5e173c9259ff378046454d68b1f8bc8)
         ;
 
 
 
 
-            circle_marker_25bad54420cf4ca2790d8e5d91d122df.bindTooltip(
+            circle_marker_1743ca38bace519558c542f26dd55f48.bindTooltip(
                 `<div>
                      Barbâtre
                  </div>`,
@@ -1039,30 +1039,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_b7d51af2f20370c53b603a8f49ddba52 = L.circleMarker(
+            var circle_marker_3c7b43f145541a21b18754ba5a2440c9 = L.circleMarker(
                 [46.87299, -2.10167],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_a1840c6b424e3c12c1fa9dac5f8d7d1b = L.popup({
+        var popup_dbfd392e31ba2de2c16ecd9c3e1fd197 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_12e6d9accdd80af8ef852598472c1d9e = $(`<div id=&quot;html_12e6d9accdd80af8ef852598472c1d9e&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Barre-de-Monts</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 2,367     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630130810744.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_a1840c6b424e3c12c1fa9dac5f8d7d1b.setContent(html_12e6d9accdd80af8ef852598472c1d9e);
+                var html_044a1c9495986c7d2513db4e990ef5f6 = $(`<div id=&quot;html_044a1c9495986c7d2513db4e990ef5f6&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Barre-de-Monts</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 2,367     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630130810744.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_dbfd392e31ba2de2c16ecd9c3e1fd197.setContent(html_044a1c9495986c7d2513db4e990ef5f6);
 
 
 
-        circle_marker_b7d51af2f20370c53b603a8f49ddba52.bindPopup(popup_a1840c6b424e3c12c1fa9dac5f8d7d1b)
+        circle_marker_3c7b43f145541a21b18754ba5a2440c9.bindPopup(popup_dbfd392e31ba2de2c16ecd9c3e1fd197)
         ;
 
 
 
 
-            circle_marker_b7d51af2f20370c53b603a8f49ddba52.bindTooltip(
+            circle_marker_3c7b43f145541a21b18754ba5a2440c9.bindTooltip(
                 `<div>
                      Barre-de-Monts
                  </div>`,
@@ -1072,30 +1072,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_5c4df56ad062a8e5709253087b42244b = L.circleMarker(
+            var circle_marker_6ec28ef039c11363996bc8054353b235 = L.circleMarker(
                 [46.61186, -1.81095],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_03b9e7491f2018de0fa3bf8b89bb3dcb = L.popup({
+        var popup_ddabc90f93d2c5fcb0cee80a040f2ee6 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_7ad5f3010353f71a67ea17d3a50fb142 = $(`<div id=&quot;html_7ad5f3010353f71a67ea17d3a50fb142&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Brem-sur-Mer</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 2,993     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629111129608.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_03b9e7491f2018de0fa3bf8b89bb3dcb.setContent(html_7ad5f3010353f71a67ea17d3a50fb142);
+                var html_a28afc83b081f2fd00e3b453e0ca5e39 = $(`<div id=&quot;html_a28afc83b081f2fd00e3b453e0ca5e39&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Brem-sur-Mer</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 2,993     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629111129608.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_ddabc90f93d2c5fcb0cee80a040f2ee6.setContent(html_a28afc83b081f2fd00e3b453e0ca5e39);
 
 
 
-        circle_marker_5c4df56ad062a8e5709253087b42244b.bindPopup(popup_03b9e7491f2018de0fa3bf8b89bb3dcb)
+        circle_marker_6ec28ef039c11363996bc8054353b235.bindPopup(popup_ddabc90f93d2c5fcb0cee80a040f2ee6)
         ;
 
 
 
 
-            circle_marker_5c4df56ad062a8e5709253087b42244b.bindTooltip(
+            circle_marker_6ec28ef039c11363996bc8054353b235.bindTooltip(
                 `<div>
                      Brem-sur-Mer
                  </div>`,
@@ -1105,30 +1105,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_62ed21269fa81f74cef9da491f2c888f = L.circleMarker(
+            var circle_marker_6780306b2b27292c491b37d4e80b3f36 = L.circleMarker(
                 [46.63816, -1.8637],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_c927eaedf7cb056a2d45791c80c3ffef = L.popup({
+        var popup_15ff5e3ce4e20c6cf3656ee16c45816c = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_26efa1e25f0fc5ac1841a1c798e2c4a8 = $(`<div id=&quot;html_26efa1e25f0fc5ac1841a1c798e2c4a8&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Bretignolles-sur-Mer</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 5,344     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630114453203.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_c927eaedf7cb056a2d45791c80c3ffef.setContent(html_26efa1e25f0fc5ac1841a1c798e2c4a8);
+                var html_a8ab0eb2dd8e2b1951ace6c44576c7f5 = $(`<div id=&quot;html_a8ab0eb2dd8e2b1951ace6c44576c7f5&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Bretignolles-sur-Mer</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 5,344     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630114453203.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_15ff5e3ce4e20c6cf3656ee16c45816c.setContent(html_a8ab0eb2dd8e2b1951ace6c44576c7f5);
 
 
 
-        circle_marker_62ed21269fa81f74cef9da491f2c888f.bindPopup(popup_c927eaedf7cb056a2d45791c80c3ffef)
+        circle_marker_6780306b2b27292c491b37d4e80b3f36.bindPopup(popup_15ff5e3ce4e20c6cf3656ee16c45816c)
         ;
 
 
 
 
-            circle_marker_62ed21269fa81f74cef9da491f2c888f.bindTooltip(
+            circle_marker_6780306b2b27292c491b37d4e80b3f36.bindTooltip(
                 `<div>
                      Bretignolles-sur-Mer
                  </div>`,
@@ -1138,30 +1138,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_351b8721f27d3a14ddd0451b3b2130e6 = L.circleMarker(
+            var circle_marker_8943e0fc2120e7e6ec371d597d91021e = L.circleMarker(
                 [46.6476, -1.81979],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_ed64617ff97d548f682eec4ba8b722c1 = L.popup({
+        var popup_5e2c1c3b519a52e003d00e5f0f2b628e = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_64fc79c66c80bbcf9fc21f873f4d41ea = $(`<div id=&quot;html_64fc79c66c80bbcf9fc21f873f4d41ea&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Chaize-Giraud</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 1,124     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629150900874.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_ed64617ff97d548f682eec4ba8b722c1.setContent(html_64fc79c66c80bbcf9fc21f873f4d41ea);
+                var html_852f74a54fcf9aa5b6305b5bf6c63c49 = $(`<div id=&quot;html_852f74a54fcf9aa5b6305b5bf6c63c49&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Chaize-Giraud</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 1,124     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629150900874.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_5e2c1c3b519a52e003d00e5f0f2b628e.setContent(html_852f74a54fcf9aa5b6305b5bf6c63c49);
 
 
 
-        circle_marker_351b8721f27d3a14ddd0451b3b2130e6.bindPopup(popup_ed64617ff97d548f682eec4ba8b722c1)
+        circle_marker_8943e0fc2120e7e6ec371d597d91021e.bindPopup(popup_5e2c1c3b519a52e003d00e5f0f2b628e)
         ;
 
 
 
 
-            circle_marker_351b8721f27d3a14ddd0451b3b2130e6.bindTooltip(
+            circle_marker_8943e0fc2120e7e6ec371d597d91021e.bindTooltip(
                 `<div>
                      Chaize-Giraud
                  </div>`,
@@ -1171,30 +1171,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_420115147f107bb4a65a135a80c31aa3 = L.circleMarker(
+            var circle_marker_858224a05da8437fc48dae950a65f96a = L.circleMarker(
                 [46.71612, -1.89218],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_80fdf883379c3919669f7ab00d3a1f7c = L.popup({
+        var popup_cb4356fae25aa0eabc04f6a5f284f0da = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_deb44f32ba75c312af7d944ee4616d54 = $(`<div id=&quot;html_deb44f32ba75c312af7d944ee4616d54&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Fenouiller</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 4,978     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629154415693.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_80fdf883379c3919669f7ab00d3a1f7c.setContent(html_deb44f32ba75c312af7d944ee4616d54);
+                var html_7eb2059889253e2aed3c5ee8d51f581d = $(`<div id=&quot;html_7eb2059889253e2aed3c5ee8d51f581d&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Fenouiller</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 4,978     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629154415693.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_cb4356fae25aa0eabc04f6a5f284f0da.setContent(html_7eb2059889253e2aed3c5ee8d51f581d);
 
 
 
-        circle_marker_420115147f107bb4a65a135a80c31aa3.bindPopup(popup_80fdf883379c3919669f7ab00d3a1f7c)
+        circle_marker_858224a05da8437fc48dae950a65f96a.bindPopup(popup_cb4356fae25aa0eabc04f6a5f284f0da)
         ;
 
 
 
 
-            circle_marker_420115147f107bb4a65a135a80c31aa3.bindTooltip(
+            circle_marker_858224a05da8437fc48dae950a65f96a.bindTooltip(
                 `<div>
                      Fenouiller
                  </div>`,
@@ -1204,30 +1204,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_5037150f816dc0d8aa493beee4d7e9c2 = L.circleMarker(
+            var circle_marker_e05cad2f96cb50be2a4bdd63f63fb201 = L.circleMarker(
                 [46.57302, -1.58893],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_e7e004897fd4acdfeec64b73d343440d = L.popup({
+        var popup_a9a41cf47b601bef5cc1623194a6ed4c = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_839fa567fc01109d9b8ea453a5b81ac5 = $(`<div id=&quot;html_839fa567fc01109d9b8ea453a5b81ac5&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Girouard</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 1,156     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628125435287.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_e7e004897fd4acdfeec64b73d343440d.setContent(html_839fa567fc01109d9b8ea453a5b81ac5);
+                var html_df676fb3dbc21d9e3a5ea57a694db33d = $(`<div id=&quot;html_df676fb3dbc21d9e3a5ea57a694db33d&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Girouard</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 1,156     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628125435287.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_a9a41cf47b601bef5cc1623194a6ed4c.setContent(html_df676fb3dbc21d9e3a5ea57a694db33d);
 
 
 
-        circle_marker_5037150f816dc0d8aa493beee4d7e9c2.bindPopup(popup_e7e004897fd4acdfeec64b73d343440d)
+        circle_marker_e05cad2f96cb50be2a4bdd63f63fb201.bindPopup(popup_a9a41cf47b601bef5cc1623194a6ed4c)
         ;
 
 
 
 
-            circle_marker_5037150f816dc0d8aa493beee4d7e9c2.bindTooltip(
+            circle_marker_e05cad2f96cb50be2a4bdd63f63fb201.bindTooltip(
                 `<div>
                      Girouard
                  </div>`,
@@ -1237,30 +1237,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_93f5c21c7e5ead711efdeb84e6b63466 = L.circleMarker(
+            var circle_marker_ddbb3e8841422abfaabc2213bfce4be0 = L.circleMarker(
                 [46.68242, -1.87805],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_c19b6f8b7b5be4c38c60e29a3d9c01e5 = L.popup({
+        var popup_9dd83ab9fb0d615615de5ae1cbb535e9 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_7acb8aff4b98269b6e5668b50e2730db = $(`<div id=&quot;html_7acb8aff4b98269b6e5668b50e2730db&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Givrand</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 2,205     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630115525239.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_c19b6f8b7b5be4c38c60e29a3d9c01e5.setContent(html_7acb8aff4b98269b6e5668b50e2730db);
+                var html_327ba3444c851aadba96a621a0374126 = $(`<div id=&quot;html_327ba3444c851aadba96a621a0374126&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Givrand</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 2,205     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630115525239.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_9dd83ab9fb0d615615de5ae1cbb535e9.setContent(html_327ba3444c851aadba96a621a0374126);
 
 
 
-        circle_marker_93f5c21c7e5ead711efdeb84e6b63466.bindPopup(popup_c19b6f8b7b5be4c38c60e29a3d9c01e5)
+        circle_marker_ddbb3e8841422abfaabc2213bfce4be0.bindPopup(popup_9dd83ab9fb0d615615de5ae1cbb535e9)
         ;
 
 
 
 
-            circle_marker_93f5c21c7e5ead711efdeb84e6b63466.bindTooltip(
+            circle_marker_ddbb3e8841422abfaabc2213bfce4be0.bindTooltip(
                 `<div>
                      Givrand
                  </div>`,
@@ -1270,30 +1270,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_4ede1e10202fd0754920b38054974cd4 = L.circleMarker(
+            var circle_marker_62d79c6f1a486a56502b4c0934041754 = L.circleMarker(
                 [46.53921, -1.60709],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_93e9e06e342dbacabb0ff39660be5427 = L.popup({
+        var popup_221b511eaccadb8eb3f2a5ad2dc0659b = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_7a658e11580597c26d6059088e3a4347 = $(`<div id=&quot;html_7a658e11580597c26d6059088e3a4347&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Grosbreuil</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,221     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628114834434.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_93e9e06e342dbacabb0ff39660be5427.setContent(html_7a658e11580597c26d6059088e3a4347);
+                var html_83711e2282f9ff23e61cbf9fa0ee4401 = $(`<div id=&quot;html_83711e2282f9ff23e61cbf9fa0ee4401&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Grosbreuil</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,221     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628114834434.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_221b511eaccadb8eb3f2a5ad2dc0659b.setContent(html_83711e2282f9ff23e61cbf9fa0ee4401);
 
 
 
-        circle_marker_4ede1e10202fd0754920b38054974cd4.bindPopup(popup_93e9e06e342dbacabb0ff39660be5427)
+        circle_marker_62d79c6f1a486a56502b4c0934041754.bindPopup(popup_221b511eaccadb8eb3f2a5ad2dc0659b)
         ;
 
 
 
 
-            circle_marker_4ede1e10202fd0754920b38054974cd4.bindTooltip(
+            circle_marker_62d79c6f1a486a56502b4c0934041754.bindTooltip(
                 `<div>
                      Grosbreuil
                  </div>`,
@@ -1303,30 +1303,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_1a31970f879fe6c633ac90f91ce864d7 = L.circleMarker(
+            var circle_marker_822ff7197474a99d78369b1eb82b248e = L.circleMarker(
                 [46.96708, -2.23113],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_6af3af10de2000e5352f6afb3a81ceb0 = L.popup({
+        var popup_f1b1193ca29e61b098bca728c79b5b18 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_29f13074ac6fda615131f6edaeb12399 = $(`<div id=&quot;html_29f13074ac6fda615131f6edaeb12399&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Guérinière</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 1,377     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630141558953.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_6af3af10de2000e5352f6afb3a81ceb0.setContent(html_29f13074ac6fda615131f6edaeb12399);
+                var html_42aafe5b4ade22775b373455009a1778 = $(`<div id=&quot;html_42aafe5b4ade22775b373455009a1778&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Guérinière</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 1,377     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630141558953.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_f1b1193ca29e61b098bca728c79b5b18.setContent(html_42aafe5b4ade22775b373455009a1778);
 
 
 
-        circle_marker_1a31970f879fe6c633ac90f91ce864d7.bindPopup(popup_6af3af10de2000e5352f6afb3a81ceb0)
+        circle_marker_822ff7197474a99d78369b1eb82b248e.bindPopup(popup_f1b1193ca29e61b098bca728c79b5b18)
         ;
 
 
 
 
-            circle_marker_1a31970f879fe6c633ac90f91ce864d7.bindTooltip(
+            circle_marker_822ff7197474a99d78369b1eb82b248e.bindTooltip(
                 `<div>
                      Guérinière
                  </div>`,
@@ -1336,30 +1336,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_8a31299acaa962ca7b666726bab09891 = L.circleMarker(
+            var circle_marker_21bfdcc6cb430d0c57b476c4770a8d72 = L.circleMarker(
                 [46.64414, -1.78544],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_6bb5cac9a5a4941ad89b758ccb10201e = L.popup({
+        var popup_6e91be4baa17aba3f196f5892739c2d8 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_47f278bf988e4e0e4bce818e2b5abe0b = $(`<div id=&quot;html_47f278bf988e4e0e4bce818e2b5abe0b&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Landevieille</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 1,519     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629145155101.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_6bb5cac9a5a4941ad89b758ccb10201e.setContent(html_47f278bf988e4e0e4bce818e2b5abe0b);
+                var html_0c13632413584a8bdc72c6da338d7f8b = $(`<div id=&quot;html_0c13632413584a8bdc72c6da338d7f8b&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Landevieille</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 1,519     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629145155101.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_6e91be4baa17aba3f196f5892739c2d8.setContent(html_0c13632413584a8bdc72c6da338d7f8b);
 
 
 
-        circle_marker_8a31299acaa962ca7b666726bab09891.bindPopup(popup_6bb5cac9a5a4941ad89b758ccb10201e)
+        circle_marker_21bfdcc6cb430d0c57b476c4770a8d72.bindPopup(popup_6e91be4baa17aba3f196f5892739c2d8)
         ;
 
 
 
 
-            circle_marker_8a31299acaa962ca7b666726bab09891.bindTooltip(
+            circle_marker_21bfdcc6cb430d0c57b476c4770a8d72.bindTooltip(
                 `<div>
                      Landevieille
                  </div>`,
@@ -1369,30 +1369,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_e8372b03dc2b863588995b2cf57b05e4 = L.circleMarker(
+            var circle_marker_008fad534f90670eedc9b30aa7129001 = L.circleMarker(
                 [46.56788, -1.51567],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_1adb57733b6972052de52b61f6dbfea0 = L.popup({
+        var popup_2b6f4202232d849509b0cb80fcbac746 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_e01f26abe45b2649277fd42c71390d69 = $(`<div id=&quot;html_e01f26abe45b2649277fd42c71390d69&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Nieul-le-Dolent</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,571     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628122214321.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_1adb57733b6972052de52b61f6dbfea0.setContent(html_e01f26abe45b2649277fd42c71390d69);
+                var html_a558e864807d36e271d62e6d64f3c589 = $(`<div id=&quot;html_a558e864807d36e271d62e6d64f3c589&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Nieul-le-Dolent</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,571     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628122214321.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_2b6f4202232d849509b0cb80fcbac746.setContent(html_a558e864807d36e271d62e6d64f3c589);
 
 
 
-        circle_marker_e8372b03dc2b863588995b2cf57b05e4.bindPopup(popup_1adb57733b6972052de52b61f6dbfea0)
+        circle_marker_008fad534f90670eedc9b30aa7129001.bindPopup(popup_2b6f4202232d849509b0cb80fcbac746)
         ;
 
 
 
 
-            circle_marker_e8372b03dc2b863588995b2cf57b05e4.bindTooltip(
+            circle_marker_008fad534f90670eedc9b30aa7129001.bindTooltip(
                 `<div>
                      Nieul-le-Dolent
                  </div>`,
@@ -1402,30 +1402,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_9519317b7034938690e40469688e7838 = L.circleMarker(
+            var circle_marker_85313c7a490626f8285487c5d1c3072d = L.circleMarker(
                 [47.00892, -2.26259],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_66b9a11bad736648a8b8eb744217f8ba = L.popup({
+        var popup_cad9cf4bca0f24f447bd92fb6660bd0c = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_5827a4cac61a0eede4b9707a98d6c702 = $(`<div id=&quot;html_5827a4cac61a0eede4b9707a98d6c702&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Noirmoutier-en-l'Île</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 4,505     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630154920087.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_66b9a11bad736648a8b8eb744217f8ba.setContent(html_5827a4cac61a0eede4b9707a98d6c702);
+                var html_33bf1750b2e257db40b461995c9e32f5 = $(`<div id=&quot;html_33bf1750b2e257db40b461995c9e32f5&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Noirmoutier-en-l'Île</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 4,505     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630154920087.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_cad9cf4bca0f24f447bd92fb6660bd0c.setContent(html_33bf1750b2e257db40b461995c9e32f5);
 
 
 
-        circle_marker_9519317b7034938690e40469688e7838.bindPopup(popup_66b9a11bad736648a8b8eb744217f8ba)
+        circle_marker_85313c7a490626f8285487c5d1c3072d.bindPopup(popup_cad9cf4bca0f24f447bd92fb6660bd0c)
         ;
 
 
 
 
-            circle_marker_9519317b7034938690e40469688e7838.bindTooltip(
+            circle_marker_85313c7a490626f8285487c5d1c3072d.bindTooltip(
                 `<div>
                      Noirmoutier-en-l'Île
                  </div>`,
@@ -1435,30 +1435,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_d7997535649c20e68f28d57c4973995c = L.circleMarker(
+            var circle_marker_fa3ebea3d98c7723ba9dbcc2c054fdb0 = L.circleMarker(
                 [46.66766, -1.4079],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_8478749bea0a0f2b871fde010f75e888 = L.popup({
+        var popup_afdd25456bccfefa29f93d203e80f3aa = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_05dedbc9b37356cf6e126cef4da71021 = $(`<div id=&quot;html_05dedbc9b37356cf6e126cef4da71021&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Roche-sur-Yon</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 54,849     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628140155932.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_8478749bea0a0f2b871fde010f75e888.setContent(html_05dedbc9b37356cf6e126cef4da71021);
+                var html_1824996554b55ad0e7d44633ecb1fef9 = $(`<div id=&quot;html_1824996554b55ad0e7d44633ecb1fef9&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Roche-sur-Yon</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 54,849     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628140155932.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_afdd25456bccfefa29f93d203e80f3aa.setContent(html_1824996554b55ad0e7d44633ecb1fef9);
 
 
 
-        circle_marker_d7997535649c20e68f28d57c4973995c.bindPopup(popup_8478749bea0a0f2b871fde010f75e888)
+        circle_marker_fa3ebea3d98c7723ba9dbcc2c054fdb0.bindPopup(popup_afdd25456bccfefa29f93d203e80f3aa)
         ;
 
 
 
 
-            circle_marker_d7997535649c20e68f28d57c4973995c.bindTooltip(
+            circle_marker_fa3ebea3d98c7723ba9dbcc2c054fdb0.bindTooltip(
                 `<div>
                      Roche-sur-Yon
                  </div>`,
@@ -1468,30 +1468,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_dc86ebd2534db8754a457bfdec2e1acc = L.circleMarker(
+            var circle_marker_a9a99cc3e199e05c9b094f0083a159c4 = L.circleMarker(
                 [46.51979, -1.76391],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_dcfdf2fd5b710aba08fa11c9a0446114 = L.popup({
+        var popup_506368a447e42d0ef1e288d5c19a4e73 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_5bc7fb967bf8838b28079b9a8c637b2c = $(`<div id=&quot;html_5bc7fb967bf8838b28079b9a8c637b2c&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Sables-d'Olonne</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 49,603     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628192830187.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_dcfdf2fd5b710aba08fa11c9a0446114.setContent(html_5bc7fb967bf8838b28079b9a8c637b2c);
+                var html_f12d851f7ebe7cdd50675cfde57c9620 = $(`<div id=&quot;html_f12d851f7ebe7cdd50675cfde57c9620&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Sables-d'Olonne</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 49,603     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628192830187.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_506368a447e42d0ef1e288d5c19a4e73.setContent(html_f12d851f7ebe7cdd50675cfde57c9620);
 
 
 
-        circle_marker_dc86ebd2534db8754a457bfdec2e1acc.bindPopup(popup_dcfdf2fd5b710aba08fa11c9a0446114)
+        circle_marker_a9a99cc3e199e05c9b094f0083a159c4.bindPopup(popup_506368a447e42d0ef1e288d5c19a4e73)
         ;
 
 
 
 
-            circle_marker_dc86ebd2534db8754a457bfdec2e1acc.bindTooltip(
+            circle_marker_a9a99cc3e199e05c9b094f0083a159c4.bindTooltip(
                 `<div>
                      Sables-d'Olonne
                  </div>`,
@@ -1501,30 +1501,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_7683d2af810bab64a41415cf6fdfc2df = L.circleMarker(
+            var circle_marker_33973db3e593999fd1d0cfc0b0410f57 = L.circleMarker(
                 [46.64265, -1.62834],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_4d312a1ded7e944695b80b0449fd2961 = L.popup({
+        var popup_84c03157fb35f691f738bedbd52ea6fa = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_2ded1f1fdc46530836ca2cc4aa8874b8 = $(`<div id=&quot;html_2ded1f1fdc46530836ca2cc4aa8874b8&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Saint-Georges-de-Pointindoux</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 1,870     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628165149633.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_4d312a1ded7e944695b80b0449fd2961.setContent(html_2ded1f1fdc46530836ca2cc4aa8874b8);
+                var html_216c10b516ee7ca3e4ec637c33cfa0c7 = $(`<div id=&quot;html_216c10b516ee7ca3e4ec637c33cfa0c7&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Saint-Georges-de-Pointindoux</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 1,870     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628165149633.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_84c03157fb35f691f738bedbd52ea6fa.setContent(html_216c10b516ee7ca3e4ec637c33cfa0c7);
 
 
 
-        circle_marker_7683d2af810bab64a41415cf6fdfc2df.bindPopup(popup_4d312a1ded7e944695b80b0449fd2961)
+        circle_marker_33973db3e593999fd1d0cfc0b0410f57.bindPopup(popup_84c03157fb35f691f738bedbd52ea6fa)
         ;
 
 
 
 
-            circle_marker_7683d2af810bab64a41415cf6fdfc2df.bindTooltip(
+            circle_marker_33973db3e593999fd1d0cfc0b0410f57.bindTooltip(
                 `<div>
                      Saint-Georges-de-Pointindoux
                  </div>`,
@@ -1534,30 +1534,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_dfaf5bbeeeb38cff0914f70dbdfc55f9 = L.circleMarker(
+            var circle_marker_993a1861fcab4ed0604f313f4cebeec2 = L.circleMarker(
                 [46.69059, -1.91859],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_a301230e23a602169d70b500e3768ea0 = L.popup({
+        var popup_27870ded0a76cb92bb0633212b8aa773 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_69c71c42196589acdb418023e7c3e05b = $(`<div id=&quot;html_69c71c42196589acdb418023e7c3e05b&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Saint-Gilles-Croix-de-Vie</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 8,333     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629155930071.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_a301230e23a602169d70b500e3768ea0.setContent(html_69c71c42196589acdb418023e7c3e05b);
+                var html_93c9257957295bb44a6e4ae42d3041db = $(`<div id=&quot;html_93c9257957295bb44a6e4ae42d3041db&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Saint-Gilles-Croix-de-Vie</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 8,333     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629155930071.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_27870ded0a76cb92bb0633212b8aa773.setContent(html_93c9257957295bb44a6e4ae42d3041db);
 
 
 
-        circle_marker_dfaf5bbeeeb38cff0914f70dbdfc55f9.bindPopup(popup_a301230e23a602169d70b500e3768ea0)
+        circle_marker_993a1861fcab4ed0604f313f4cebeec2.bindPopup(popup_27870ded0a76cb92bb0633212b8aa773)
         ;
 
 
 
 
-            circle_marker_dfaf5bbeeeb38cff0914f70dbdfc55f9.bindTooltip(
+            circle_marker_993a1861fcab4ed0604f313f4cebeec2.bindTooltip(
                 `<div>
                      Saint-Gilles-Croix-de-Vie
                  </div>`,
@@ -1567,30 +1567,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_3325e6d4deda511869af8923ce9fe64b = L.circleMarker(
+            var circle_marker_0b3ddf50324a12a8dc85d915afb8f0f3 = L.circleMarker(
                 [46.56888, -1.70802],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_6411ba3e5d19f88f79ae11aa3fe6cd1b = L.popup({
+        var popup_708700c556249220158746f58ed4714b = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_aefb8491e80dd4098f1423e954c07b7d = $(`<div id=&quot;html_aefb8491e80dd4098f1423e954c07b7d&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Saint-Mathurin</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,496     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628174506610.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_6411ba3e5d19f88f79ae11aa3fe6cd1b.setContent(html_aefb8491e80dd4098f1423e954c07b7d);
+                var html_fd580478d0a3da4362ab3eab312f6adc = $(`<div id=&quot;html_fd580478d0a3da4362ab3eab312f6adc&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Saint-Mathurin</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,496     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628174506610.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_708700c556249220158746f58ed4714b.setContent(html_fd580478d0a3da4362ab3eab312f6adc);
 
 
 
-        circle_marker_3325e6d4deda511869af8923ce9fe64b.bindPopup(popup_6411ba3e5d19f88f79ae11aa3fe6cd1b)
+        circle_marker_0b3ddf50324a12a8dc85d915afb8f0f3.bindPopup(popup_708700c556249220158746f58ed4714b)
         ;
 
 
 
 
-            circle_marker_3325e6d4deda511869af8923ce9fe64b.bindTooltip(
+            circle_marker_0b3ddf50324a12a8dc85d915afb8f0f3.bindTooltip(
                 `<div>
                      Saint-Mathurin
                  </div>`,
@@ -1600,30 +1600,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_bc5c5aa1ab306471b40a2b5c8ac5dbee = L.circleMarker(
+            var circle_marker_94592c74decac9611e4c2974dd65704d = L.circleMarker(
                 [46.61129, -1.58008],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_ea4a828a629356a3912142c03f007a60 = L.popup({
+        var popup_c1dcddaeacac6c8bccbc2b9fdc7c99be = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_8a6e77c7db72e994ed02b3539f2737b8 = $(`<div id=&quot;html_8a6e77c7db72e994ed02b3539f2737b8&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Sainte-Flaive-des-Loups</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,585     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628123829382.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_ea4a828a629356a3912142c03f007a60.setContent(html_8a6e77c7db72e994ed02b3539f2737b8);
+                var html_5999d79040146f2c3cca4f615be02086 = $(`<div id=&quot;html_5999d79040146f2c3cca4f615be02086&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Sainte-Flaive-des-Loups</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,585     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628123829382.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_c1dcddaeacac6c8bccbc2b9fdc7c99be.setContent(html_5999d79040146f2c3cca4f615be02086);
 
 
 
-        circle_marker_bc5c5aa1ab306471b40a2b5c8ac5dbee.bindPopup(popup_ea4a828a629356a3912142c03f007a60)
+        circle_marker_94592c74decac9611e4c2974dd65704d.bindPopup(popup_c1dcddaeacac6c8bccbc2b9fdc7c99be)
         ;
 
 
 
 
-            circle_marker_bc5c5aa1ab306471b40a2b5c8ac5dbee.bindTooltip(
+            circle_marker_94592c74decac9611e4c2974dd65704d.bindTooltip(
                 `<div>
                      Sainte-Flaive-des-Loups
                  </div>`,
@@ -1633,30 +1633,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_c8f8c6eb09a5cbc1cee023d07751333b = L.circleMarker(
+            var circle_marker_c35c06d21db3c5f23775b60bb869e54f = L.circleMarker(
                 [46.53266, -1.69205],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_78c4dbf2ea1a36bb87dbb6eee978f6a4 = L.popup({
+        var popup_502ae2527b5be37d1ed716956f8271b2 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_03e8d8604ce8703d005fac0c4a609393 = $(`<div id=&quot;html_03e8d8604ce8703d005fac0c4a609393&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Sainte-Foy</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,717     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628112344867.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_78c4dbf2ea1a36bb87dbb6eee978f6a4.setContent(html_03e8d8604ce8703d005fac0c4a609393);
+                var html_3d3b8772832b2cf16dbf19a295857e9b = $(`<div id=&quot;html_3d3b8772832b2cf16dbf19a295857e9b&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Sainte-Foy</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 2,717     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628112344867.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_502ae2527b5be37d1ed716956f8271b2.setContent(html_3d3b8772832b2cf16dbf19a295857e9b);
 
 
 
-        circle_marker_c8f8c6eb09a5cbc1cee023d07751333b.bindPopup(popup_78c4dbf2ea1a36bb87dbb6eee978f6a4)
+        circle_marker_c35c06d21db3c5f23775b60bb869e54f.bindPopup(popup_502ae2527b5be37d1ed716956f8271b2)
         ;
 
 
 
 
-            circle_marker_c8f8c6eb09a5cbc1cee023d07751333b.bindTooltip(
+            circle_marker_c35c06d21db3c5f23775b60bb869e54f.bindTooltip(
                 `<div>
                      Sainte-Foy
                  </div>`,
@@ -1666,30 +1666,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_cace4263d7d68971714a89a4d12cbdc6 = L.circleMarker(
+            var circle_marker_563a33b8dfc942515d76d7cdb0300259 = L.circleMarker(
                 [46.60547, -1.74938],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_87085d62570b59fc9584570e544403aa = L.popup({
+        var popup_f6b79a93fea58dadf00529b40a8fcc88 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_fd6c8a63f189ecbfaa74a5ef3983f93c = $(`<div id=&quot;html_fd6c8a63f189ecbfaa74a5ef3983f93c&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Vairé</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 1,960     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629143017027.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_87085d62570b59fc9584570e544403aa.setContent(html_fd6c8a63f189ecbfaa74a5ef3983f93c);
+                var html_c6afff1157bfc63591c1fc3f575ff885 = $(`<div id=&quot;html_c6afff1157bfc63591c1fc3f575ff885&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Vairé</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 1,960     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629143017027.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_f6b79a93fea58dadf00529b40a8fcc88.setContent(html_c6afff1157bfc63591c1fc3f575ff885);
 
 
 
-        circle_marker_cace4263d7d68971714a89a4d12cbdc6.bindPopup(popup_87085d62570b59fc9584570e544403aa)
+        circle_marker_563a33b8dfc942515d76d7cdb0300259.bindPopup(popup_f6b79a93fea58dadf00529b40a8fcc88)
         ;
 
 
 
 
-            circle_marker_cace4263d7d68971714a89a4d12cbdc6.bindTooltip(
+            circle_marker_563a33b8dfc942515d76d7cdb0300259.bindTooltip(
                 `<div>
                      Vairé
                  </div>`,
@@ -1699,30 +1699,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_6c974dd7be478288a758b5c8180aa434 = L.circleMarker(
+            var circle_marker_c82fbfcb30081440523552501819eb21 = L.circleMarker(
                 [46.68532, -1.54064],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_3fa9d1fd755a3c73525bdcd79fbdea67 = L.popup({
+        var popup_d420be5744a8afb42af46bdb78a6b011 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_ad45cd4873a8cc8bd3c48b8f72117bbd = $(`<div id=&quot;html_ad45cd4873a8cc8bd3c48b8f72117bbd&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Venansault</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 4,757     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628162533200.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_3fa9d1fd755a3c73525bdcd79fbdea67.setContent(html_ad45cd4873a8cc8bd3c48b8f72117bbd);
+                var html_e4ccb69ef1c86a2470a7b0fe8605b9af = $(`<div id=&quot;html_e4ccb69ef1c86a2470a7b0fe8605b9af&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Venansault</b><br>       Vendée — <em>2026-06-28</em><br>       Population: 4,757     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260628162533200.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_d420be5744a8afb42af46bdb78a6b011.setContent(html_e4ccb69ef1c86a2470a7b0fe8605b9af);
 
 
 
-        circle_marker_6c974dd7be478288a758b5c8180aa434.bindPopup(popup_3fa9d1fd755a3c73525bdcd79fbdea67)
+        circle_marker_c82fbfcb30081440523552501819eb21.bindPopup(popup_d420be5744a8afb42af46bdb78a6b011)
         ;
 
 
 
 
-            circle_marker_6c974dd7be478288a758b5c8180aa434.bindTooltip(
+            circle_marker_c82fbfcb30081440523552501819eb21.bindTooltip(
                 `<div>
                      Venansault
                  </div>`,
@@ -1732,30 +1732,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_108cad77142642d1637969e430a8d431 = L.circleMarker(
+            var circle_marker_382d4ee50d72fc93a7c49ab6a36918da = L.circleMarker(
                 [46.98443, -2.26422],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_9aa4cc96dbdba3c1c4ca934b499554a5 = L.popup({
+        var popup_2273f537acae51212d02c6baeb0e311f = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_3a220bafc951d36c7234beec06a92d02 = $(`<div id=&quot;html_3a220bafc951d36c7234beec06a92d02&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Épine</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 1,636     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630145437756.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_9aa4cc96dbdba3c1c4ca934b499554a5.setContent(html_3a220bafc951d36c7234beec06a92d02);
+                var html_5f8db60ea90a0aca76bbccfefdfa4a35 = $(`<div id=&quot;html_5f8db60ea90a0aca76bbccfefdfa4a35&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Épine</b><br>       Vendée — <em>2026-06-30</em><br>       Population: 1,636     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260630145437756.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_2273f537acae51212d02c6baeb0e311f.setContent(html_5f8db60ea90a0aca76bbccfefdfa4a35);
 
 
 
-        circle_marker_108cad77142642d1637969e430a8d431.bindPopup(popup_9aa4cc96dbdba3c1c4ca934b499554a5)
+        circle_marker_382d4ee50d72fc93a7c49ab6a36918da.bindPopup(popup_2273f537acae51212d02c6baeb0e311f)
         ;
 
 
 
 
-            circle_marker_108cad77142642d1637969e430a8d431.bindTooltip(
+            circle_marker_382d4ee50d72fc93a7c49ab6a36918da.bindTooltip(
                 `<div>
                      Épine
                  </div>`,
@@ -1765,30 +1765,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            var circle_marker_24c8d18e0517d9b0380bf23831f97c14 = L.circleMarker(
+            var circle_marker_0924b451a36b0a9a99bd5f28098be797 = L.circleMarker(
                 [46.56967, -1.77357],
                 {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;green&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: true, &quot;fillColor&quot;: &quot;green&quot;, &quot;fillOpacity&quot;: 0.8, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;opacity&quot;: 1.0, &quot;radius&quot;: 8, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
-            ).addTo(marker_cluster_c552d7192e46e598f625d8458a75d9fb);
+            ).addTo(marker_cluster_604647f325390efa02f510366e2fc4b8);
 
 
-        var popup_f6f7400d926f839d75b91b4bef103e73 = L.popup({
+        var popup_eac5fab7dfff988c0eaf409dbf710f78 = L.popup({
   &quot;maxWidth&quot;: 300,
 });
 
 
 
-                var html_1351d1d9c4ee4725b7512637351d1ab8 = $(`<div id=&quot;html_1351d1d9c4ee4725b7512637351d1ab8&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Île-d'Olonne</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 2,802     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629135214849.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
-                popup_f6f7400d926f839d75b91b4bef103e73.setContent(html_1351d1d9c4ee4725b7512637351d1ab8);
+                var html_7e16c1e313d1466c4a107bfe2e6af42a = $(`<div id=&quot;html_7e16c1e313d1466c4a107bfe2e6af42a&quot; style=&quot;width: 100.0%; height: 100.0%;&quot;>     <div style=&quot;min-width:220px&quot;>       <b>Île-d'Olonne</b><br>       Vendée — <em>2026-06-29</em><br>       Population: 2,802     <br><img src=&quot;https://raw.githubusercontent.com/enarroied/french_towns_lakehouse/master/blog/data/img/communes_20260629135214849.jpg&quot; width=&quot;200&quot; style=&quot;margin-top:6px;border-radius:4px&quot;></div></div>`)[0];
+                popup_eac5fab7dfff988c0eaf409dbf710f78.setContent(html_7e16c1e313d1466c4a107bfe2e6af42a);
 
 
 
-        circle_marker_24c8d18e0517d9b0380bf23831f97c14.bindPopup(popup_f6f7400d926f839d75b91b4bef103e73)
+        circle_marker_0924b451a36b0a9a99bd5f28098be797.bindPopup(popup_eac5fab7dfff988c0eaf409dbf710f78)
         ;
 
 
 
 
-            circle_marker_24c8d18e0517d9b0380bf23831f97c14.bindTooltip(
+            circle_marker_0924b451a36b0a9a99bd5f28098be797.bindTooltip(
                 `<div>
                      Île-d'Olonne
                  </div>`,
@@ -1798,10 +1798,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             );
 
 
-            marker_cluster_c552d7192e46e598f625d8458a75d9fb.addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+            marker_cluster_604647f325390efa02f510366e2fc4b8.addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
 
 
-            var tile_layer_5549407092b6119b2da9e7a48ab0b419 = L.tileLayer(
+            var tile_layer_4dae00b1695dc851f6e9e224f1dfe05d = L.tileLayer(
                 &quot;https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}&quot;,
                 {
   &quot;minZoom&quot;: 0,
@@ -1825,29 +1825,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;,
   &quot;forceSeparateButton&quot;: false,
 }
-            ).addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+            ).addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
 
 
-            var layer_control_f6d5d63e9229bef808411a1614899d01_layers = {
+            var layer_control_9694c65dba2516c038962b14ec99d895_layers = {
                 base_layers : {
-                    &quot;OpenStreetMap&quot; : tile_layer_30ec8bcb5571261d68d38c40ca373e24,
-                    &quot;Satellite&quot; : tile_layer_5549407092b6119b2da9e7a48ab0b419,
+                    &quot;OpenStreetMap&quot; : tile_layer_33e964deec97e4905b0515f86e97c408,
+                    &quot;Satellite&quot; : tile_layer_4dae00b1695dc851f6e9e224f1dfe05d,
                 },
                 overlays :  {
-                    &quot;Unvisited communes&quot; : fast_marker_cluster_7cb2b8fe9e4b95e1fd033e44557de720,
-                    &quot;Visited communes&quot; : fast_marker_cluster_09fc8593bda84ef49e5b64ce796205b9,
-                    &quot;Visited (details)&quot; : marker_cluster_c552d7192e46e598f625d8458a75d9fb,
+                    &quot;Unvisited communes&quot; : fast_marker_cluster_6d74be66a9abd147061393a721d58914,
+                    &quot;Visited communes&quot; : fast_marker_cluster_abe360bba824883c50fef196d5a16a9f,
+                    &quot;Visited (details)&quot; : marker_cluster_604647f325390efa02f510366e2fc4b8,
                 },
             };
-            let layer_control_f6d5d63e9229bef808411a1614899d01 = L.control.layers(
-                layer_control_f6d5d63e9229bef808411a1614899d01_layers.base_layers,
-                layer_control_f6d5d63e9229bef808411a1614899d01_layers.overlays,
+            let layer_control_9694c65dba2516c038962b14ec99d895 = L.control.layers(
+                layer_control_9694c65dba2516c038962b14ec99d895_layers.base_layers,
+                layer_control_9694c65dba2516c038962b14ec99d895_layers.overlays,
                 {
   &quot;position&quot;: &quot;topright&quot;,
   &quot;collapsed&quot;: true,
   &quot;autoZIndex&quot;: true,
 }
-            ).addTo(map_b5ecbf3cb2be8f2fdb36c22523bcc481);
+            ).addTo(map_a107ef50f4a3b368c84aaea9ca9dec00);
 
 
 </script>
@@ -1867,7 +1867,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="badges" class="level2">
 <h2 class="anchored" data-anchor-id="badges">Badges</h2>
-<div id="f492bafe" class="cell" data-execution_count="4">
+<div id="c3506143" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(badges) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
@@ -1951,7 +1951,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="department-stats" class="level2">
 <h2 class="anchored" data-anchor-id="department-stats">Department stats</h2>
-<div id="008e00b7" class="cell" data-execution_count="5">
+<div id="bc2d6c47" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> great_tables <span class="im">import</span> GT</span>
@@ -1975,55 +1975,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>GT(dept_stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="5">
-<div id="hzhiglwkyl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="nljshrwlfa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>
-#hzhiglwkyl table {
+#nljshrwlfa table {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
-#hzhiglwkyl thead, tbody, tfoot, tr, td, th { border-style: none; }
+#nljshrwlfa thead, tbody, tfoot, tr, td, th { border-style: none; }
  tr { background-color: transparent; }
-#hzhiglwkyl p { margin: 0; padding: 0; }
- #hzhiglwkyl .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #A8A8A8; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #A8A8A8; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
- #hzhiglwkyl .gt_caption { padding-top: 4px; padding-bottom: 4px; }
- #hzhiglwkyl .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
- #hzhiglwkyl .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
- #hzhiglwkyl .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #hzhiglwkyl .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
- #hzhiglwkyl .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #hzhiglwkyl .gt_col_heading { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
- #hzhiglwkyl .gt_column_spanner_outer { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
- #hzhiglwkyl .gt_column_spanner_outer:first-child { padding-left: 0; }
- #hzhiglwkyl .gt_column_spanner_outer:last-child { padding-right: 0; }
- #hzhiglwkyl .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
- #hzhiglwkyl .gt_spanner_row { border-bottom-style: hidden; }
- #hzhiglwkyl .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
- #hzhiglwkyl .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: middle; }
- #hzhiglwkyl .gt_from_md> :first-child { margin-top: 0; }
- #hzhiglwkyl .gt_from_md> :last-child { margin-bottom: 0; }
- #hzhiglwkyl .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; }
- #hzhiglwkyl .gt_stub { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; }
- #hzhiglwkyl .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
- #hzhiglwkyl .gt_row_group_first td { border-top-width: 2px; }
- #hzhiglwkyl .gt_row_group_first th { border-top-width: 2px; }
- #hzhiglwkyl .gt_striped { color: #333333; background-color: #F4F4F4; }
- #hzhiglwkyl .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
- #hzhiglwkyl .gt_grand_summary_row { color: #333333; background-color: #FFFFFF; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
- #hzhiglwkyl .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
- #hzhiglwkyl .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
- #hzhiglwkyl .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
- #hzhiglwkyl .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
- #hzhiglwkyl .gt_left { text-align: left; }
- #hzhiglwkyl .gt_center { text-align: center; }
- #hzhiglwkyl .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
- #hzhiglwkyl .gt_font_normal { font-weight: normal; }
- #hzhiglwkyl .gt_font_bold { font-weight: bold; }
- #hzhiglwkyl .gt_font_italic { font-style: italic; }
- #hzhiglwkyl .gt_super { font-size: 65%; }
- #hzhiglwkyl .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
- #hzhiglwkyl .gt_asterisk { font-size: 100%; vertical-align: 0; }
+#nljshrwlfa p { margin: 0; padding: 0; }
+ #nljshrwlfa .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #A8A8A8; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #A8A8A8; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
+ #nljshrwlfa .gt_caption { padding-top: 4px; padding-bottom: 4px; }
+ #nljshrwlfa .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
+ #nljshrwlfa .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
+ #nljshrwlfa .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #nljshrwlfa .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
+ #nljshrwlfa .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #nljshrwlfa .gt_col_heading { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
+ #nljshrwlfa .gt_column_spanner_outer { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
+ #nljshrwlfa .gt_column_spanner_outer:first-child { padding-left: 0; }
+ #nljshrwlfa .gt_column_spanner_outer:last-child { padding-right: 0; }
+ #nljshrwlfa .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
+ #nljshrwlfa .gt_spanner_row { border-bottom-style: hidden; }
+ #nljshrwlfa .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
+ #nljshrwlfa .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: middle; }
+ #nljshrwlfa .gt_from_md> :first-child { margin-top: 0; }
+ #nljshrwlfa .gt_from_md> :last-child { margin-bottom: 0; }
+ #nljshrwlfa .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; }
+ #nljshrwlfa .gt_stub { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; }
+ #nljshrwlfa .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
+ #nljshrwlfa .gt_row_group_first td { border-top-width: 2px; }
+ #nljshrwlfa .gt_row_group_first th { border-top-width: 2px; }
+ #nljshrwlfa .gt_striped { color: #333333; background-color: #F4F4F4; }
+ #nljshrwlfa .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
+ #nljshrwlfa .gt_grand_summary_row { color: #333333; background-color: #FFFFFF; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
+ #nljshrwlfa .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
+ #nljshrwlfa .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
+ #nljshrwlfa .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
+ #nljshrwlfa .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
+ #nljshrwlfa .gt_left { text-align: left; }
+ #nljshrwlfa .gt_center { text-align: center; }
+ #nljshrwlfa .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
+ #nljshrwlfa .gt_font_normal { font-weight: normal; }
+ #nljshrwlfa .gt_font_bold { font-weight: bold; }
+ #nljshrwlfa .gt_font_italic { font-style: italic; }
+ #nljshrwlfa .gt_super { font-size: 65%; }
+ #nljshrwlfa .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
+ #nljshrwlfa .gt_asterisk { font-size: 100%; vertical-align: 0; }
 
 </style>
 
@@ -2081,7 +2081,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="visited-communes" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="visited-communes">Visited communes</h2>
-<div id="863f084e" class="cell page-columns page-full" data-execution_count="6">
+<div id="e40d80f0" class="cell page-columns page-full" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itables</span>
@@ -2102,7 +2102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-display column-page">
 <!--| quarto-html-table-processing: none -->
-<table id="itables_d848391f_e417_4d75_8743_83efff086b35">
+<table id="itables_dc144a0f_512c_4770_8fde_d9f9af149fe8">
   <tbody>
     <tr>
       <td style="vertical-align:middle; text-align:left"><a href="https://mwouts.github.io/itables/"><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="64" viewbox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
@@ -2172,7 +2172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script type="module">
     import { ITable, jQuery as $ } from 'https://www.unpkg.com/dt_for_itables@2.5.1/dt_bundle.js';
 
-    document.querySelectorAll("#itables_d848391f_e417_4d75_8743_83efff086b35:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_dc144a0f_512c_4770_8fde_d9f9af149fe8:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 

@@ -522,6 +522,13 @@ french_towns_lakehouse/
 │   ├── _freeze/                    # Pre-rendered outputs (committed to git)
 │   └── _quarto.yml                 # Quarto config
 ├── scripts/                        # Utility scripts
+│   ├── dashboard/
+│   │   ├── refresh_dashboard.sh    # One-command dashboard refresh (6 steps)
+│   │   ├── generate_thumbnails.py  # Photo thumbnails → blog/data/img/
+│   │   ├── generate_master_parquet.py  # Master commune/visit parquet
+│   │   ├── generate_france_map.py  # Static France overview PNG
+│   │   ├── promote_photos.py       # Field-photo promotion + archival
+│   │   └── build_movie.sh          # Timelapse MP4 from snapshots
 │   ├── init_duckdb.sql.template    # SQL template (secrets from .env)
 │   ├── refresh_lakehouse_views.sh  # Refresh .duckdb gold/silver views
 │   └── render_blog.sh              # Render Quarto blog
@@ -532,7 +539,7 @@ french_towns_lakehouse/
 │       │   ├── dim/
 │       │   └── fact/
 │       └── lakehouse/              # SCD Type 2 models
-├── tests/                          # Test suite (196 tests)
+├── tests/                          # Test suite (222 tests)
 │   ├── conftest.py
 │   ├── shared/                     # Tests for shared modules
 │   ├── scrapers/                   # Tests for web scrapers
@@ -550,6 +557,76 @@ french_towns_lakehouse/
 ├── .env.example                   # Environment variables template
 └── pyproject.toml                 # Project config + linting
 ```
+
+---
+
+## Visited-Towns Dashboard
+
+A self-contained Quarto dashboard (`blog/dashboards/visited-towns/`) that tracks
+the French communes visited in the field: an interactive folium map (clusters,
+photo/YouTube popups), a lightweight static France overview image, KPIs, badges,
+and per-department stats. Deployed to GitHub Pages: pushes to `master` touching
+`blog/_site/**` trigger the `blog.yml` workflow, which publishes `blog/_site/`
+to the `gh-pages` branch.
+
+### Refresh
+
+Refresh everything with a single command:
+
+```bash
+bash scripts/dashboard/refresh_dashboard.sh
+```
+
+Steps performed:
+
+1. **Thumbnails** — `generate_thumbnails.py` → `blog/data/img/`
+2. **Master parquet** — `generate_master_parquet.py` → `data/dashboard/visited_towns.parquet`
+3. **Copy data** — parquet into `blog/data/dashboard/` for Quarto
+4. **Map image** — `generate_france_map.py` → `blog/dashboards/visited-towns/images/france_visited.png`
+5. **Snapshot** — date-stamped copy into `data/dashboard/snapshots/<date>.*`
+6. **Render** — Quarto → `blog/_site/dashboards/visited-towns/`
+
+The refresh needs the `.env` secrets and a running Polaris catalog: the map and
+master parquet query `polaris.lakehouse.dim_geography` for commune geometry.
+
+Afterwards, commit and push the new thumbnails/dashboard data so the raw GitHub
+image URLs resolve, then run `promote_photos.py` to purge shipped photos from
+the QField project.
+
+### France overview map
+
+`generate_france_map.py` draws a sign-coloured choropleth of all ~35k communes:
+visited green, remaining red (both are module globals, `VISITED_COLOR` /
+`UNVISITED_COLOR`). Metropolitan France uses its native Lambert-93 projection
+(`EPSG:2154`); overseas territories are grouped into two thin-framed panels —
+**DROM** (971/972/973/974/976) and **COM & territoires** (975/977/978/986/987/988) —
+each territory enlarged in its own cell. TAAF (984) and Clipperton (989) are
+omitted as uninhabited.
+
+The dashboard's OSM tile layer sets `referrer_policy="no-referrer-when-downgrade"`.
+OSM enforces that tile requests carry a `Referer`; opening the rendered HTML as a
+local `file://` file sends none, so OSM answers with a `403`. Served over
+`http(s)` (localhost or GitHub Pages) it works normally.
+
+### Snapshots & time-lapse
+
+Every refresh archives `data/dashboard/snapshots/<YYYY-MM-DD>.png` and
+`.parquet` — local only, since `data/` is gitignored (back it up yourself if you
+care about the history). Build a movie from the accumulated frames:
+
+```bash
+bash scripts/dashboard/build_movie.sh   # → data/dashboard/snapshots/france_visited_movie.mp4
+```
+
+Needs at least two snapshots and `ffmpeg` installed. Frame filenames are
+chronological, so the movie shows the green growing across France over time; the
+parquet snapshots also allow re-rendering old maps with newer styling.
+
+### Field photos
+
+`promote_photos.py` manages the flow of field photos back from the QFieldCloud
+project to the archive, and purges uploaded thumbnails from the project so the
+field app stays light. See its module docstring for the full contract.
 
 ---
 
