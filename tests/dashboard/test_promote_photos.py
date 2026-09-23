@@ -205,3 +205,145 @@ def test_apply_survives_spatial_rtree_triggers(promote_mod, tmp_path: Path) -> N
     assert _photo_values(proj / "communes.gpkg")[0].startswith(
         "https://raw.githubusercontent.com"
     )
+
+
+def _open_conn(mod, path: Path) -> sqlite3.Connection:
+    return mod._connect_gpkg(path)
+
+
+def test_plan_promotions_classifies_pending_vs_ready(promote_mod, project) -> None:
+    proj, dcim, blog_img, archive = project
+    conn = _open_conn(promote_mod, proj / "communes.gpkg")
+    try:
+        promotions, pending, referenced, already_url = promote_mod.plan_promotions(
+            conn, dcim, blog_img
+        )
+    finally:
+        conn.close()
+
+    assert [p.name for p in promotions] == ["Épine"]
+    assert pending == ["Barbâtre"]
+    assert referenced == {"a.jpg", "b.jpg"}
+    assert already_url == {"a.jpg"}
+
+    promo = promotions[0]
+    assert promo.fid == 1
+    assert promo.url == f"{promote_mod.THUMB_BASE}/a.jpg"
+    assert promo.source_path == dcim / "a.jpg"
+    assert promo.source_exists is True
+
+
+def test_plan_promotions_marks_source_missing(promote_mod, tmp_path: Path) -> None:
+    proj = tmp_path / "project"
+    dcim = proj / "DCIM"
+    dcim.mkdir(parents=True)
+    blog_img = proj / "blog_img"
+    blog_img.mkdir(parents=True)
+    (blog_img / "a.jpg").write_bytes(b"aaa-thumb")
+
+    _make_gpkg(proj / "communes.gpkg")
+    conn = _open_conn(promote_mod, proj / "communes.gpkg")
+    try:
+        promotions, pending, _, _ = promote_mod.plan_promotions(conn, dcim, blog_img)
+    finally:
+        conn.close()
+
+    assert len(promotions) == 1
+    assert promotions[0].name == "Épine"
+    assert promotions[0].source_exists is False
+    assert pending == ["Barbâtre"]
+
+
+def test_apply_promotions_dry_run_is_inert(promote_mod, project) -> None:
+    proj, dcim, blog_img, archive = project
+    conn = _open_conn(promote_mod, proj / "communes.gpkg")
+    try:
+        promotions, *_ = promote_mod.plan_promotions(conn, dcim, blog_img)
+        missing_local, freed = promote_mod.apply_promotions(
+            conn, promotions, archive, dry_run=True
+        )
+    finally:
+        conn.close()
+
+    assert missing_local == []
+    assert freed == (dcim / "a.jpg").stat().st_size
+    assert (dcim / "a.jpg").exists()
+    assert not archive.exists()
+    assert _photo_values(proj / "communes.gpkg")[0] == "DCIM/a.jpg"
+
+
+def test_apply_promotions_archives_and_updates(promote_mod, project) -> None:
+    proj, dcim, blog_img, archive = project
+    conn = _open_conn(promote_mod, proj / "communes.gpkg")
+    expected_size = (dcim / "a.jpg").stat().st_size
+    try:
+        promotions, *_ = promote_mod.plan_promotions(conn, dcim, blog_img)
+        missing_local, freed = promote_mod.apply_promotions(
+            conn, promotions, archive, dry_run=False
+        )
+    finally:
+        conn.close()
+
+    assert missing_local == []
+    assert freed == expected_size
+    assert not (dcim / "a.jpg").exists()
+    assert (archive / "a.jpg").exists()
+    assert _photo_values(proj / "communes.gpkg")[0] == f"{promote_mod.THUMB_BASE}/a.jpg"
+
+
+def test_apply_residue_dry_run_is_inert(promote_mod, project) -> None:
+    proj, dcim, blog_img, archive = project
+    stale, cache_files = promote_mod.plan_residue(
+        dcim, {"a.jpg", "b.jpg"}, {"a.jpg"}, excluded=set()
+    )
+
+    stale_names, cache_names, freed = promote_mod.apply_residue(
+        stale, cache_files, archive, dry_run=True
+    )
+
+    assert stale_names == ["a.jpg", "other.jpg"]
+    assert cache_names == ["a.jpg"]
+    assert freed > 0
+    assert (dcim / "a.jpg").exists()
+    assert (dcim / "other.jpg").exists()
+    assert (dcim / "thumbs" / "a.jpg").exists()
+    assert not archive.exists()
+
+
+@pytest.mark.parametrize(
+    ("filename", "referenced", "already_url", "expected"),
+    [
+        ("b.jpg", {"a.jpg", "b.jpg"}, {"a.jpg"}, False),
+        ("zzz.jpg", {"a.jpg", "b.jpg"}, set(), True),
+        ("a.jpg", {"a.jpg"}, {"a.jpg"}, True),
+        ("a.jpg", {"a.jpg", "b.jpg"}, {"a.jpg"}, True),
+    ],
+)
+def test_is_stale_logic(
+    promote_mod, filename, referenced, already_url, expected
+) -> None:
+    assert promote_mod._is_stale(filename, referenced, already_url) is expected
+
+
+def test_plan_residue_excludes_files_moved_by_first_pass(promote_mod, tmp_path) -> None:
+    """Regression: a file that's both referenced and already-URL must not be
+    offered as stale residue when apply_promotions will archive it, or it would
+    be double-moved."""
+    dcim = tmp_path / "DCIM"
+    thumbs = dcim / "thumbs"
+    thumbs.mkdir(parents=True)
+    (dcim / "a.jpg").write_bytes(b"aaa")
+    (dcim / "other.jpg").write_bytes(b"other")
+    (thumbs / "a.jpg").write_bytes(b"thumb")
+
+    in_both_bands = {"a.jpg"}
+    referenced = {"a.jpg", "b.jpg"}
+    already_url = {"a.jpg"}
+
+    stale_excluded, _ = promote_mod.plan_residue(
+        dcim, referenced, already_url, excluded=in_both_bands
+    )
+    stale_naive, _ = promote_mod.plan_residue(dcim, referenced, already_url)
+
+    assert [p.name for p in stale_excluded] == ["other.jpg"]
+    assert [p.name for p in stale_naive] == ["a.jpg", "other.jpg"]
