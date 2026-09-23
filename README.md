@@ -539,7 +539,7 @@ french_towns_lakehouse/
 │       │   ├── dim/
 │       │   └── fact/
 │       └── lakehouse/              # SCD Type 2 models
-├── tests/                          # Test suite (222 tests)
+├── tests/                          # Test suite (281 tests)
 │   ├── conftest.py
 │   ├── shared/                     # Tests for shared modules
 │   ├── scrapers/                   # Tests for web scrapers

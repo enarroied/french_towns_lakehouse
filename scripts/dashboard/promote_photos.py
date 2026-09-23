@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import shutil
 import sqlite3
+from contextlib import closing
 from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
@@ -43,20 +44,43 @@ DEFAULT_DCIM_DIR = DEFAULT_PROJECT_DIR / "DCIM"
 DEFAULT_ARCHIVE_DIR = Path.home() / "QField_photo_archive" / "communes" / "DCIM_archive"
 DEFAULT_THUMB_DIR = Path(__file__).resolve().parents[2] / "blog" / "data" / "img"
 EXTENSIONS = {".jpg", ".jpeg", ".png"}
+DCIM_PREFIX = "DCIM/"
+THUMBS_SUBDIR = "thumbs"
+
+
+# --------------------------------------------------------------------------- #
+# Data model
+# --------------------------------------------------------------------------- #
+
+
+@dataclass
+class PlannedPromotion:
+    """A local DCIM/ photo whose ship-ready copy already exists in the repo."""
+
+    fid: int
+    name: str
+    url: str
+    source_path: Path
+    source_exists: bool
 
 
 @dataclass
 class Summary:
-    promoted: list[str]
-    pending: list[str]
-    missing_local: list[str]
+    promoted: list[str] = field(default_factory=list)
+    pending: list[str] = field(default_factory=list)
+    missing_local: list[str] = field(default_factory=list)
     stale: list[str] = field(default_factory=list)
     cache_removed: list[str] = field(default_factory=list)
     freed_bytes: int = 0
 
 
 def _photo_filename(photo: str) -> str:
-    return photo.removeprefix("DCIM/").rsplit("/", 1)[-1]
+    return photo.removeprefix(DCIM_PREFIX).rsplit("/", 1)[-1]
+
+
+# --------------------------------------------------------------------------- #
+# GeoPackage access
+# --------------------------------------------------------------------------- #
 
 
 def _connect_gpkg(path: Path) -> sqlite3.Connection:
@@ -67,125 +91,229 @@ def _connect_gpkg(path: Path) -> sqlite3.Connection:
     touch `geom` or `fid`, so the trigger bodies never run; inert stubs are enough.
     """
     conn = sqlite3.connect(str(path))
-    for name, arity in [
-        ("ST_IsEmpty", 1),
-        ("ST_MinX", 1),
-        ("ST_MaxX", 1),
-        ("ST_MinY", 1),
-        ("ST_MaxY", 1),
-    ]:
-        conn.create_function(name, arity, lambda *v: 0)
+    for name in ("ST_IsEmpty", "ST_MinX", "ST_MaxX", "ST_MinY", "ST_MaxY"):
+        conn.create_function(name, 1, lambda *_: 0)
     return conn
 
 
-def _archive_residue(
-    dcim_dir: Path,
-    archive_dir: Path,
-    referenced: set[str],
-    already_url: set[str],
-    dry_run: bool,
-) -> tuple[list[str], list[str], int]:
-    """Move unused originals into the archive and drop regenerable thumb cache."""
-    stale: list[str] = []
-    cache_removed: list[str] = []
-    freed = 0
-    if not dcim_dir.is_dir():
-        return stale, cache_removed, freed
-
-    for img_path in sorted(dcim_dir.iterdir()):
-        if img_path.is_dir():
-            if img_path.name == "thumbs":
-                for thumb in sorted(img_path.iterdir()):
-                    if thumb.suffix.lower() not in EXTENSIONS:
-                        continue
-                    freed += thumb.stat().st_size
-                    if not dry_run:
-                        thumb.unlink()
-                    cache_removed.append(thumb.name)
-            continue
-        if img_path.suffix.lower() not in EXTENSIONS:
-            continue
-        if img_path.name in referenced and img_path.name not in already_url:
-            continue
-        freed += img_path.stat().st_size
-        if not dry_run:
-            archive_dir.mkdir(parents=True, exist_ok=True)
-            shutil.move(str(img_path), str(archive_dir / img_path.name))
-        stale.append(img_path.name)
-    return stale, cache_removed, freed
+# --------------------------------------------------------------------------- #
+# Planning (read-only: no files moved, no rows written)
+# --------------------------------------------------------------------------- #
 
 
-def promote(
-    gpkg_path: Path,
-    dcim_dir: Path,
-    thumb_dir: Path,
-    archive_dir: Path,
-    dry_run: bool,
-) -> Summary:
-    """Rewrite ship-ready local photos to GitHub URLs and archive the originals."""
-    summary = Summary(promoted=[], pending=[], missing_local=[])
+def plan_promotions(
+    conn: sqlite3.Connection, dcim_dir: Path, thumb_dir: Path
+) -> tuple[list[PlannedPromotion], list[str], set[str], set[str]]:
+    """Decide what would happen, without touching disk or the database.
 
-    conn = _connect_gpkg(gpkg_path)
-    try:
-        all_photos = [
-            r[0]
-            for r in conn.execute("SELECT photo FROM communes WHERE photo IS NOT NULL")
-        ]
-        rows = conn.execute(
-            "SELECT fid, id, name, photo FROM communes WHERE photo LIKE 'DCIM/%'"
-        ).fetchall()
-    finally:
-        conn.close()
-
+    Returns (promotions, pending_names, referenced_filenames, already_url_filenames).
+    """
+    all_photos = [
+        row[0]
+        for row in conn.execute("SELECT photo FROM communes WHERE photo IS NOT NULL")
+    ]
     referenced = {_photo_filename(p) for p in all_photos}
     already_url = {_photo_filename(p) for p in all_photos if p.startswith("https://")}
 
-    updates: list[tuple[str, int]] = []
-    for fid, _, name, photo in rows:
+    rows = conn.execute(
+        f"SELECT fid, name, photo FROM communes WHERE photo LIKE '{DCIM_PREFIX}%'"
+    ).fetchall()
+
+    promotions: list[PlannedPromotion] = []
+    pending: list[str] = []
+    for fid, name, photo in rows:
         filename = _photo_filename(photo)
-        server_copy = thumb_dir / filename
-
-        if not server_copy.exists():
-            summary.pending.append(name)
+        if not (thumb_dir / filename).exists():
+            pending.append(name)
             continue
-
-        summary.promoted.append(name)
-        updates.append((f"{THUMB_BASE}/{filename}", fid))
-
         source = dcim_dir / filename
-        if source.exists():
-            freed = source.stat().st_size
-            if not dry_run:
-                archive_dir.mkdir(parents=True, exist_ok=True)
-                shutil.move(str(source), str(archive_dir / filename))
-            summary.freed_bytes += freed
+        promotions.append(
+            PlannedPromotion(
+                fid=fid,
+                name=name,
+                url=f"{THUMB_BASE}/{filename}",
+                source_path=source,
+                source_exists=source.exists(),
+            )
+        )
+    return promotions, pending, referenced, already_url
+
+
+def _is_stale(filename: str, referenced: set[str], already_url: set[str]) -> bool:
+    """An original is stale once nothing references it, or its commune already
+    moved on to a URL (i.e. it's leftover from a previous sync)."""
+    return filename not in referenced or filename in already_url
+
+
+def _list_originals(dcim_dir: Path) -> list[Path]:
+    """Photo files directly inside DCIM/, excluding subdirectories like thumbs/."""
+    return [
+        p
+        for p in sorted(dcim_dir.iterdir())
+        if p.is_file() and p.suffix.lower() in EXTENSIONS
+    ]
+
+
+def _list_thumb_cache(dcim_dir: Path) -> list[Path]:
+    """QField's regenerable preview cache, if present."""
+    thumbs_dir = dcim_dir / THUMBS_SUBDIR
+    if not thumbs_dir.is_dir():
+        return []
+    return [p for p in sorted(thumbs_dir.iterdir()) if p.suffix.lower() in EXTENSIONS]
+
+
+def plan_residue(
+    dcim_dir: Path,
+    referenced: set[str],
+    already_url: set[str],
+    excluded: set[str] | None = None,
+) -> tuple[list[Path], list[Path]]:
+    """Find stale originals and cached thumbs that are safe to remove.
+
+    ``excluded`` names originals that will be archived by ``apply_promotions``
+    (e.g. a basename that is simultaneously an already-URL reference); those
+    must not also be offered as stale residue, or they'd be double-moved.
+
+    Returns (stale_originals, cache_files) — both are files, not yet touched.
+    """
+    if not dcim_dir.is_dir():
+        return [], []
+
+    excluded = excluded or set()
+    stale = [
+        p
+        for p in _list_originals(dcim_dir)
+        if _is_stale(p.name, referenced, already_url) and p.name not in excluded
+    ]
+    cache_files = _list_thumb_cache(dcim_dir)
+    return stale, cache_files
+
+
+# --------------------------------------------------------------------------- #
+# Execution (the only functions allowed to touch disk or the database)
+# --------------------------------------------------------------------------- #
+
+
+def _archive(path: Path, archive_dir: Path, dry_run: bool) -> int:
+    """Move `path` into `archive_dir` (unless dry_run) and return its size in bytes."""
+    freed = path.stat().st_size
+    if not dry_run:
+        archive_dir.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(path), str(archive_dir / path.name))
+    return freed
+
+
+def _delete(path: Path, dry_run: bool) -> int:
+    freed = path.stat().st_size
+    if not dry_run:
+        path.unlink()
+    return freed
+
+
+def apply_promotions(
+    conn: sqlite3.Connection,
+    promotions: list[PlannedPromotion],
+    archive_dir: Path,
+    dry_run: bool,
+) -> tuple[list[str], int]:
+    """Archive each promoted photo's local original and update its gpkg row."""
+    missing_local: list[str] = []
+    freed_bytes = 0
+
+    for promo in promotions:
+        if promo.source_exists:
+            freed_bytes += _archive(promo.source_path, archive_dir, dry_run)
         else:
-            summary.missing_local.append(name)
+            missing_local.append(promo.name)
 
-    if updates and not dry_run:
-        up_conn = _connect_gpkg(gpkg_path)
-        try:
-            up_conn.executemany("UPDATE communes SET photo = ? WHERE fid = ?", updates)
-            up_conn.commit()
-        finally:
-            up_conn.close()
-
-    if dcim_dir.is_dir():
-        stale, cache_removed, freed = _archive_residue(
-            dcim_dir, archive_dir, referenced, already_url, dry_run
+    if promotions and not dry_run:
+        conn.executemany(
+            "UPDATE communes SET photo = ? WHERE fid = ?",
+            [(p.url, p.fid) for p in promotions],
         )
-        summary.stale = stale
-        summary.cache_removed = cache_removed
-        summary.freed_bytes += freed
+        conn.commit()
 
-    return summary
+    return missing_local, freed_bytes
 
 
-def main() -> None:
+def apply_residue(
+    stale: list[Path], cache_files: list[Path], archive_dir: Path, dry_run: bool
+) -> tuple[list[str], list[str], int]:
+    freed_bytes = 0
+    for path in stale:
+        freed_bytes += _archive(path, archive_dir, dry_run)
+    for path in cache_files:
+        freed_bytes += _delete(path, dry_run)
+    return [p.name for p in stale], [p.name for p in cache_files], freed_bytes
+
+
+# --------------------------------------------------------------------------- #
+# Orchestration
+# --------------------------------------------------------------------------- #
+
+
+def promote(
+    gpkg_path: Path, dcim_dir: Path, thumb_dir: Path, archive_dir: Path, dry_run: bool
+) -> Summary:
+    with closing(_connect_gpkg(gpkg_path)) as conn:
+        promotions, pending, referenced, already_url = plan_promotions(
+            conn, dcim_dir, thumb_dir
+        )
+        moved_by_first_pass = {
+            p.source_path.name for p in promotions if p.source_exists and not dry_run
+        }
+        stale, cache_files = plan_residue(
+            dcim_dir, referenced, already_url, excluded=moved_by_first_pass
+        )
+
+        missing_local, promo_freed = apply_promotions(
+            conn, promotions, archive_dir, dry_run
+        )
+        stale_names, cache_names, residue_freed = apply_residue(
+            stale, cache_files, archive_dir, dry_run
+        )
+
+    return Summary(
+        promoted=[p.name for p in promotions],
+        pending=pending,
+        missing_local=missing_local,
+        stale=stale_names,
+        cache_removed=cache_names,
+        freed_bytes=promo_freed + residue_freed,
+    )
+
+
+def print_report(summary: Summary, applied: bool) -> None:
+    mode = "APPLIED" if applied else "DRY RUN (no changes made)"
+    print(f"=== {mode} ===")
+    print(f"  promoted     : {len(summary.promoted)}")
+    print(f"  pending      : {len(summary.pending)} (not yet in blog/data/img)")
+    print(
+        f"  missing local: {len(summary.missing_local)} (URL set, original already gone)"
+    )
+    print(f"  stale purged : {len(summary.stale)} (residue moved out of the project)")
+    print(
+        f"  cache purged : {len(summary.cache_removed)} (regenerable DCIM/thumbs removed)"
+    )
+    print(
+        f"  freed bytes  : {summary.freed_bytes:,} ({summary.freed_bytes / 1024:.0f} KiB)"
+    )
+
+    if applied:
+        print(
+            "\n💡 Next: open the project in QGIS, re-package for QField/QFieldCloud,"
+            "\n   and let the next sync drop the purged files from the app."
+        )
+    else:
+        print(
+            "\n   Re-run with --apply once you have committed & pushed the new"
+            "\n   blog/data/img thumbnails."
+        )
+
+
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description=(
-            "Promote shipped photos to GitHub URLs and archive local originals"
-        )
+        description="Promote shipped photos to GitHub URLs and archive local originals"
     )
     parser.add_argument(
         "--apply",
@@ -216,8 +344,11 @@ def main() -> None:
         default=DEFAULT_ARCHIVE_DIR,
         help=f"Archive for purged originals (default: {DEFAULT_ARCHIVE_DIR})",
     )
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def main() -> None:
+    args = parse_args()
     summary = promote(
         args.gpkg,
         args.dcim_dir,
@@ -225,32 +356,7 @@ def main() -> None:
         args.archive_dir,
         dry_run=not args.apply,
     )
-
-    mode = "APPLIED" if args.apply else "DRY RUN (no changes made)"
-    print(f"=== {mode} ===")
-    print(f"  promoted     : {len(summary.promoted)}")
-    print(f"  pending      : {len(summary.pending)} (not yet in blog/data/img)")
-    print(
-        f"  missing local: {len(summary.missing_local)} (URL set, original already gone)"
-    )
-    print(f"  stale purged  : {len(summary.stale)} (residue moved out of the project)")
-    print(
-        f"  cache purged  : {len(summary.cache_removed)} (regenerable DCIM/thumbs removed)"
-    )
-    print(
-        f"  freed bytes  : {summary.freed_bytes:,} ({summary.freed_bytes / 1024:.0f} KiB)"
-    )
-
-    if args.apply:
-        print(
-            "\n💡 Next: open the project in QGIS, re-package for QField/QFieldCloud,"
-            "\n   and let the next sync drop the purged files from the app."
-        )
-    else:
-        print(
-            "\n   Re-run with --apply once you have committed & pushed the new"
-            "\n   blog/data/img thumbnails."
-        )
+    print_report(summary, applied=args.apply)
 
 
 if __name__ == "__main__":
