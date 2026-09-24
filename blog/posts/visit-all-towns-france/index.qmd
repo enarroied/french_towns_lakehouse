@@ -471,7 +471,13 @@ region_colors = {
     "Mayotte": "#7D3C98",
 }
 
-m = folium.Map(location=[46.6, 2.4], zoom_start=6, tiles="CartoDB positron", control_scale=True)
+m = folium.Map(location=[46.6, 2.4], zoom_start=6, tiles=None, control_scale=True)
+
+folium.TileLayer(
+    tiles="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attr="© OpenStreetMap contributors",
+    name="OpenStreetMap",
+).add_to(m)
 
 for row in df.iter_rows(named=True):
     if row["longitude"] is None or row["latitude"] is None:
