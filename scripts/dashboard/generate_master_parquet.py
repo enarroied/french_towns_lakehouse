@@ -56,14 +56,23 @@ def require_env(name: str) -> str:
     return value
 
 
+def ensure_extension(conn: duckdb.DuckDBPyConnection, name: str) -> None:
+    """Load a DuckDB extension, installing it on first use if necessary."""
+    try:
+        conn.execute(f"LOAD {name};")
+    except duckdb.IOException:
+        conn.execute(f"INSTALL {name};")
+        conn.execute(f"LOAD {name};")
+
+
 def connect_to_polaris() -> duckdb.DuckDBPyConnection:
     """Open a DuckDB connection with the iceberg/spatial extensions and Polaris attached."""
     client_id = require_env("POLARIS_CLIENT_ID")
     client_secret = require_env("POLARIS_CLIENT_SECRET")
 
     conn = duckdb.connect()
-    conn.execute("LOAD iceberg;")
-    conn.execute("LOAD spatial;")
+    ensure_extension(conn, "iceberg")
+    ensure_extension(conn, "spatial")
     conn.execute(
         """
         CREATE SECRET polaris_secret (

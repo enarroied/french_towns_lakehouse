@@ -74,7 +74,7 @@ POPULATION = [
 def conn(mp_mod) -> duckdb.DuckDBPyConnection:
     """In-memory duckdb connection with a fake ``polaris.lakehouse`` catalog."""
     connection = duckdb.connect()
-    connection.execute("LOAD spatial;")
+    mp_mod.ensure_extension(connection, "spatial")
     connection.execute("ATTACH ':memory:' AS polaris (TYPE duckdb)")
     connection.execute("CREATE SCHEMA polaris.lakehouse")
     connection.execute(

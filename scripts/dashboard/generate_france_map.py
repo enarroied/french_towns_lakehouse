@@ -579,12 +579,21 @@ def render_figure(
 # ── Polaris connection ──────────────────────────────────────────────
 
 
+def ensure_extension(conn: duckdb.DuckDBPyConnection, name: str) -> None:
+    """Load a DuckDB extension, installing it on first use if necessary."""
+    try:
+        conn.execute(f"LOAD {name};")
+    except duckdb.IOException:
+        conn.execute(f"INSTALL {name};")
+        conn.execute(f"LOAD {name};")
+
+
 def connect_polaris() -> duckdb.DuckDBPyConnection:
     """Create a DuckDB connection to the local Polaris catalog."""
 
     conn = duckdb.connect()
 
-    conn.execute("LOAD spatial;")
+    ensure_extension(conn, "spatial")
 
     conn.execute(
         "CREATE SECRET polaris_secret (TYPE iceberg, "

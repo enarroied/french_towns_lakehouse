@@ -7,6 +7,10 @@ on:
       - 'blog/_site/**'
   workflow_dispatch:
 
+concurrency:
+  group: deploy-blog
+  cancel-in-progress: false
+
 jobs:
   deploy-blog:
     runs-on: ubuntu-latest
