@@ -115,7 +115,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 <meta name="robots" content="noai, noimageai">
 
 
@@ -863,27 +862,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mayotte"</span>: <span class="st">"#7D3C98"</span>,</span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> folium.Map(location<span class="op">=</span>[<span class="fl">46.6</span>, <span class="fl">2.4</span>], zoom_start<span class="op">=</span><span class="dv">6</span>, tiles<span class="op">=</span><span class="st">"CartoDB positron"</span>, control_scale<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> folium.Map(location<span class="op">=</span>[<span class="fl">46.6</span>, <span class="fl">2.4</span>], zoom_start<span class="op">=</span><span class="dv">6</span>, tiles<span class="op">=</span><span class="va">None</span>, control_scale<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> df.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"longitude"</span>] <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> row[<span class="st">"latitude"</span>] <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"flag_metropole"</span>] <span class="op">!=</span> <span class="dv">1</span>:</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> region_colors.get(row[<span class="st">"region_name"</span>], <span class="st">"#666"</span>)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="bu">max</span>(<span class="dv">3</span>, <span class="bu">min</span>(row[<span class="st">"visit_hours"</span>], <span class="dv">10</span>))</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    folium.CircleMarker(</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        location<span class="op">=</span>[row[<span class="st">"latitude"</span>], row[<span class="st">"longitude"</span>]],</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        radius<span class="op">=</span>radius,</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>color,</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        fill_opacity<span class="op">=</span><span class="fl">0.4</span>,</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        tooltip<span class="op">=</span>row[<span class="st">"name"</span>],</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    ).add_to(m)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>map_path <span class="op">=</span> <span class="st">"_site/posts/visit-all-towns-france/map_mainland.html"</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>os.makedirs(os.path.dirname(map_path), exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>m.save(map_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>folium.TileLayer(</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    tiles<span class="op">=</span><span class="st">"https://tile.openstreetmap.org/</span><span class="sc">{z}</span><span class="st">/</span><span class="sc">{x}</span><span class="st">/</span><span class="sc">{y}</span><span class="st">.png"</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    attr<span class="op">=</span><span class="st">"© OpenStreetMap contributors"</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"OpenStreetMap"</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>).add_to(m)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> df.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"longitude"</span>] <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> row[<span class="st">"latitude"</span>] <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"flag_metropole"</span>] <span class="op">!=</span> <span class="dv">1</span>:</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> region_colors.get(row[<span class="st">"region_name"</span>], <span class="st">"#666"</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="bu">max</span>(<span class="dv">3</span>, <span class="bu">min</span>(row[<span class="st">"visit_hours"</span>], <span class="dv">10</span>))</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    folium.CircleMarker(</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        location<span class="op">=</span>[row[<span class="st">"latitude"</span>], row[<span class="st">"longitude"</span>]],</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        radius<span class="op">=</span>radius,</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>color,</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        fill_opacity<span class="op">=</span><span class="fl">0.4</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        tooltip<span class="op">=</span>row[<span class="st">"name"</span>],</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    ).add_to(m)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>map_path <span class="op">=</span> <span class="st">"_site/posts/visit-all-towns-france/map_mainland.html"</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>os.makedirs(os.path.dirname(map_path), exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>m.save(map_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <iframe src="map_mainland.html" width="100%" height="600px" style="border:none;">
@@ -917,55 +922,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>, columns<span class="op">=</span>[<span class="st">"Population"</span>, <span class="st">"Monuments"</span>, <span class="st">"Heures"</span>])</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="kboavqzcdl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="kenhjpjhod" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>
-#kboavqzcdl table {
+#kenhjpjhod table {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
-#kboavqzcdl thead, tbody, tfoot, tr, td, th { border-style: none; }
+#kenhjpjhod thead, tbody, tfoot, tr, td, th { border-style: none; }
  tr { background-color: transparent; }
-#kboavqzcdl p { margin: 0; padding: 0; }
- #kboavqzcdl .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #A8A8A8; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #A8A8A8; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
- #kboavqzcdl .gt_caption { padding-top: 4px; padding-bottom: 4px; }
- #kboavqzcdl .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
- #kboavqzcdl .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
- #kboavqzcdl .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #kboavqzcdl .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
- #kboavqzcdl .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #kboavqzcdl .gt_col_heading { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
- #kboavqzcdl .gt_column_spanner_outer { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
- #kboavqzcdl .gt_column_spanner_outer:first-child { padding-left: 0; }
- #kboavqzcdl .gt_column_spanner_outer:last-child { padding-right: 0; }
- #kboavqzcdl .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
- #kboavqzcdl .gt_spanner_row { border-bottom-style: hidden; }
- #kboavqzcdl .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
- #kboavqzcdl .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: middle; }
- #kboavqzcdl .gt_from_md> :first-child { margin-top: 0; }
- #kboavqzcdl .gt_from_md> :last-child { margin-bottom: 0; }
- #kboavqzcdl .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; }
- #kboavqzcdl .gt_stub { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; }
- #kboavqzcdl .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
- #kboavqzcdl .gt_row_group_first td { border-top-width: 2px; }
- #kboavqzcdl .gt_row_group_first th { border-top-width: 2px; }
- #kboavqzcdl .gt_striped { color: #333333; background-color: #F4F4F4; }
- #kboavqzcdl .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
- #kboavqzcdl .gt_grand_summary_row { color: #333333; background-color: #FFFFFF; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
- #kboavqzcdl .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
- #kboavqzcdl .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
- #kboavqzcdl .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
- #kboavqzcdl .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
- #kboavqzcdl .gt_left { text-align: left; }
- #kboavqzcdl .gt_center { text-align: center; }
- #kboavqzcdl .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
- #kboavqzcdl .gt_font_normal { font-weight: normal; }
- #kboavqzcdl .gt_font_bold { font-weight: bold; }
- #kboavqzcdl .gt_font_italic { font-style: italic; }
- #kboavqzcdl .gt_super { font-size: 65%; }
- #kboavqzcdl .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
- #kboavqzcdl .gt_asterisk { font-size: 100%; vertical-align: 0; }
+#kenhjpjhod p { margin: 0; padding: 0; }
+ #kenhjpjhod .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #A8A8A8; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #A8A8A8; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
+ #kenhjpjhod .gt_caption { padding-top: 4px; padding-bottom: 4px; }
+ #kenhjpjhod .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
+ #kenhjpjhod .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
+ #kenhjpjhod .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #kenhjpjhod .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
+ #kenhjpjhod .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #kenhjpjhod .gt_col_heading { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
+ #kenhjpjhod .gt_column_spanner_outer { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
+ #kenhjpjhod .gt_column_spanner_outer:first-child { padding-left: 0; }
+ #kenhjpjhod .gt_column_spanner_outer:last-child { padding-right: 0; }
+ #kenhjpjhod .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
+ #kenhjpjhod .gt_spanner_row { border-bottom-style: hidden; }
+ #kenhjpjhod .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
+ #kenhjpjhod .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: middle; }
+ #kenhjpjhod .gt_from_md> :first-child { margin-top: 0; }
+ #kenhjpjhod .gt_from_md> :last-child { margin-bottom: 0; }
+ #kenhjpjhod .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; }
+ #kenhjpjhod .gt_stub { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; }
+ #kenhjpjhod .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
+ #kenhjpjhod .gt_row_group_first td { border-top-width: 2px; }
+ #kenhjpjhod .gt_row_group_first th { border-top-width: 2px; }
+ #kenhjpjhod .gt_striped { color: #333333; background-color: #F4F4F4; }
+ #kenhjpjhod .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
+ #kenhjpjhod .gt_grand_summary_row { color: #333333; background-color: #FFFFFF; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
+ #kenhjpjhod .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
+ #kenhjpjhod .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
+ #kenhjpjhod .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
+ #kenhjpjhod .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
+ #kenhjpjhod .gt_left { text-align: left; }
+ #kenhjpjhod .gt_center { text-align: center; }
+ #kenhjpjhod .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
+ #kenhjpjhod .gt_font_normal { font-weight: normal; }
+ #kenhjpjhod .gt_font_bold { font-weight: bold; }
+ #kenhjpjhod .gt_font_italic { font-style: italic; }
+ #kenhjpjhod .gt_super { font-size: 65%; }
+ #kenhjpjhod .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
+ #kenhjpjhod .gt_asterisk { font-size: 100%; vertical-align: 0; }
 
 </style>
 
@@ -1103,55 +1108,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>)</span>
 <span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="hdjukxqdln" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="ngsfcnlegv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>
-#hdjukxqdln table {
+#ngsfcnlegv table {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
-#hdjukxqdln thead, tbody, tfoot, tr, td, th { border-style: none; }
+#ngsfcnlegv thead, tbody, tfoot, tr, td, th { border-style: none; }
  tr { background-color: transparent; }
-#hdjukxqdln p { margin: 0; padding: 0; }
- #hdjukxqdln .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #A8A8A8; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #A8A8A8; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
- #hdjukxqdln .gt_caption { padding-top: 4px; padding-bottom: 4px; }
- #hdjukxqdln .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
- #hdjukxqdln .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
- #hdjukxqdln .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #hdjukxqdln .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
- #hdjukxqdln .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #hdjukxqdln .gt_col_heading { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
- #hdjukxqdln .gt_column_spanner_outer { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
- #hdjukxqdln .gt_column_spanner_outer:first-child { padding-left: 0; }
- #hdjukxqdln .gt_column_spanner_outer:last-child { padding-right: 0; }
- #hdjukxqdln .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
- #hdjukxqdln .gt_spanner_row { border-bottom-style: hidden; }
- #hdjukxqdln .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
- #hdjukxqdln .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: middle; }
- #hdjukxqdln .gt_from_md> :first-child { margin-top: 0; }
- #hdjukxqdln .gt_from_md> :last-child { margin-bottom: 0; }
- #hdjukxqdln .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; }
- #hdjukxqdln .gt_stub { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; }
- #hdjukxqdln .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
- #hdjukxqdln .gt_row_group_first td { border-top-width: 2px; }
- #hdjukxqdln .gt_row_group_first th { border-top-width: 2px; }
- #hdjukxqdln .gt_striped { color: #333333; background-color: #F4F4F4; }
- #hdjukxqdln .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
- #hdjukxqdln .gt_grand_summary_row { color: #333333; background-color: #FFFFFF; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
- #hdjukxqdln .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
- #hdjukxqdln .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
- #hdjukxqdln .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
- #hdjukxqdln .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
- #hdjukxqdln .gt_left { text-align: left; }
- #hdjukxqdln .gt_center { text-align: center; }
- #hdjukxqdln .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
- #hdjukxqdln .gt_font_normal { font-weight: normal; }
- #hdjukxqdln .gt_font_bold { font-weight: bold; }
- #hdjukxqdln .gt_font_italic { font-style: italic; }
- #hdjukxqdln .gt_super { font-size: 65%; }
- #hdjukxqdln .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
- #hdjukxqdln .gt_asterisk { font-size: 100%; vertical-align: 0; }
+#ngsfcnlegv p { margin: 0; padding: 0; }
+ #ngsfcnlegv .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #A8A8A8; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #A8A8A8; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
+ #ngsfcnlegv .gt_caption { padding-top: 4px; padding-bottom: 4px; }
+ #ngsfcnlegv .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
+ #ngsfcnlegv .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
+ #ngsfcnlegv .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #ngsfcnlegv .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
+ #ngsfcnlegv .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #ngsfcnlegv .gt_col_heading { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
+ #ngsfcnlegv .gt_column_spanner_outer { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
+ #ngsfcnlegv .gt_column_spanner_outer:first-child { padding-left: 0; }
+ #ngsfcnlegv .gt_column_spanner_outer:last-child { padding-right: 0; }
+ #ngsfcnlegv .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
+ #ngsfcnlegv .gt_spanner_row { border-bottom-style: hidden; }
+ #ngsfcnlegv .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
+ #ngsfcnlegv .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; vertical-align: middle; }
+ #ngsfcnlegv .gt_from_md> :first-child { margin-top: 0; }
+ #ngsfcnlegv .gt_from_md> :last-child { margin-bottom: 0; }
+ #ngsfcnlegv .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; }
+ #ngsfcnlegv .gt_stub { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; }
+ #ngsfcnlegv .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
+ #ngsfcnlegv .gt_row_group_first td { border-top-width: 2px; }
+ #ngsfcnlegv .gt_row_group_first th { border-top-width: 2px; }
+ #ngsfcnlegv .gt_striped { color: #333333; background-color: #F4F4F4; }
+ #ngsfcnlegv .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; }
+ #ngsfcnlegv .gt_grand_summary_row { color: #333333; background-color: #FFFFFF; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
+ #ngsfcnlegv .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
+ #ngsfcnlegv .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
+ #ngsfcnlegv .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
+ #ngsfcnlegv .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
+ #ngsfcnlegv .gt_left { text-align: left; }
+ #ngsfcnlegv .gt_center { text-align: center; }
+ #ngsfcnlegv .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
+ #ngsfcnlegv .gt_font_normal { font-weight: normal; }
+ #ngsfcnlegv .gt_font_bold { font-weight: bold; }
+ #ngsfcnlegv .gt_font_italic { font-style: italic; }
+ #ngsfcnlegv .gt_super { font-size: 65%; }
+ #ngsfcnlegv .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
+ #ngsfcnlegv .gt_asterisk { font-size: 100%; vertical-align: 0; }
 
 </style>
 
@@ -1317,10 +1322,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_center">0.2</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center">Terres australes et antarctiques françaises</td>
-<td class="gt_row gt_center">5</td>
+<td class="gt_row gt_center">Wallis-et-Futuna</td>
+<td class="gt_row gt_center">3</td>
 <td class="gt_row gt_center">1</td>
-<td class="gt_row gt_center">1</td>
+<td class="gt_row gt_center">0</td>
 <td class="gt_row gt_center">0.2</td>
 </tr>
 <tr class="odd">
@@ -1331,10 +1336,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_center">0.2</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center">Wallis-et-Futuna</td>
-<td class="gt_row gt_center">3</td>
+<td class="gt_row gt_center">Terres australes et antarctiques françaises</td>
+<td class="gt_row gt_center">5</td>
 <td class="gt_row gt_center">1</td>
-<td class="gt_row gt_center">0</td>
+<td class="gt_row gt_center">1</td>
 <td class="gt_row gt_center">0.2</td>
 </tr>
 <tr class="odd">
@@ -1392,55 +1397,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    .opt_stylize(style<span class="op">=</span><span class="dv">6</span>)</span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="amzgzorqvx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="ckasueleiw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>
-#amzgzorqvx table {
+#ckasueleiw table {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
-#amzgzorqvx thead, tbody, tfoot, tr, td, th { border-style: none; }
+#ckasueleiw thead, tbody, tfoot, tr, td, th { border-style: none; }
  tr { background-color: transparent; }
-#amzgzorqvx p { margin: 0; padding: 0; }
- #amzgzorqvx .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
- #amzgzorqvx .gt_caption { padding-top: 4px; padding-bottom: 4px; }
- #amzgzorqvx .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
- #amzgzorqvx .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
- #amzgzorqvx .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #amzgzorqvx .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
- #amzgzorqvx .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #amzgzorqvx .gt_col_heading { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
- #amzgzorqvx .gt_column_spanner_outer { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
- #amzgzorqvx .gt_column_spanner_outer:first-child { padding-left: 0; }
- #amzgzorqvx .gt_column_spanner_outer:last-child { padding-right: 0; }
- #amzgzorqvx .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
- #amzgzorqvx .gt_spanner_row { border-bottom-style: hidden; }
- #amzgzorqvx .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
- #amzgzorqvx .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: middle; }
- #amzgzorqvx .gt_from_md> :first-child { margin-top: 0; }
- #amzgzorqvx .gt_from_md> :last-child { margin-bottom: 0; }
- #amzgzorqvx .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: none; border-top-width: 1px; border-top-color: #D5D5D5; border-left-style: none; border-left-width: 1px; border-left-color: #D5D5D5; border-right-style: none; border-right-width: 1px; border-right-color: #D5D5D5; vertical-align: middle; overflow-x: hidden; }
- #amzgzorqvx .gt_stub { color: #333333; background-color: #89D3FE; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D5D5D5; padding-left: 5px; padding-right: 5px; }
- #amzgzorqvx .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
- #amzgzorqvx .gt_row_group_first td { border-top-width: 2px; }
- #amzgzorqvx .gt_row_group_first th { border-top-width: 2px; }
- #amzgzorqvx .gt_striped { color: #333333; background-color: #EDF7FC; }
- #amzgzorqvx .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
- #amzgzorqvx .gt_grand_summary_row { color: #333333; background-color: #D5D5D5; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
- #amzgzorqvx .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
- #amzgzorqvx .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
- #amzgzorqvx .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
- #amzgzorqvx .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
- #amzgzorqvx .gt_left { text-align: left; }
- #amzgzorqvx .gt_center { text-align: center; }
- #amzgzorqvx .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
- #amzgzorqvx .gt_font_normal { font-weight: normal; }
- #amzgzorqvx .gt_font_bold { font-weight: bold; }
- #amzgzorqvx .gt_font_italic { font-style: italic; }
- #amzgzorqvx .gt_super { font-size: 65%; }
- #amzgzorqvx .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
- #amzgzorqvx .gt_asterisk { font-size: 100%; vertical-align: 0; }
+#ckasueleiw p { margin: 0; padding: 0; }
+ #ckasueleiw .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
+ #ckasueleiw .gt_caption { padding-top: 4px; padding-bottom: 4px; }
+ #ckasueleiw .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
+ #ckasueleiw .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
+ #ckasueleiw .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #ckasueleiw .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
+ #ckasueleiw .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #ckasueleiw .gt_col_heading { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
+ #ckasueleiw .gt_column_spanner_outer { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
+ #ckasueleiw .gt_column_spanner_outer:first-child { padding-left: 0; }
+ #ckasueleiw .gt_column_spanner_outer:last-child { padding-right: 0; }
+ #ckasueleiw .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
+ #ckasueleiw .gt_spanner_row { border-bottom-style: hidden; }
+ #ckasueleiw .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
+ #ckasueleiw .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: middle; }
+ #ckasueleiw .gt_from_md> :first-child { margin-top: 0; }
+ #ckasueleiw .gt_from_md> :last-child { margin-bottom: 0; }
+ #ckasueleiw .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: none; border-top-width: 1px; border-top-color: #D5D5D5; border-left-style: none; border-left-width: 1px; border-left-color: #D5D5D5; border-right-style: none; border-right-width: 1px; border-right-color: #D5D5D5; vertical-align: middle; overflow-x: hidden; }
+ #ckasueleiw .gt_stub { color: #333333; background-color: #89D3FE; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D5D5D5; padding-left: 5px; padding-right: 5px; }
+ #ckasueleiw .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
+ #ckasueleiw .gt_row_group_first td { border-top-width: 2px; }
+ #ckasueleiw .gt_row_group_first th { border-top-width: 2px; }
+ #ckasueleiw .gt_striped { color: #333333; background-color: #EDF7FC; }
+ #ckasueleiw .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
+ #ckasueleiw .gt_grand_summary_row { color: #333333; background-color: #D5D5D5; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
+ #ckasueleiw .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
+ #ckasueleiw .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
+ #ckasueleiw .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
+ #ckasueleiw .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
+ #ckasueleiw .gt_left { text-align: left; }
+ #ckasueleiw .gt_center { text-align: center; }
+ #ckasueleiw .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
+ #ckasueleiw .gt_font_normal { font-weight: normal; }
+ #ckasueleiw .gt_font_bold { font-weight: bold; }
+ #ckasueleiw .gt_font_italic { font-style: italic; }
+ #ckasueleiw .gt_super { font-size: 65%; }
+ #ckasueleiw .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
+ #ckasueleiw .gt_asterisk { font-size: 100%; vertical-align: 0; }
 
 </style>
 
@@ -2387,55 +2392,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    .opt_stylize(style<span class="op">=</span><span class="dv">6</span>)</span>
 <span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="ijhbobrudl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="jxjidtnjtq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>
-#ijhbobrudl table {
+#jxjidtnjtq table {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
-#ijhbobrudl thead, tbody, tfoot, tr, td, th { border-style: none; }
+#jxjidtnjtq thead, tbody, tfoot, tr, td, th { border-style: none; }
  tr { background-color: transparent; }
-#ijhbobrudl p { margin: 0; padding: 0; }
- #ijhbobrudl .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
- #ijhbobrudl .gt_caption { padding-top: 4px; padding-bottom: 4px; }
- #ijhbobrudl .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
- #ijhbobrudl .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
- #ijhbobrudl .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #ijhbobrudl .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
- #ijhbobrudl .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
- #ijhbobrudl .gt_col_heading { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
- #ijhbobrudl .gt_column_spanner_outer { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
- #ijhbobrudl .gt_column_spanner_outer:first-child { padding-left: 0; }
- #ijhbobrudl .gt_column_spanner_outer:last-child { padding-right: 0; }
- #ijhbobrudl .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
- #ijhbobrudl .gt_spanner_row { border-bottom-style: hidden; }
- #ijhbobrudl .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
- #ijhbobrudl .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: middle; }
- #ijhbobrudl .gt_from_md> :first-child { margin-top: 0; }
- #ijhbobrudl .gt_from_md> :last-child { margin-bottom: 0; }
- #ijhbobrudl .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: none; border-top-width: 1px; border-top-color: #D5D5D5; border-left-style: none; border-left-width: 1px; border-left-color: #D5D5D5; border-right-style: none; border-right-width: 1px; border-right-color: #D5D5D5; vertical-align: middle; overflow-x: hidden; }
- #ijhbobrudl .gt_stub { color: #333333; background-color: #89D3FE; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D5D5D5; padding-left: 5px; padding-right: 5px; }
- #ijhbobrudl .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
- #ijhbobrudl .gt_row_group_first td { border-top-width: 2px; }
- #ijhbobrudl .gt_row_group_first th { border-top-width: 2px; }
- #ijhbobrudl .gt_striped { color: #333333; background-color: #EDF7FC; }
- #ijhbobrudl .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
- #ijhbobrudl .gt_grand_summary_row { color: #333333; background-color: #D5D5D5; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
- #ijhbobrudl .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
- #ijhbobrudl .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
- #ijhbobrudl .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
- #ijhbobrudl .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
- #ijhbobrudl .gt_left { text-align: left; }
- #ijhbobrudl .gt_center { text-align: center; }
- #ijhbobrudl .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
- #ijhbobrudl .gt_font_normal { font-weight: normal; }
- #ijhbobrudl .gt_font_bold { font-weight: bold; }
- #ijhbobrudl .gt_font_italic { font-style: italic; }
- #ijhbobrudl .gt_super { font-size: 65%; }
- #ijhbobrudl .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
- #ijhbobrudl .gt_asterisk { font-size: 100%; vertical-align: 0; }
+#jxjidtnjtq p { margin: 0; padding: 0; }
+ #jxjidtnjtq .gt_table { display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; }
+ #jxjidtnjtq .gt_caption { padding-top: 4px; padding-bottom: 4px; }
+ #jxjidtnjtq .gt_title { color: #333333; font-size: 125%; font-weight: initial; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; border-bottom-color: #FFFFFF; border-bottom-width: 0; }
+ #jxjidtnjtq .gt_subtitle { color: #333333; font-size: 85%; font-weight: initial; padding-top: 3px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; border-top-color: #FFFFFF; border-top-width: 0; }
+ #jxjidtnjtq .gt_heading { background-color: #FFFFFF; text-align: center; border-bottom-color: #FFFFFF; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #jxjidtnjtq .gt_bottom_border { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
+ #jxjidtnjtq .gt_col_headings { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; }
+ #jxjidtnjtq .gt_col_heading { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; }
+ #jxjidtnjtq .gt_column_spanner_outer { color: #FFFFFF; background-color: #0076BA; font-size: 100%; font-weight: normal; text-transform: inherit; padding-top: 0; padding-bottom: 0; padding-left: 4px; padding-right: 4px; }
+ #jxjidtnjtq .gt_column_spanner_outer:first-child { padding-left: 0; }
+ #jxjidtnjtq .gt_column_spanner_outer:last-child { padding-right: 0; }
+ #jxjidtnjtq .gt_column_spanner { border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: bottom; padding-top: 5px; padding-bottom: 5px; overflow-x: hidden; display: inline-block; width: 100%; }
+ #jxjidtnjtq .gt_spanner_row { border-bottom-style: hidden; }
+ #jxjidtnjtq .gt_group_heading { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; text-align: left; }
+ #jxjidtnjtq .gt_empty_group_heading { padding: 0.5px; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; vertical-align: middle; }
+ #jxjidtnjtq .gt_from_md> :first-child { margin-top: 0; }
+ #jxjidtnjtq .gt_from_md> :last-child { margin-bottom: 0; }
+ #jxjidtnjtq .gt_row { padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: none; border-top-width: 1px; border-top-color: #D5D5D5; border-left-style: none; border-left-width: 1px; border-left-color: #D5D5D5; border-right-style: none; border-right-width: 1px; border-right-color: #D5D5D5; vertical-align: middle; overflow-x: hidden; }
+ #jxjidtnjtq .gt_stub { color: #333333; background-color: #89D3FE; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D5D5D5; padding-left: 5px; padding-right: 5px; }
+ #jxjidtnjtq .gt_stub_row_group { color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: initial; text-transform: inherit; border-right-style: solid; border-right-width: 2px; border-right-color: #D3D3D3; padding-left: 5px; padding-right: 5px; vertical-align: top; }
+ #jxjidtnjtq .gt_row_group_first td { border-top-width: 2px; }
+ #jxjidtnjtq .gt_row_group_first th { border-top-width: 2px; }
+ #jxjidtnjtq .gt_striped { color: #333333; background-color: #EDF7FC; }
+ #jxjidtnjtq .gt_table_body { border-top-style: solid; border-top-width: 2px; border-top-color: #5F5F5F; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #5F5F5F; }
+ #jxjidtnjtq .gt_grand_summary_row { color: #333333; background-color: #D5D5D5; text-transform: inherit; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; }
+ #jxjidtnjtq .gt_first_grand_summary_row_bottom { border-top-style: double; border-top-width: 6px; border-top-color: #D3D3D3; }
+ #jxjidtnjtq .gt_last_grand_summary_row_top { border-bottom-style: double; border-bottom-width: 6px; border-bottom-color: #D3D3D3; }
+ #jxjidtnjtq .gt_sourcenotes { color: #333333; background-color: #FFFFFF; border-bottom-style: none; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; }
+ #jxjidtnjtq .gt_sourcenote { font-size: 90%; padding-top: 4px; padding-bottom: 4px; padding-left: 5px; padding-right: 5px; text-align: left; }
+ #jxjidtnjtq .gt_left { text-align: left; }
+ #jxjidtnjtq .gt_center { text-align: center; }
+ #jxjidtnjtq .gt_right { text-align: right; font-variant-numeric: tabular-nums; }
+ #jxjidtnjtq .gt_font_normal { font-weight: normal; }
+ #jxjidtnjtq .gt_font_bold { font-weight: bold; }
+ #jxjidtnjtq .gt_font_italic { font-style: italic; }
+ #jxjidtnjtq .gt_super { font-size: 65%; }
+ #jxjidtnjtq .gt_footnote_marks { font-size: 75%; vertical-align: 0.4em; position: initial; }
+ #jxjidtnjtq .gt_asterisk { font-size: 100%; vertical-align: 0; }
 
 </style>
 
@@ -2489,15 +2494,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_center">4.6</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center gt_striped">Wallis-et-Futuna</td>
-<td class="gt_row gt_center gt_striped">3</td>
+<td class="gt_row gt_center gt_striped">Saint-Pierre-et-Miquelon</td>
+<td class="gt_row gt_center gt_striped">2</td>
 <td class="gt_row gt_center gt_striped">1</td>
 <td class="gt_row gt_center gt_striped">4</td>
 <td class="gt_row gt_center gt_striped">4.1</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_center">Saint-Pierre-et-Miquelon</td>
-<td class="gt_row gt_center">2</td>
+<td class="gt_row gt_center">Wallis-et-Futuna</td>
+<td class="gt_row gt_center">3</td>
 <td class="gt_row gt_center">1</td>
 <td class="gt_row gt_center">4</td>
 <td class="gt_row gt_center">4.1</td>
@@ -2644,9 +2649,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 
 </main> <!-- /main -->
-<script type="application/vnd.jupyter.widget-state+json">
-{"state":{"1f9a111ed1304e139421df3234188d0a":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"FloatProgressModel","state":{"_dom_classes":[],"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"FloatProgressModel","_view_count":null,"_view_module":"@jupyter-widgets/controls","_view_module_version":"2.0.0","_view_name":"ProgressView","bar_style":"","description":"","description_allow_html":false,"layout":"IPY_MODEL_c0de8180a91340ac9c762139ca8ec6de","max":100,"min":0,"orientation":"horizontal","style":"IPY_MODEL_6af37b206e6e4fda980ace9543d061f7","tabbable":null,"tooltip":null,"value":100}},"6af37b206e6e4fda980ace9543d061f7":{"model_module":"@jupyter-widgets/controls","model_module_version":"2.0.0","model_name":"ProgressStyleModel","state":{"_model_module":"@jupyter-widgets/controls","_model_module_version":"2.0.0","_model_name":"ProgressStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"StyleView","bar_color":"black","description_width":""}},"c0de8180a91340ac9c762139ca8ec6de":{"model_module":"@jupyter-widgets/base","model_module_version":"2.0.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"2.0.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"2.0.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border_bottom":null,"border_left":null,"border_right":null,"border_top":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"padding":null,"right":null,"top":null,"visibility":null,"width":"auto"}}},"version_major":2,"version_minor":0}
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -3584,275 +3586,281 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-477"><a href="#cb10-477" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Mayotte"</span>: <span class="st">"#7D3C98"</span>,</span>
 <span id="cb10-478"><a href="#cb10-478" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb10-479"><a href="#cb10-479" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-480"><a href="#cb10-480" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> folium.Map(location<span class="op">=</span>[<span class="fl">46.6</span>, <span class="fl">2.4</span>], zoom_start<span class="op">=</span><span class="dv">6</span>, tiles<span class="op">=</span><span class="st">"CartoDB positron"</span>, control_scale<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-480"><a href="#cb10-480" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> folium.Map(location<span class="op">=</span>[<span class="fl">46.6</span>, <span class="fl">2.4</span>], zoom_start<span class="op">=</span><span class="dv">6</span>, tiles<span class="op">=</span><span class="va">None</span>, control_scale<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb10-481"><a href="#cb10-481" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-482"><a href="#cb10-482" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> df.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
-<span id="cb10-483"><a href="#cb10-483" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"longitude"</span>] <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> row[<span class="st">"latitude"</span>] <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb10-484"><a href="#cb10-484" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb10-485"><a href="#cb10-485" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"flag_metropole"</span>] <span class="op">!=</span> <span class="dv">1</span>:</span>
-<span id="cb10-486"><a href="#cb10-486" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb10-487"><a href="#cb10-487" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> region_colors.get(row[<span class="st">"region_name"</span>], <span class="st">"#666"</span>)</span>
-<span id="cb10-488"><a href="#cb10-488" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="bu">max</span>(<span class="dv">3</span>, <span class="bu">min</span>(row[<span class="st">"visit_hours"</span>], <span class="dv">10</span>))</span>
-<span id="cb10-489"><a href="#cb10-489" aria-hidden="true" tabindex="-1"></a>    folium.CircleMarker(</span>
-<span id="cb10-490"><a href="#cb10-490" aria-hidden="true" tabindex="-1"></a>        location<span class="op">=</span>[row[<span class="st">"latitude"</span>], row[<span class="st">"longitude"</span>]],</span>
-<span id="cb10-491"><a href="#cb10-491" aria-hidden="true" tabindex="-1"></a>        radius<span class="op">=</span>radius,</span>
-<span id="cb10-492"><a href="#cb10-492" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>color,</span>
-<span id="cb10-493"><a href="#cb10-493" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb10-494"><a href="#cb10-494" aria-hidden="true" tabindex="-1"></a>        fill_opacity<span class="op">=</span><span class="fl">0.4</span>,</span>
-<span id="cb10-495"><a href="#cb10-495" aria-hidden="true" tabindex="-1"></a>        tooltip<span class="op">=</span>row[<span class="st">"name"</span>],</span>
-<span id="cb10-496"><a href="#cb10-496" aria-hidden="true" tabindex="-1"></a>    ).add_to(m)</span>
-<span id="cb10-497"><a href="#cb10-497" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-498"><a href="#cb10-498" aria-hidden="true" tabindex="-1"></a>map_path <span class="op">=</span> <span class="st">"_site/posts/visit-all-towns-france/map_mainland.html"</span></span>
-<span id="cb10-499"><a href="#cb10-499" aria-hidden="true" tabindex="-1"></a>os.makedirs(os.path.dirname(map_path), exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb10-500"><a href="#cb10-500" aria-hidden="true" tabindex="-1"></a>m.save(map_path)</span>
-<span id="cb10-501"><a href="#cb10-501" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-502"><a href="#cb10-502" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-503"><a href="#cb10-503" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">iframe</span><span class="ot"> src</span><span class="op">=</span><span class="st">"map_mainland.html"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"100%"</span><span class="ot"> height</span><span class="op">=</span><span class="st">"600px"</span><span class="ot"> style</span><span class="op">=</span><span class="st">"border:none;"</span><span class="dt">&gt;&lt;/</span><span class="kw">iframe</span><span class="dt">&gt;</span></span>
-<span id="cb10-504"><a href="#cb10-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-505"><a href="#cb10-505" aria-hidden="true" tabindex="-1"></a>Mainland France + Corsica only. See the Overseas Territories table for DOM/TOM.</span>
-<span id="cb10-506"><a href="#cb10-506" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-507"><a href="#cb10-507" aria-hidden="true" tabindex="-1"></a><span class="fu">## Top 10 Most Monument-Rich Towns</span></span>
+<span id="cb10-482"><a href="#cb10-482" aria-hidden="true" tabindex="-1"></a>folium.TileLayer(</span>
+<span id="cb10-483"><a href="#cb10-483" aria-hidden="true" tabindex="-1"></a>    tiles<span class="op">=</span><span class="st">"https://tile.openstreetmap.org/</span><span class="sc">{z}</span><span class="st">/</span><span class="sc">{x}</span><span class="st">/</span><span class="sc">{y}</span><span class="st">.png"</span>,</span>
+<span id="cb10-484"><a href="#cb10-484" aria-hidden="true" tabindex="-1"></a>    attr<span class="op">=</span><span class="st">"© OpenStreetMap contributors"</span>,</span>
+<span id="cb10-485"><a href="#cb10-485" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"OpenStreetMap"</span>,</span>
+<span id="cb10-486"><a href="#cb10-486" aria-hidden="true" tabindex="-1"></a>).add_to(m)</span>
+<span id="cb10-487"><a href="#cb10-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-488"><a href="#cb10-488" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> df.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb10-489"><a href="#cb10-489" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"longitude"</span>] <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> row[<span class="st">"latitude"</span>] <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb10-490"><a href="#cb10-490" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb10-491"><a href="#cb10-491" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"flag_metropole"</span>] <span class="op">!=</span> <span class="dv">1</span>:</span>
+<span id="cb10-492"><a href="#cb10-492" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb10-493"><a href="#cb10-493" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> region_colors.get(row[<span class="st">"region_name"</span>], <span class="st">"#666"</span>)</span>
+<span id="cb10-494"><a href="#cb10-494" aria-hidden="true" tabindex="-1"></a>    radius <span class="op">=</span> <span class="bu">max</span>(<span class="dv">3</span>, <span class="bu">min</span>(row[<span class="st">"visit_hours"</span>], <span class="dv">10</span>))</span>
+<span id="cb10-495"><a href="#cb10-495" aria-hidden="true" tabindex="-1"></a>    folium.CircleMarker(</span>
+<span id="cb10-496"><a href="#cb10-496" aria-hidden="true" tabindex="-1"></a>        location<span class="op">=</span>[row[<span class="st">"latitude"</span>], row[<span class="st">"longitude"</span>]],</span>
+<span id="cb10-497"><a href="#cb10-497" aria-hidden="true" tabindex="-1"></a>        radius<span class="op">=</span>radius,</span>
+<span id="cb10-498"><a href="#cb10-498" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>color,</span>
+<span id="cb10-499"><a href="#cb10-499" aria-hidden="true" tabindex="-1"></a>        fill<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb10-500"><a href="#cb10-500" aria-hidden="true" tabindex="-1"></a>        fill_opacity<span class="op">=</span><span class="fl">0.4</span>,</span>
+<span id="cb10-501"><a href="#cb10-501" aria-hidden="true" tabindex="-1"></a>        tooltip<span class="op">=</span>row[<span class="st">"name"</span>],</span>
+<span id="cb10-502"><a href="#cb10-502" aria-hidden="true" tabindex="-1"></a>    ).add_to(m)</span>
+<span id="cb10-503"><a href="#cb10-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-504"><a href="#cb10-504" aria-hidden="true" tabindex="-1"></a>map_path <span class="op">=</span> <span class="st">"_site/posts/visit-all-towns-france/map_mainland.html"</span></span>
+<span id="cb10-505"><a href="#cb10-505" aria-hidden="true" tabindex="-1"></a>os.makedirs(os.path.dirname(map_path), exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-506"><a href="#cb10-506" aria-hidden="true" tabindex="-1"></a>m.save(map_path)</span>
+<span id="cb10-507"><a href="#cb10-507" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb10-508"><a href="#cb10-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-509"><a href="#cb10-509" aria-hidden="true" tabindex="-1"></a>These are the communes with the most historical monuments — a major driver of visit time:</span>
+<span id="cb10-509"><a href="#cb10-509" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">iframe</span><span class="ot"> src</span><span class="op">=</span><span class="st">"map_mainland.html"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"100%"</span><span class="ot"> height</span><span class="op">=</span><span class="st">"600px"</span><span class="ot"> style</span><span class="op">=</span><span class="st">"border:none;"</span><span class="dt">&gt;&lt;/</span><span class="kw">iframe</span><span class="dt">&gt;</span></span>
 <span id="cb10-510"><a href="#cb10-510" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-513"><a href="#cb10-513" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-514"><a href="#cb10-514" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: top10-table</span></span>
-<span id="cb10-515"><a href="#cb10-515" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-511"><a href="#cb10-511" aria-hidden="true" tabindex="-1"></a>Mainland France + Corsica only. See the Overseas Territories table for DOM/TOM.</span>
+<span id="cb10-512"><a href="#cb10-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-513"><a href="#cb10-513" aria-hidden="true" tabindex="-1"></a><span class="fu">## Top 10 Most Monument-Rich Towns</span></span>
+<span id="cb10-514"><a href="#cb10-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-515"><a href="#cb10-515" aria-hidden="true" tabindex="-1"></a>These are the communes with the most historical monuments — a major driver of visit time:</span>
 <span id="cb10-516"><a href="#cb10-516" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-517"><a href="#cb10-517" aria-hidden="true" tabindex="-1"></a>top10 <span class="op">=</span> (df</span>
-<span id="cb10-518"><a href="#cb10-518" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"total_monuments"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb10-519"><a href="#cb10-519" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
-<span id="cb10-520"><a href="#cb10-520" aria-hidden="true" tabindex="-1"></a>    .select([<span class="st">"name"</span>, <span class="st">"department_name"</span>, <span class="st">"population"</span>, <span class="st">"total_monuments"</span>, <span class="st">"visit_hours"</span>])</span>
-<span id="cb10-521"><a href="#cb10-521" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-519"><a href="#cb10-519" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-520"><a href="#cb10-520" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: top10-table</span></span>
+<span id="cb10-521"><a href="#cb10-521" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
 <span id="cb10-522"><a href="#cb10-522" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-523"><a href="#cb10-523" aria-hidden="true" tabindex="-1"></a>top10_display <span class="op">=</span> top10.with_columns([</span>
-<span id="cb10-524"><a href="#cb10-524" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"population"</span>).fill_null(<span class="dv">0</span>).cast(pl.Int64).alias(<span class="st">"population"</span>),</span>
-<span id="cb10-525"><a href="#cb10-525" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"visit_hours"</span>).<span class="bu">round</span>(<span class="dv">1</span>).alias(<span class="st">"visit_hours"</span>),</span>
-<span id="cb10-526"><a href="#cb10-526" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb10-527"><a href="#cb10-527" aria-hidden="true" tabindex="-1"></a>top10_display.columns <span class="op">=</span> [<span class="st">"Commune"</span>, <span class="st">"Département"</span>, <span class="st">"Population"</span>, <span class="st">"Monuments"</span>, <span class="st">"Heures"</span>]</span>
+<span id="cb10-523"><a href="#cb10-523" aria-hidden="true" tabindex="-1"></a>top10 <span class="op">=</span> (df</span>
+<span id="cb10-524"><a href="#cb10-524" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"total_monuments"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-525"><a href="#cb10-525" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">10</span>)</span>
+<span id="cb10-526"><a href="#cb10-526" aria-hidden="true" tabindex="-1"></a>    .select([<span class="st">"name"</span>, <span class="st">"department_name"</span>, <span class="st">"population"</span>, <span class="st">"total_monuments"</span>, <span class="st">"visit_hours"</span>])</span>
+<span id="cb10-527"><a href="#cb10-527" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb10-528"><a href="#cb10-528" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-529"><a href="#cb10-529" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb10-530"><a href="#cb10-530" aria-hidden="true" tabindex="-1"></a>    GT(top10_display)</span>
-<span id="cb10-531"><a href="#cb10-531" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Top 10 — most monuments per commune"</span>)</span>
-<span id="cb10-532"><a href="#cb10-532" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Population"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb10-533"><a href="#cb10-533" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Heures"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb10-534"><a href="#cb10-534" aria-hidden="true" tabindex="-1"></a>    .tab_style(locations<span class="op">=</span>loc.body(), style<span class="op">=</span>style.text(weight<span class="op">=</span><span class="st">"bold"</span>))</span>
-<span id="cb10-535"><a href="#cb10-535" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"left"</span>, columns<span class="op">=</span>[<span class="st">"Commune"</span>, <span class="st">"Département"</span>])</span>
-<span id="cb10-536"><a href="#cb10-536" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>, columns<span class="op">=</span>[<span class="st">"Population"</span>, <span class="st">"Monuments"</span>, <span class="st">"Heures"</span>])</span>
-<span id="cb10-537"><a href="#cb10-537" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-538"><a href="#cb10-538" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-539"><a href="#cb10-539" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-540"><a href="#cb10-540" aria-hidden="true" tabindex="-1"></a><span class="fu">## By Region</span></span>
-<span id="cb10-541"><a href="#cb10-541" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-542"><a href="#cb10-542" aria-hidden="true" tabindex="-1"></a>How the total days break down by region:</span>
-<span id="cb10-543"><a href="#cb10-543" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-546"><a href="#cb10-546" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-547"><a href="#cb10-547" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: region-table</span></span>
-<span id="cb10-548"><a href="#cb10-548" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-529"><a href="#cb10-529" aria-hidden="true" tabindex="-1"></a>top10_display <span class="op">=</span> top10.with_columns([</span>
+<span id="cb10-530"><a href="#cb10-530" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"population"</span>).fill_null(<span class="dv">0</span>).cast(pl.Int64).alias(<span class="st">"population"</span>),</span>
+<span id="cb10-531"><a href="#cb10-531" aria-hidden="true" tabindex="-1"></a>    pl.col(<span class="st">"visit_hours"</span>).<span class="bu">round</span>(<span class="dv">1</span>).alias(<span class="st">"visit_hours"</span>),</span>
+<span id="cb10-532"><a href="#cb10-532" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb10-533"><a href="#cb10-533" aria-hidden="true" tabindex="-1"></a>top10_display.columns <span class="op">=</span> [<span class="st">"Commune"</span>, <span class="st">"Département"</span>, <span class="st">"Population"</span>, <span class="st">"Monuments"</span>, <span class="st">"Heures"</span>]</span>
+<span id="cb10-534"><a href="#cb10-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-535"><a href="#cb10-535" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb10-536"><a href="#cb10-536" aria-hidden="true" tabindex="-1"></a>    GT(top10_display)</span>
+<span id="cb10-537"><a href="#cb10-537" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Top 10 — most monuments per commune"</span>)</span>
+<span id="cb10-538"><a href="#cb10-538" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Population"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-539"><a href="#cb10-539" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Heures"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-540"><a href="#cb10-540" aria-hidden="true" tabindex="-1"></a>    .tab_style(locations<span class="op">=</span>loc.body(), style<span class="op">=</span>style.text(weight<span class="op">=</span><span class="st">"bold"</span>))</span>
+<span id="cb10-541"><a href="#cb10-541" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"left"</span>, columns<span class="op">=</span>[<span class="st">"Commune"</span>, <span class="st">"Département"</span>])</span>
+<span id="cb10-542"><a href="#cb10-542" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>, columns<span class="op">=</span>[<span class="st">"Population"</span>, <span class="st">"Monuments"</span>, <span class="st">"Heures"</span>])</span>
+<span id="cb10-543"><a href="#cb10-543" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-544"><a href="#cb10-544" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-545"><a href="#cb10-545" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-546"><a href="#cb10-546" aria-hidden="true" tabindex="-1"></a><span class="fu">## By Region</span></span>
+<span id="cb10-547"><a href="#cb10-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-548"><a href="#cb10-548" aria-hidden="true" tabindex="-1"></a>How the total days break down by region:</span>
 <span id="cb10-549"><a href="#cb10-549" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-550"><a href="#cb10-550" aria-hidden="true" tabindex="-1"></a>region_agg <span class="op">=</span> (df</span>
-<span id="cb10-551"><a href="#cb10-551" aria-hidden="true" tabindex="-1"></a>    .group_by(<span class="st">"region_name"</span>)</span>
-<span id="cb10-552"><a href="#cb10-552" aria-hidden="true" tabindex="-1"></a>    .agg([</span>
-<span id="cb10-553"><a href="#cb10-553" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">len</span>().alias(<span class="st">"n_towns"</span>),</span>
-<span id="cb10-554"><a href="#cb10-554" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">sum</span>(<span class="st">"visit_hours"</span>).alias(<span class="st">"total_visit_h"</span>),</span>
-<span id="cb10-555"><a href="#cb10-555" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb10-556"><a href="#cb10-556" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-557"><a href="#cb10-557" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-558"><a href="#cb10-558" aria-hidden="true" tabindex="-1"></a>region_rows <span class="op">=</span> []</span>
-<span id="cb10-559"><a href="#cb10-559" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> region_agg.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
-<span id="cb10-560"><a href="#cb10-560" aria-hidden="true" tabindex="-1"></a>    region <span class="op">=</span> r[<span class="st">"region_name"</span>]</span>
-<span id="cb10-561"><a href="#cb10-561" aria-hidden="true" tabindex="-1"></a>    depts_in_region <span class="op">=</span> dept_df.<span class="bu">filter</span>(pl.col(<span class="st">"region_name"</span>) <span class="op">==</span> region)</span>
-<span id="cb10-562"><a href="#cb10-562" aria-hidden="true" tabindex="-1"></a>    region_visit_h <span class="op">=</span> r[<span class="st">"total_visit_h"</span>]</span>
-<span id="cb10-563"><a href="#cb10-563" aria-hidden="true" tabindex="-1"></a>    region_travel_h <span class="op">=</span> depts_in_region[<span class="st">"intra_travel_hours"</span>].<span class="bu">sum</span>()</span>
-<span id="cb10-564"><a href="#cb10-564" aria-hidden="true" tabindex="-1"></a>    inter <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, <span class="bu">len</span>(depts_in_region) <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> <span class="fl">1.5</span></span>
-<span id="cb10-565"><a href="#cb10-565" aria-hidden="true" tabindex="-1"></a>    total_h <span class="op">=</span> region_visit_h <span class="op">+</span> region_travel_h <span class="op">+</span> inter</span>
-<span id="cb10-566"><a href="#cb10-566" aria-hidden="true" tabindex="-1"></a>    region_rows.append({</span>
-<span id="cb10-567"><a href="#cb10-567" aria-hidden="true" tabindex="-1"></a>        <span class="st">"region"</span>: region,</span>
-<span id="cb10-568"><a href="#cb10-568" aria-hidden="true" tabindex="-1"></a>        <span class="st">"towns"</span>: r[<span class="st">"n_towns"</span>],</span>
-<span id="cb10-569"><a href="#cb10-569" aria-hidden="true" tabindex="-1"></a>        <span class="st">"visit_h"</span>: <span class="bu">round</span>(region_visit_h, <span class="dv">0</span>),</span>
-<span id="cb10-570"><a href="#cb10-570" aria-hidden="true" tabindex="-1"></a>        <span class="st">"travel_h"</span>: <span class="bu">round</span>(region_travel_h <span class="op">+</span> inter, <span class="dv">0</span>),</span>
-<span id="cb10-571"><a href="#cb10-571" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_days"</span>: <span class="bu">round</span>(total_h <span class="op">/</span> <span class="dv">10</span>, <span class="dv">1</span>),</span>
-<span id="cb10-572"><a href="#cb10-572" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb10-573"><a href="#cb10-573" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-574"><a href="#cb10-574" aria-hidden="true" tabindex="-1"></a>region_df <span class="op">=</span> pl.DataFrame(region_rows).sort(<span class="st">"total_days"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb10-575"><a href="#cb10-575" aria-hidden="true" tabindex="-1"></a>reg_tbl <span class="op">=</span> region_df.rename({</span>
-<span id="cb10-576"><a href="#cb10-576" aria-hidden="true" tabindex="-1"></a>    <span class="st">"region"</span>: <span class="st">"Région"</span>, <span class="st">"towns"</span>: <span class="st">"Communes"</span>,</span>
-<span id="cb10-577"><a href="#cb10-577" aria-hidden="true" tabindex="-1"></a>    <span class="st">"visit_h"</span>: <span class="st">"Visite (h)"</span>, <span class="st">"travel_h"</span>: <span class="st">"Trajet (h)"</span>,</span>
-<span id="cb10-578"><a href="#cb10-578" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total_days"</span>: <span class="st">"Jours"</span>,</span>
-<span id="cb10-579"><a href="#cb10-579" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb10-580"><a href="#cb10-580" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-581"><a href="#cb10-581" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb10-582"><a href="#cb10-582" aria-hidden="true" tabindex="-1"></a>    GT(reg_tbl)</span>
-<span id="cb10-583"><a href="#cb10-583" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Days required by region"</span>)</span>
-<span id="cb10-584"><a href="#cb10-584" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Communes"</span>, <span class="st">"Visite (h)"</span>, <span class="st">"Trajet (h)"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb10-585"><a href="#cb10-585" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Jours"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb10-586"><a href="#cb10-586" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>)</span>
-<span id="cb10-587"><a href="#cb10-587" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-588"><a href="#cb10-588" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-589"><a href="#cb10-589" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-590"><a href="#cb10-590" aria-hidden="true" tabindex="-1"></a><span class="fu">## By Department</span></span>
-<span id="cb10-591"><a href="#cb10-591" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-592"><a href="#cb10-592" aria-hidden="true" tabindex="-1"></a>Breakdown of visit time and travel days for every French department:</span>
-<span id="cb10-593"><a href="#cb10-593" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-596"><a href="#cb10-596" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-597"><a href="#cb10-597" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dept-table</span></span>
-<span id="cb10-598"><a href="#cb10-598" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-552"><a href="#cb10-552" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-553"><a href="#cb10-553" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: region-table</span></span>
+<span id="cb10-554"><a href="#cb10-554" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-555"><a href="#cb10-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-556"><a href="#cb10-556" aria-hidden="true" tabindex="-1"></a>region_agg <span class="op">=</span> (df</span>
+<span id="cb10-557"><a href="#cb10-557" aria-hidden="true" tabindex="-1"></a>    .group_by(<span class="st">"region_name"</span>)</span>
+<span id="cb10-558"><a href="#cb10-558" aria-hidden="true" tabindex="-1"></a>    .agg([</span>
+<span id="cb10-559"><a href="#cb10-559" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">len</span>().alias(<span class="st">"n_towns"</span>),</span>
+<span id="cb10-560"><a href="#cb10-560" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">sum</span>(<span class="st">"visit_hours"</span>).alias(<span class="st">"total_visit_h"</span>),</span>
+<span id="cb10-561"><a href="#cb10-561" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb10-562"><a href="#cb10-562" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-563"><a href="#cb10-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-564"><a href="#cb10-564" aria-hidden="true" tabindex="-1"></a>region_rows <span class="op">=</span> []</span>
+<span id="cb10-565"><a href="#cb10-565" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> region_agg.iter_rows(named<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb10-566"><a href="#cb10-566" aria-hidden="true" tabindex="-1"></a>    region <span class="op">=</span> r[<span class="st">"region_name"</span>]</span>
+<span id="cb10-567"><a href="#cb10-567" aria-hidden="true" tabindex="-1"></a>    depts_in_region <span class="op">=</span> dept_df.<span class="bu">filter</span>(pl.col(<span class="st">"region_name"</span>) <span class="op">==</span> region)</span>
+<span id="cb10-568"><a href="#cb10-568" aria-hidden="true" tabindex="-1"></a>    region_visit_h <span class="op">=</span> r[<span class="st">"total_visit_h"</span>]</span>
+<span id="cb10-569"><a href="#cb10-569" aria-hidden="true" tabindex="-1"></a>    region_travel_h <span class="op">=</span> depts_in_region[<span class="st">"intra_travel_hours"</span>].<span class="bu">sum</span>()</span>
+<span id="cb10-570"><a href="#cb10-570" aria-hidden="true" tabindex="-1"></a>    inter <span class="op">=</span> <span class="bu">max</span>(<span class="dv">0</span>, <span class="bu">len</span>(depts_in_region) <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> <span class="fl">1.5</span></span>
+<span id="cb10-571"><a href="#cb10-571" aria-hidden="true" tabindex="-1"></a>    total_h <span class="op">=</span> region_visit_h <span class="op">+</span> region_travel_h <span class="op">+</span> inter</span>
+<span id="cb10-572"><a href="#cb10-572" aria-hidden="true" tabindex="-1"></a>    region_rows.append({</span>
+<span id="cb10-573"><a href="#cb10-573" aria-hidden="true" tabindex="-1"></a>        <span class="st">"region"</span>: region,</span>
+<span id="cb10-574"><a href="#cb10-574" aria-hidden="true" tabindex="-1"></a>        <span class="st">"towns"</span>: r[<span class="st">"n_towns"</span>],</span>
+<span id="cb10-575"><a href="#cb10-575" aria-hidden="true" tabindex="-1"></a>        <span class="st">"visit_h"</span>: <span class="bu">round</span>(region_visit_h, <span class="dv">0</span>),</span>
+<span id="cb10-576"><a href="#cb10-576" aria-hidden="true" tabindex="-1"></a>        <span class="st">"travel_h"</span>: <span class="bu">round</span>(region_travel_h <span class="op">+</span> inter, <span class="dv">0</span>),</span>
+<span id="cb10-577"><a href="#cb10-577" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_days"</span>: <span class="bu">round</span>(total_h <span class="op">/</span> <span class="dv">10</span>, <span class="dv">1</span>),</span>
+<span id="cb10-578"><a href="#cb10-578" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb10-579"><a href="#cb10-579" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-580"><a href="#cb10-580" aria-hidden="true" tabindex="-1"></a>region_df <span class="op">=</span> pl.DataFrame(region_rows).sort(<span class="st">"total_days"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-581"><a href="#cb10-581" aria-hidden="true" tabindex="-1"></a>reg_tbl <span class="op">=</span> region_df.rename({</span>
+<span id="cb10-582"><a href="#cb10-582" aria-hidden="true" tabindex="-1"></a>    <span class="st">"region"</span>: <span class="st">"Région"</span>, <span class="st">"towns"</span>: <span class="st">"Communes"</span>,</span>
+<span id="cb10-583"><a href="#cb10-583" aria-hidden="true" tabindex="-1"></a>    <span class="st">"visit_h"</span>: <span class="st">"Visite (h)"</span>, <span class="st">"travel_h"</span>: <span class="st">"Trajet (h)"</span>,</span>
+<span id="cb10-584"><a href="#cb10-584" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total_days"</span>: <span class="st">"Jours"</span>,</span>
+<span id="cb10-585"><a href="#cb10-585" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-586"><a href="#cb10-586" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-587"><a href="#cb10-587" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb10-588"><a href="#cb10-588" aria-hidden="true" tabindex="-1"></a>    GT(reg_tbl)</span>
+<span id="cb10-589"><a href="#cb10-589" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Days required by region"</span>)</span>
+<span id="cb10-590"><a href="#cb10-590" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Communes"</span>, <span class="st">"Visite (h)"</span>, <span class="st">"Trajet (h)"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-591"><a href="#cb10-591" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Jours"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-592"><a href="#cb10-592" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>)</span>
+<span id="cb10-593"><a href="#cb10-593" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-594"><a href="#cb10-594" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-595"><a href="#cb10-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-596"><a href="#cb10-596" aria-hidden="true" tabindex="-1"></a><span class="fu">## By Department</span></span>
+<span id="cb10-597"><a href="#cb10-597" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-598"><a href="#cb10-598" aria-hidden="true" tabindex="-1"></a>Breakdown of visit time and travel days for every French department:</span>
 <span id="cb10-599"><a href="#cb10-599" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-600"><a href="#cb10-600" aria-hidden="true" tabindex="-1"></a>dept_tbl <span class="op">=</span> (dept_df</span>
-<span id="cb10-601"><a href="#cb10-601" aria-hidden="true" tabindex="-1"></a>    .with_columns([</span>
-<span id="cb10-602"><a href="#cb10-602" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"n_towns"</span>).alias(<span class="st">"Towns"</span>),</span>
-<span id="cb10-603"><a href="#cb10-603" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"total_visit_hours"</span>).<span class="bu">round</span>(<span class="dv">0</span>).cast(pl.Int64).alias(<span class="st">"Visit (h)"</span>),</span>
-<span id="cb10-604"><a href="#cb10-604" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"intra_travel_hours"</span>).<span class="bu">round</span>(<span class="dv">0</span>).cast(pl.Int64).alias(<span class="st">"Travel (h)"</span>),</span>
-<span id="cb10-605"><a href="#cb10-605" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"total_days"</span>).<span class="bu">round</span>(<span class="dv">1</span>).alias(<span class="st">"Days"</span>),</span>
-<span id="cb10-606"><a href="#cb10-606" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb10-607"><a href="#cb10-607" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"total_days"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb10-608"><a href="#cb10-608" aria-hidden="true" tabindex="-1"></a>    .select([<span class="st">"department_name"</span>, <span class="st">"region_name"</span>, <span class="st">"Towns"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (h)"</span>, <span class="st">"Days"</span>])</span>
-<span id="cb10-609"><a href="#cb10-609" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-610"><a href="#cb10-610" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-611"><a href="#cb10-611" aria-hidden="true" tabindex="-1"></a>dept_tbl.columns <span class="op">=</span> [<span class="st">"Department"</span>, <span class="st">"Region"</span>, <span class="st">"Towns"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (h)"</span>, <span class="st">"Days"</span>]</span>
-<span id="cb10-612"><a href="#cb10-612" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-613"><a href="#cb10-613" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb10-614"><a href="#cb10-614" aria-hidden="true" tabindex="-1"></a>    GT(dept_tbl)</span>
-<span id="cb10-615"><a href="#cb10-615" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Total days required by department"</span>)</span>
-<span id="cb10-616"><a href="#cb10-616" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Towns"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (h)"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb10-617"><a href="#cb10-617" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Days"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb10-618"><a href="#cb10-618" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>)</span>
-<span id="cb10-619"><a href="#cb10-619" aria-hidden="true" tabindex="-1"></a>    .opt_row_striping()</span>
-<span id="cb10-620"><a href="#cb10-620" aria-hidden="true" tabindex="-1"></a>    .opt_stylize(style<span class="op">=</span><span class="dv">6</span>)</span>
-<span id="cb10-621"><a href="#cb10-621" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-622"><a href="#cb10-622" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-623"><a href="#cb10-623" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-624"><a href="#cb10-624" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overseas Territories</span></span>
-<span id="cb10-625"><a href="#cb10-625" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-628"><a href="#cb10-628" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-629"><a href="#cb10-629" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: overseas-intro</span></span>
-<span id="cb10-630"><a href="#cb10-630" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-602"><a href="#cb10-602" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-603"><a href="#cb10-603" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dept-table</span></span>
+<span id="cb10-604"><a href="#cb10-604" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-605"><a href="#cb10-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-606"><a href="#cb10-606" aria-hidden="true" tabindex="-1"></a>dept_tbl <span class="op">=</span> (dept_df</span>
+<span id="cb10-607"><a href="#cb10-607" aria-hidden="true" tabindex="-1"></a>    .with_columns([</span>
+<span id="cb10-608"><a href="#cb10-608" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"n_towns"</span>).alias(<span class="st">"Towns"</span>),</span>
+<span id="cb10-609"><a href="#cb10-609" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"total_visit_hours"</span>).<span class="bu">round</span>(<span class="dv">0</span>).cast(pl.Int64).alias(<span class="st">"Visit (h)"</span>),</span>
+<span id="cb10-610"><a href="#cb10-610" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"intra_travel_hours"</span>).<span class="bu">round</span>(<span class="dv">0</span>).cast(pl.Int64).alias(<span class="st">"Travel (h)"</span>),</span>
+<span id="cb10-611"><a href="#cb10-611" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"total_days"</span>).<span class="bu">round</span>(<span class="dv">1</span>).alias(<span class="st">"Days"</span>),</span>
+<span id="cb10-612"><a href="#cb10-612" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb10-613"><a href="#cb10-613" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"total_days"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-614"><a href="#cb10-614" aria-hidden="true" tabindex="-1"></a>    .select([<span class="st">"department_name"</span>, <span class="st">"region_name"</span>, <span class="st">"Towns"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (h)"</span>, <span class="st">"Days"</span>])</span>
+<span id="cb10-615"><a href="#cb10-615" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-616"><a href="#cb10-616" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-617"><a href="#cb10-617" aria-hidden="true" tabindex="-1"></a>dept_tbl.columns <span class="op">=</span> [<span class="st">"Department"</span>, <span class="st">"Region"</span>, <span class="st">"Towns"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (h)"</span>, <span class="st">"Days"</span>]</span>
+<span id="cb10-618"><a href="#cb10-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-619"><a href="#cb10-619" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb10-620"><a href="#cb10-620" aria-hidden="true" tabindex="-1"></a>    GT(dept_tbl)</span>
+<span id="cb10-621"><a href="#cb10-621" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Total days required by department"</span>)</span>
+<span id="cb10-622"><a href="#cb10-622" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Towns"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (h)"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-623"><a href="#cb10-623" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Days"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-624"><a href="#cb10-624" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>)</span>
+<span id="cb10-625"><a href="#cb10-625" aria-hidden="true" tabindex="-1"></a>    .opt_row_striping()</span>
+<span id="cb10-626"><a href="#cb10-626" aria-hidden="true" tabindex="-1"></a>    .opt_stylize(style<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb10-627"><a href="#cb10-627" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-628"><a href="#cb10-628" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-629"><a href="#cb10-629" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-630"><a href="#cb10-630" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overseas Territories</span></span>
 <span id="cb10-631"><a href="#cb10-631" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-632"><a href="#cb10-632" aria-hidden="true" tabindex="-1"></a>n_overseas_communes <span class="op">=</span> df.<span class="bu">filter</span>(pl.col(<span class="st">"flag_metropole"</span>) <span class="op">==</span> <span class="dv">0</span>).height</span>
-<span id="cb10-633"><a href="#cb10-633" aria-hidden="true" tabindex="-1"></a>display(Markdown(<span class="ss">f"The </span><span class="sc">{</span>n_overseas_communes<span class="sc">}</span><span class="ss"> overseas communes add extra visit + travel days."</span>))</span>
-<span id="cb10-634"><a href="#cb10-634" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-635"><a href="#cb10-635" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-638"><a href="#cb10-638" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-639"><a href="#cb10-639" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: overseas-table</span></span>
-<span id="cb10-640"><a href="#cb10-640" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-634"><a href="#cb10-634" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-635"><a href="#cb10-635" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: overseas-intro</span></span>
+<span id="cb10-636"><a href="#cb10-636" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-637"><a href="#cb10-637" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-638"><a href="#cb10-638" aria-hidden="true" tabindex="-1"></a>n_overseas_communes <span class="op">=</span> df.<span class="bu">filter</span>(pl.col(<span class="st">"flag_metropole"</span>) <span class="op">==</span> <span class="dv">0</span>).height</span>
+<span id="cb10-639"><a href="#cb10-639" aria-hidden="true" tabindex="-1"></a>display(Markdown(<span class="ss">f"The </span><span class="sc">{</span>n_overseas_communes<span class="sc">}</span><span class="ss"> overseas communes add extra visit + travel days."</span>))</span>
+<span id="cb10-640"><a href="#cb10-640" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb10-641"><a href="#cb10-641" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-642"><a href="#cb10-642" aria-hidden="true" tabindex="-1"></a>overseas_groups <span class="op">=</span> (</span>
-<span id="cb10-643"><a href="#cb10-643" aria-hidden="true" tabindex="-1"></a>    df.<span class="bu">filter</span>((pl.col(<span class="st">"flag_metropole"</span>) <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"overseas_group"</span>) <span class="op">!=</span> <span class="st">""</span>))</span>
-<span id="cb10-644"><a href="#cb10-644" aria-hidden="true" tabindex="-1"></a>    .group_by(<span class="st">"overseas_group"</span>)</span>
-<span id="cb10-645"><a href="#cb10-645" aria-hidden="true" tabindex="-1"></a>    .agg([</span>
-<span id="cb10-646"><a href="#cb10-646" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">len</span>().alias(<span class="st">"n_towns"</span>),</span>
-<span id="cb10-647"><a href="#cb10-647" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">sum</span>(<span class="st">"visit_hours"</span>).alias(<span class="st">"total_visit_h"</span>),</span>
-<span id="cb10-648"><a href="#cb10-648" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">max</span>(<span class="st">"overseas_travel_days"</span>).alias(<span class="st">"travel_days"</span>),</span>
-<span id="cb10-649"><a href="#cb10-649" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb10-650"><a href="#cb10-650" aria-hidden="true" tabindex="-1"></a>    .with_columns([</span>
-<span id="cb10-651"><a href="#cb10-651" aria-hidden="true" tabindex="-1"></a>        (pl.col(<span class="st">"total_visit_h"</span>) <span class="op">/</span> <span class="dv">10</span> <span class="op">+</span> pl.col(<span class="st">"travel_days"</span>)).<span class="bu">round</span>(<span class="dv">1</span>).alias(<span class="st">"total_days"</span>),</span>
-<span id="cb10-652"><a href="#cb10-652" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb10-653"><a href="#cb10-653" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"total_days"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb10-654"><a href="#cb10-654" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-655"><a href="#cb10-655" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-656"><a href="#cb10-656" aria-hidden="true" tabindex="-1"></a>overseas_tbl <span class="op">=</span> overseas_groups.rename({</span>
-<span id="cb10-657"><a href="#cb10-657" aria-hidden="true" tabindex="-1"></a>    <span class="st">"overseas_group"</span>: <span class="st">"Territory"</span>,</span>
-<span id="cb10-658"><a href="#cb10-658" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_towns"</span>: <span class="st">"Communes"</span>,</span>
-<span id="cb10-659"><a href="#cb10-659" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total_visit_h"</span>: <span class="st">"Visit (h)"</span>,</span>
-<span id="cb10-660"><a href="#cb10-660" aria-hidden="true" tabindex="-1"></a>    <span class="st">"travel_days"</span>: <span class="st">"Travel (days)"</span>,</span>
-<span id="cb10-661"><a href="#cb10-661" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total_days"</span>: <span class="st">"Total days"</span>,</span>
-<span id="cb10-662"><a href="#cb10-662" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb10-663"><a href="#cb10-663" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-664"><a href="#cb10-664" aria-hidden="true" tabindex="-1"></a>(</span>
-<span id="cb10-665"><a href="#cb10-665" aria-hidden="true" tabindex="-1"></a>    GT(overseas_tbl)</span>
-<span id="cb10-666"><a href="#cb10-666" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Overseas territories — visit time, travel, and total days"</span>)</span>
-<span id="cb10-667"><a href="#cb10-667" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Communes"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (days)"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb10-668"><a href="#cb10-668" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Total days"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb10-669"><a href="#cb10-669" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>)</span>
-<span id="cb10-670"><a href="#cb10-670" aria-hidden="true" tabindex="-1"></a>    .opt_row_striping()</span>
-<span id="cb10-671"><a href="#cb10-671" aria-hidden="true" tabindex="-1"></a>    .opt_stylize(style<span class="op">=</span><span class="dv">6</span>)</span>
-<span id="cb10-672"><a href="#cb10-672" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-673"><a href="#cb10-673" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-674"><a href="#cb10-674" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-675"><a href="#cb10-675" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Bottom Line</span></span>
-<span id="cb10-676"><a href="#cb10-676" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-679"><a href="#cb10-679" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-680"><a href="#cb10-680" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bottom-line</span></span>
-<span id="cb10-681"><a href="#cb10-681" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-644"><a href="#cb10-644" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-645"><a href="#cb10-645" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: overseas-table</span></span>
+<span id="cb10-646"><a href="#cb10-646" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-647"><a href="#cb10-647" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-648"><a href="#cb10-648" aria-hidden="true" tabindex="-1"></a>overseas_groups <span class="op">=</span> (</span>
+<span id="cb10-649"><a href="#cb10-649" aria-hidden="true" tabindex="-1"></a>    df.<span class="bu">filter</span>((pl.col(<span class="st">"flag_metropole"</span>) <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"overseas_group"</span>) <span class="op">!=</span> <span class="st">""</span>))</span>
+<span id="cb10-650"><a href="#cb10-650" aria-hidden="true" tabindex="-1"></a>    .group_by(<span class="st">"overseas_group"</span>)</span>
+<span id="cb10-651"><a href="#cb10-651" aria-hidden="true" tabindex="-1"></a>    .agg([</span>
+<span id="cb10-652"><a href="#cb10-652" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">len</span>().alias(<span class="st">"n_towns"</span>),</span>
+<span id="cb10-653"><a href="#cb10-653" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">sum</span>(<span class="st">"visit_hours"</span>).alias(<span class="st">"total_visit_h"</span>),</span>
+<span id="cb10-654"><a href="#cb10-654" aria-hidden="true" tabindex="-1"></a>        pl.<span class="bu">max</span>(<span class="st">"overseas_travel_days"</span>).alias(<span class="st">"travel_days"</span>),</span>
+<span id="cb10-655"><a href="#cb10-655" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb10-656"><a href="#cb10-656" aria-hidden="true" tabindex="-1"></a>    .with_columns([</span>
+<span id="cb10-657"><a href="#cb10-657" aria-hidden="true" tabindex="-1"></a>        (pl.col(<span class="st">"total_visit_h"</span>) <span class="op">/</span> <span class="dv">10</span> <span class="op">+</span> pl.col(<span class="st">"travel_days"</span>)).<span class="bu">round</span>(<span class="dv">1</span>).alias(<span class="st">"total_days"</span>),</span>
+<span id="cb10-658"><a href="#cb10-658" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb10-659"><a href="#cb10-659" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"total_days"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-660"><a href="#cb10-660" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-661"><a href="#cb10-661" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-662"><a href="#cb10-662" aria-hidden="true" tabindex="-1"></a>overseas_tbl <span class="op">=</span> overseas_groups.rename({</span>
+<span id="cb10-663"><a href="#cb10-663" aria-hidden="true" tabindex="-1"></a>    <span class="st">"overseas_group"</span>: <span class="st">"Territory"</span>,</span>
+<span id="cb10-664"><a href="#cb10-664" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_towns"</span>: <span class="st">"Communes"</span>,</span>
+<span id="cb10-665"><a href="#cb10-665" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total_visit_h"</span>: <span class="st">"Visit (h)"</span>,</span>
+<span id="cb10-666"><a href="#cb10-666" aria-hidden="true" tabindex="-1"></a>    <span class="st">"travel_days"</span>: <span class="st">"Travel (days)"</span>,</span>
+<span id="cb10-667"><a href="#cb10-667" aria-hidden="true" tabindex="-1"></a>    <span class="st">"total_days"</span>: <span class="st">"Total days"</span>,</span>
+<span id="cb10-668"><a href="#cb10-668" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-669"><a href="#cb10-669" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-670"><a href="#cb10-670" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb10-671"><a href="#cb10-671" aria-hidden="true" tabindex="-1"></a>    GT(overseas_tbl)</span>
+<span id="cb10-672"><a href="#cb10-672" aria-hidden="true" tabindex="-1"></a>    .tab_header(<span class="st">"Overseas territories — visit time, travel, and total days"</span>)</span>
+<span id="cb10-673"><a href="#cb10-673" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Communes"</span>, <span class="st">"Visit (h)"</span>, <span class="st">"Travel (days)"</span>], decimals<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-674"><a href="#cb10-674" aria-hidden="true" tabindex="-1"></a>    .fmt_number(columns<span class="op">=</span>[<span class="st">"Total days"</span>], decimals<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-675"><a href="#cb10-675" aria-hidden="true" tabindex="-1"></a>    .cols_align(<span class="st">"center"</span>)</span>
+<span id="cb10-676"><a href="#cb10-676" aria-hidden="true" tabindex="-1"></a>    .opt_row_striping()</span>
+<span id="cb10-677"><a href="#cb10-677" aria-hidden="true" tabindex="-1"></a>    .opt_stylize(style<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb10-678"><a href="#cb10-678" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-679"><a href="#cb10-679" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-680"><a href="#cb10-680" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-681"><a href="#cb10-681" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Bottom Line</span></span>
 <span id="cb10-682"><a href="#cb10-682" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-683"><a href="#cb10-683" aria-hidden="true" tabindex="-1"></a>n_towns <span class="op">=</span> <span class="bu">len</span>(df)</span>
-<span id="cb10-684"><a href="#cb10-684" aria-hidden="true" tabindex="-1"></a>n_monuments <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"total_monuments"</span>].<span class="bu">sum</span>())</span>
-<span id="cb10-685"><a href="#cb10-685" aria-hidden="true" tabindex="-1"></a>n_mountain <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_mountain"</span>].<span class="bu">sum</span>())</span>
-<span id="cb10-686"><a href="#cb10-686" aria-hidden="true" tabindex="-1"></a>n_coast <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_coast"</span>].<span class="bu">sum</span>())</span>
-<span id="cb10-687"><a href="#cb10-687" aria-hidden="true" tabindex="-1"></a>n_insular <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_insular"</span>].<span class="bu">sum</span>())</span>
-<span id="cb10-688"><a href="#cb10-688" aria-hidden="true" tabindex="-1"></a>n_island_commune <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_island_commune"</span>].<span class="bu">sum</span>())</span>
-<span id="cb10-689"><a href="#cb10-689" aria-hidden="true" tabindex="-1"></a>n_overseas_groups <span class="op">=</span> df[<span class="st">"overseas_group"</span>].n_unique()</span>
-<span id="cb10-690"><a href="#cb10-690" aria-hidden="true" tabindex="-1"></a>n_full_day <span class="op">=</span> (df[<span class="st">"visit_minutes"</span>] <span class="op">&gt;=</span> <span class="dv">480</span>).<span class="bu">sum</span>()</span>
-<span id="cb10-691"><a href="#cb10-691" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> grand_total_days <span class="op">/</span> <span class="fl">365.25</span></span>
-<span id="cb10-692"><a href="#cb10-692" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-693"><a href="#cb10-693" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-694"><a href="#cb10-694" aria-hidden="true" tabindex="-1"></a>hero_html <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb10-695"><a href="#cb10-695" aria-hidden="true" tabindex="-1"></a><span class="ss">&lt;div style="</span></span>
-<span id="cb10-696"><a href="#cb10-696" aria-hidden="true" tabindex="-1"></a><span class="ss">    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</span></span>
-<span id="cb10-697"><a href="#cb10-697" aria-hidden="true" tabindex="-1"></a><span class="ss">    border-radius: 16px;</span></span>
-<span id="cb10-698"><a href="#cb10-698" aria-hidden="true" tabindex="-1"></a><span class="ss">    padding: 32px 40px;</span></span>
-<span id="cb10-699"><a href="#cb10-699" aria-hidden="true" tabindex="-1"></a><span class="ss">    text-align: center;</span></span>
-<span id="cb10-700"><a href="#cb10-700" aria-hidden="true" tabindex="-1"></a><span class="ss">    color: white;</span></span>
-<span id="cb10-701"><a href="#cb10-701" aria-hidden="true" tabindex="-1"></a><span class="ss">    margin: 24px 0;</span></span>
-<span id="cb10-702"><a href="#cb10-702" aria-hidden="true" tabindex="-1"></a><span class="ss">    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);</span></span>
-<span id="cb10-703"><a href="#cb10-703" aria-hidden="true" tabindex="-1"></a><span class="ss">"&gt;</span></span>
-<span id="cb10-704"><a href="#cb10-704" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div style="font-size: 72px; font-weight: 800; line-height: 1; margin-bottom: 8px;"&gt;</span></span>
-<span id="cb10-705"><a href="#cb10-705" aria-hidden="true" tabindex="-1"></a><span class="ss">        </span><span class="sc">{</span>grand_total_days<span class="sc">:.0f}</span></span>
-<span id="cb10-706"><a href="#cb10-706" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;/div&gt;</span></span>
-<span id="cb10-707"><a href="#cb10-707" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div style="font-size: 20px; font-weight: 300; opacity: 0.9;"&gt;</span></span>
-<span id="cb10-708"><a href="#cb10-708" aria-hidden="true" tabindex="-1"></a><span class="ss">        total days to visit every French commune</span></span>
-<span id="cb10-709"><a href="#cb10-709" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;/div&gt;</span></span>
-<span id="cb10-710"><a href="#cb10-710" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div style="font-size: 14px; margin-top: 8px; opacity: 0.7;"&gt;</span></span>
-<span id="cb10-711"><a href="#cb10-711" aria-hidden="true" tabindex="-1"></a><span class="ss">        </span><span class="sc">{</span>years<span class="sc">:.1f}</span><span class="ss"> years &amp;middot; 7 days a week &amp;middot; 10 hours a day</span></span>
+<span id="cb10-685"><a href="#cb10-685" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-686"><a href="#cb10-686" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bottom-line</span></span>
+<span id="cb10-687"><a href="#cb10-687" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-688"><a href="#cb10-688" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-689"><a href="#cb10-689" aria-hidden="true" tabindex="-1"></a>n_towns <span class="op">=</span> <span class="bu">len</span>(df)</span>
+<span id="cb10-690"><a href="#cb10-690" aria-hidden="true" tabindex="-1"></a>n_monuments <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"total_monuments"</span>].<span class="bu">sum</span>())</span>
+<span id="cb10-691"><a href="#cb10-691" aria-hidden="true" tabindex="-1"></a>n_mountain <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_mountain"</span>].<span class="bu">sum</span>())</span>
+<span id="cb10-692"><a href="#cb10-692" aria-hidden="true" tabindex="-1"></a>n_coast <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_coast"</span>].<span class="bu">sum</span>())</span>
+<span id="cb10-693"><a href="#cb10-693" aria-hidden="true" tabindex="-1"></a>n_insular <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_insular"</span>].<span class="bu">sum</span>())</span>
+<span id="cb10-694"><a href="#cb10-694" aria-hidden="true" tabindex="-1"></a>n_island_commune <span class="op">=</span> <span class="bu">int</span>(df[<span class="st">"is_island_commune"</span>].<span class="bu">sum</span>())</span>
+<span id="cb10-695"><a href="#cb10-695" aria-hidden="true" tabindex="-1"></a>n_overseas_groups <span class="op">=</span> df[<span class="st">"overseas_group"</span>].n_unique()</span>
+<span id="cb10-696"><a href="#cb10-696" aria-hidden="true" tabindex="-1"></a>n_full_day <span class="op">=</span> (df[<span class="st">"visit_minutes"</span>] <span class="op">&gt;=</span> <span class="dv">480</span>).<span class="bu">sum</span>()</span>
+<span id="cb10-697"><a href="#cb10-697" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> grand_total_days <span class="op">/</span> <span class="fl">365.25</span></span>
+<span id="cb10-698"><a href="#cb10-698" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-699"><a href="#cb10-699" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-700"><a href="#cb10-700" aria-hidden="true" tabindex="-1"></a>hero_html <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb10-701"><a href="#cb10-701" aria-hidden="true" tabindex="-1"></a><span class="ss">&lt;div style="</span></span>
+<span id="cb10-702"><a href="#cb10-702" aria-hidden="true" tabindex="-1"></a><span class="ss">    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</span></span>
+<span id="cb10-703"><a href="#cb10-703" aria-hidden="true" tabindex="-1"></a><span class="ss">    border-radius: 16px;</span></span>
+<span id="cb10-704"><a href="#cb10-704" aria-hidden="true" tabindex="-1"></a><span class="ss">    padding: 32px 40px;</span></span>
+<span id="cb10-705"><a href="#cb10-705" aria-hidden="true" tabindex="-1"></a><span class="ss">    text-align: center;</span></span>
+<span id="cb10-706"><a href="#cb10-706" aria-hidden="true" tabindex="-1"></a><span class="ss">    color: white;</span></span>
+<span id="cb10-707"><a href="#cb10-707" aria-hidden="true" tabindex="-1"></a><span class="ss">    margin: 24px 0;</span></span>
+<span id="cb10-708"><a href="#cb10-708" aria-hidden="true" tabindex="-1"></a><span class="ss">    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);</span></span>
+<span id="cb10-709"><a href="#cb10-709" aria-hidden="true" tabindex="-1"></a><span class="ss">"&gt;</span></span>
+<span id="cb10-710"><a href="#cb10-710" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div style="font-size: 72px; font-weight: 800; line-height: 1; margin-bottom: 8px;"&gt;</span></span>
+<span id="cb10-711"><a href="#cb10-711" aria-hidden="true" tabindex="-1"></a><span class="ss">        </span><span class="sc">{</span>grand_total_days<span class="sc">:.0f}</span></span>
 <span id="cb10-712"><a href="#cb10-712" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;/div&gt;</span></span>
-<span id="cb10-713"><a href="#cb10-713" aria-hidden="true" tabindex="-1"></a><span class="ss">&lt;/div&gt;</span></span>
-<span id="cb10-714"><a href="#cb10-714" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
-<span id="cb10-715"><a href="#cb10-715" aria-hidden="true" tabindex="-1"></a>display(HTML(hero_html))</span>
-<span id="cb10-716"><a href="#cb10-716" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-717"><a href="#cb10-717" aria-hidden="true" tabindex="-1"></a>md <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb10-718"><a href="#cb10-718" aria-hidden="true" tabindex="-1"></a><span class="ss">**By the numbers:**</span></span>
-<span id="cb10-719"><a href="#cb10-719" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-720"><a href="#cb10-720" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_towns<span class="sc">:,}</span><span class="ss"> communes visited</span></span>
-<span id="cb10-721"><a href="#cb10-721" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_monuments<span class="sc">:,}</span><span class="ss"> historical monuments admired</span></span>
-<span id="cb10-722"><a href="#cb10-722" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_mountain<span class="sc">:,}</span><span class="ss"> mountain towns conquered</span></span>
-<span id="cb10-723"><a href="#cb10-723" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_coast<span class="sc">:,}</span><span class="ss"> coastal towns strolled</span></span>
-<span id="cb10-724"><a href="#cb10-724" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_insular<span class="sc">:,}</span><span class="ss"> communes in island departments/territories</span></span>
-<span id="cb10-725"><a href="#cb10-725" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_island_commune<span class="sc">:,}</span><span class="ss"> mainland island communes</span></span>
-<span id="cb10-726"><a href="#cb10-726" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_overseas_groups<span class="sc">}</span><span class="ss"> overseas territory groups navigated</span></span>
-<span id="cb10-727"><a href="#cb10-727" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_full_day<span class="sc">:,}</span><span class="ss"> communes require a full day (≥ 480 min)</span></span>
-<span id="cb10-728"><a href="#cb10-728" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-729"><a href="#cb10-729" aria-hidden="true" tabindex="-1"></a><span class="ss">**Fun comparisons:**</span></span>
-<span id="cb10-730"><a href="#cb10-730" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-731"><a href="#cb10-731" aria-hidden="true" tabindex="-1"></a><span class="ss">- That's roughly **</span><span class="sc">{</span>grand_total_days <span class="op">/</span> <span class="dv">80</span><span class="sc">:.0f}</span><span class="ss">×** the Tour de France (80 days)</span></span>
-<span id="cb10-732"><a href="#cb10-732" aria-hidden="true" tabindex="-1"></a><span class="ss">- Equivalent to driving **</span><span class="sc">{</span>grand_total_days <span class="op">*</span> <span class="dv">200</span> <span class="op">/</span> <span class="dv">40075</span><span class="sc">:.0f}</span><span class="ss">×** around the Earth (200 km/day average, 40,075 km circumference)</span></span>
-<span id="cb10-733"><a href="#cb10-733" aria-hidden="true" tabindex="-1"></a><span class="ss">- **</span><span class="sc">{</span>grand_total_days <span class="op">/</span> <span class="fl">365.25</span><span class="sc">:.1f}</span><span class="ss"> years** — could start today and finish in </span><span class="sc">{</span>datetime<span class="sc">.</span>now()<span class="sc">.</span>year <span class="op">+</span> <span class="bu">int</span>(years)<span class="sc">}</span><span class="ss"> at the earliest</span></span>
+<span id="cb10-713"><a href="#cb10-713" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div style="font-size: 20px; font-weight: 300; opacity: 0.9;"&gt;</span></span>
+<span id="cb10-714"><a href="#cb10-714" aria-hidden="true" tabindex="-1"></a><span class="ss">        total days to visit every French commune</span></span>
+<span id="cb10-715"><a href="#cb10-715" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;/div&gt;</span></span>
+<span id="cb10-716"><a href="#cb10-716" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;div style="font-size: 14px; margin-top: 8px; opacity: 0.7;"&gt;</span></span>
+<span id="cb10-717"><a href="#cb10-717" aria-hidden="true" tabindex="-1"></a><span class="ss">        </span><span class="sc">{</span>years<span class="sc">:.1f}</span><span class="ss"> years &amp;middot; 7 days a week &amp;middot; 10 hours a day</span></span>
+<span id="cb10-718"><a href="#cb10-718" aria-hidden="true" tabindex="-1"></a><span class="ss">    &lt;/div&gt;</span></span>
+<span id="cb10-719"><a href="#cb10-719" aria-hidden="true" tabindex="-1"></a><span class="ss">&lt;/div&gt;</span></span>
+<span id="cb10-720"><a href="#cb10-720" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb10-721"><a href="#cb10-721" aria-hidden="true" tabindex="-1"></a>display(HTML(hero_html))</span>
+<span id="cb10-722"><a href="#cb10-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-723"><a href="#cb10-723" aria-hidden="true" tabindex="-1"></a>md <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb10-724"><a href="#cb10-724" aria-hidden="true" tabindex="-1"></a><span class="ss">**By the numbers:**</span></span>
+<span id="cb10-725"><a href="#cb10-725" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-726"><a href="#cb10-726" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_towns<span class="sc">:,}</span><span class="ss"> communes visited</span></span>
+<span id="cb10-727"><a href="#cb10-727" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_monuments<span class="sc">:,}</span><span class="ss"> historical monuments admired</span></span>
+<span id="cb10-728"><a href="#cb10-728" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_mountain<span class="sc">:,}</span><span class="ss"> mountain towns conquered</span></span>
+<span id="cb10-729"><a href="#cb10-729" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_coast<span class="sc">:,}</span><span class="ss"> coastal towns strolled</span></span>
+<span id="cb10-730"><a href="#cb10-730" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_insular<span class="sc">:,}</span><span class="ss"> communes in island departments/territories</span></span>
+<span id="cb10-731"><a href="#cb10-731" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_island_commune<span class="sc">:,}</span><span class="ss"> mainland island communes</span></span>
+<span id="cb10-732"><a href="#cb10-732" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_overseas_groups<span class="sc">}</span><span class="ss"> overseas territory groups navigated</span></span>
+<span id="cb10-733"><a href="#cb10-733" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="sc">{</span>n_full_day<span class="sc">:,}</span><span class="ss"> communes require a full day (≥ 480 min)</span></span>
 <span id="cb10-734"><a href="#cb10-734" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-735"><a href="#cb10-735" aria-hidden="true" tabindex="-1"></a><span class="ss">**Caveats:**</span></span>
+<span id="cb10-735"><a href="#cb10-735" aria-hidden="true" tabindex="-1"></a><span class="ss">**Fun comparisons:**</span></span>
 <span id="cb10-736"><a href="#cb10-736" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-737"><a href="#cb10-737" aria-hidden="true" tabindex="-1"></a><span class="ss">- Population data is from 2023 — some towns have missing data (visits default to 10 min)</span></span>
-<span id="cb10-738"><a href="#cb10-738" aria-hidden="true" tabindex="-1"></a><span class="ss">- Travel times are rough estimates (no real routing engine)</span></span>
-<span id="cb10-739"><a href="#cb10-739" aria-hidden="true" tabindex="-1"></a><span class="ss">- Island commune data is hand-curated from Wikipedia (Îles du Ponant, Belle-Île, Ré, Oléron, Noirmoutier)</span></span>
-<span id="cb10-740"><a href="#cb10-740" aria-hidden="true" tabindex="-1"></a><span class="ss">- We assumed 7-day weeks and 10-hour days — no rest days, no weekends</span></span>
-<span id="cb10-741"><a href="#cb10-741" aria-hidden="true" tabindex="-1"></a><span class="ss">- Realistically, you'd need to add 30-50% for meal breaks, wrong turns, and weather</span></span>
-<span id="cb10-742"><a href="#cb10-742" aria-hidden="true" tabindex="-1"></a><span class="ss">- But hey — it's a fun number!</span></span>
-<span id="cb10-743"><a href="#cb10-743" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-744"><a href="#cb10-744" aria-hidden="true" tabindex="-1"></a><span class="ss">**What we didn't include:** natural parks and reserves, UNESCO World Heritage sites, sport events (Tour de France stages, marathons, etc.), cultural festivals (Fête de la Musique, film festivals), gastronomic routes, and local markets — all of which would add significant time to any real visit.</span></span>
-<span id="cb10-745"><a href="#cb10-745" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
-<span id="cb10-746"><a href="#cb10-746" aria-hidden="true" tabindex="-1"></a>display(Markdown(md))</span>
-<span id="cb10-747"><a href="#cb10-747" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-748"><a href="#cb10-748" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-749"><a href="#cb10-749" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conclusion</span></span>
-<span id="cb10-750"><a href="#cb10-750" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-753"><a href="#cb10-753" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb10-754"><a href="#cb10-754" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: conclusion</span></span>
-<span id="cb10-755"><a href="#cb10-755" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-737"><a href="#cb10-737" aria-hidden="true" tabindex="-1"></a><span class="ss">- That's roughly **</span><span class="sc">{</span>grand_total_days <span class="op">/</span> <span class="dv">80</span><span class="sc">:.0f}</span><span class="ss">×** the Tour de France (80 days)</span></span>
+<span id="cb10-738"><a href="#cb10-738" aria-hidden="true" tabindex="-1"></a><span class="ss">- Equivalent to driving **</span><span class="sc">{</span>grand_total_days <span class="op">*</span> <span class="dv">200</span> <span class="op">/</span> <span class="dv">40075</span><span class="sc">:.0f}</span><span class="ss">×** around the Earth (200 km/day average, 40,075 km circumference)</span></span>
+<span id="cb10-739"><a href="#cb10-739" aria-hidden="true" tabindex="-1"></a><span class="ss">- **</span><span class="sc">{</span>grand_total_days <span class="op">/</span> <span class="fl">365.25</span><span class="sc">:.1f}</span><span class="ss"> years** — could start today and finish in </span><span class="sc">{</span>datetime<span class="sc">.</span>now()<span class="sc">.</span>year <span class="op">+</span> <span class="bu">int</span>(years)<span class="sc">}</span><span class="ss"> at the earliest</span></span>
+<span id="cb10-740"><a href="#cb10-740" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-741"><a href="#cb10-741" aria-hidden="true" tabindex="-1"></a><span class="ss">**Caveats:**</span></span>
+<span id="cb10-742"><a href="#cb10-742" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-743"><a href="#cb10-743" aria-hidden="true" tabindex="-1"></a><span class="ss">- Population data is from 2023 — some towns have missing data (visits default to 10 min)</span></span>
+<span id="cb10-744"><a href="#cb10-744" aria-hidden="true" tabindex="-1"></a><span class="ss">- Travel times are rough estimates (no real routing engine)</span></span>
+<span id="cb10-745"><a href="#cb10-745" aria-hidden="true" tabindex="-1"></a><span class="ss">- Island commune data is hand-curated from Wikipedia (Îles du Ponant, Belle-Île, Ré, Oléron, Noirmoutier)</span></span>
+<span id="cb10-746"><a href="#cb10-746" aria-hidden="true" tabindex="-1"></a><span class="ss">- We assumed 7-day weeks and 10-hour days — no rest days, no weekends</span></span>
+<span id="cb10-747"><a href="#cb10-747" aria-hidden="true" tabindex="-1"></a><span class="ss">- Realistically, you'd need to add 30-50% for meal breaks, wrong turns, and weather</span></span>
+<span id="cb10-748"><a href="#cb10-748" aria-hidden="true" tabindex="-1"></a><span class="ss">- But hey — it's a fun number!</span></span>
+<span id="cb10-749"><a href="#cb10-749" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-750"><a href="#cb10-750" aria-hidden="true" tabindex="-1"></a><span class="ss">**What we didn't include:** natural parks and reserves, UNESCO World Heritage sites, sport events (Tour de France stages, marathons, etc.), cultural festivals (Fête de la Musique, film festivals), gastronomic routes, and local markets — all of which would add significant time to any real visit.</span></span>
+<span id="cb10-751"><a href="#cb10-751" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb10-752"><a href="#cb10-752" aria-hidden="true" tabindex="-1"></a>display(Markdown(md))</span>
+<span id="cb10-753"><a href="#cb10-753" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-754"><a href="#cb10-754" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-755"><a href="#cb10-755" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conclusion</span></span>
 <span id="cb10-756"><a href="#cb10-756" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-757"><a href="#cb10-757" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-758"><a href="#cb10-758" aria-hidden="true" tabindex="-1"></a>conclusion <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb10-759"><a href="#cb10-759" aria-hidden="true" tabindex="-1"></a><span class="ss">Visiting every French commune is a monumental undertaking: **</span><span class="sc">{</span>grand_total_days<span class="sc">:.0f}</span><span class="ss"> days (</span><span class="sc">{</span>years<span class="sc">:.1f}</span><span class="ss"> years)** of non-stop travel, with 10-hour days and no rest. The biggest drivers are the sheer number of towns (</span><span class="sc">{</span>n_towns<span class="sc">:,}</span><span class="ss">), mountain terrain adding 30% more time, and overseas logistics requiring dedicated trips. While the estimate is rough, it gives a concrete sense of scale. This does't account for anything else than visiting towns, which isnt reaalistic. Sounds like a project for a lifetime!</span></span>
-<span id="cb10-760"><a href="#cb10-760" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
-<span id="cb10-761"><a href="#cb10-761" aria-hidden="true" tabindex="-1"></a>display(Markdown(conclusion))</span>
-<span id="cb10-762"><a href="#cb10-762" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-759"><a href="#cb10-759" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb10-760"><a href="#cb10-760" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: conclusion</span></span>
+<span id="cb10-761"><a href="#cb10-761" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb10-762"><a href="#cb10-762" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-763"><a href="#cb10-763" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-764"><a href="#cb10-764" aria-hidden="true" tabindex="-1"></a>conclusion <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb10-765"><a href="#cb10-765" aria-hidden="true" tabindex="-1"></a><span class="ss">Visiting every French commune is a monumental undertaking: **</span><span class="sc">{</span>grand_total_days<span class="sc">:.0f}</span><span class="ss"> days (</span><span class="sc">{</span>years<span class="sc">:.1f}</span><span class="ss"> years)** of non-stop travel, with 10-hour days and no rest. The biggest drivers are the sheer number of towns (</span><span class="sc">{</span>n_towns<span class="sc">:,}</span><span class="ss">), mountain terrain adding 30% more time, and overseas logistics requiring dedicated trips. While the estimate is rough, it gives a concrete sense of scale. This does't account for anything else than visiting towns, which isnt reaalistic. Sounds like a project for a lifetime!</span></span>
+<span id="cb10-766"><a href="#cb10-766" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb10-767"><a href="#cb10-767" aria-hidden="true" tabindex="-1"></a>display(Markdown(conclusion))</span>
+<span id="cb10-768"><a href="#cb10-768" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
