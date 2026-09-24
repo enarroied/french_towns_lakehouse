@@ -12,10 +12,6 @@ website:
     left:
       - text: "Blog"
         href: index.qmd
-      - text: "Engineering"
-        href: engineering.qmd
-      - text: "Insights"
-        href: insights.qmd
       - text: "Dashboards"
         href: dashboards/index.qmd
       - text: "About"
