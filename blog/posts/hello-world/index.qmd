@@ -16,12 +16,9 @@ It downloads open government datasets (INSEE, Laposte, data.gouv.fr) and scrapes
 municipal label sites (flower cities, sports towns, heritage villages), then
 transforms everything into clean, queryable Parquet files using DuckDB and dbt.
 
-The blog has two main sections:
-
-- **[Engineering](../../engineering.qmd)** , deep dives into
-  the tech stack, data modelling decisions, pipeline architecture, and infrastructure.
-- **[Insights](../../insights.qmd)** , analysis and findings
-  from the data itself.
+Check out the [visited-towns dashboard](../../dashboards/visited-towns/)
+for field trips and the [About](../../about.qmd) page for the project
+overview.
 
 The [dbt documentation](https://enarroied.github.io/french_towns_lakehouse/docs/) shows the full data
 lineage and model definitions.
