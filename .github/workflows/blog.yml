@@ -26,4 +26,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./blog/_site
           destination_dir: .
-          keep_files: true
